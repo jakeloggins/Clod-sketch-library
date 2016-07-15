@@ -1,7 +1,7 @@
 Clod Sketch Library
 ===================
 
-Without any programming knowledge, the Clod Sketch Library allows users to easily customize and upload sketches to esp devices. From an interface such as the Crouton dashboard, a user can simply select the name of a sketch, enter some customizing information, and press upload. This section covers how to prepare a sketch so that it is compatible with the Clod Sketch Library. **If you just want to use Clod, you do not need to read this section**
+The Clod Sketch Library allows users with little programming knowledge to easily customize and upload sketches to esp devices. From an interface such as the Crouton dashboard, a user can simply select the name of a sketch, enter some customizing information, and press upload. Since all sketches work with over-the-air updates, a user can re-select the esp chip and upload a new sketch at anytime. This section covers how to prepare a sketch so that it is compatible with the Clod Sketch Library, and how to add it to the library. **If you just want to use Clod, you do not need to read this section**
 
 
 Create Your Own Sketch
