@@ -1,11 +1,15 @@
 Clod Sketch Library
 ===================
 
-The Clod Sketch Library allows users with little programming knowledge to easily customize and upload sketches to esp devices. From an interface such as the Crouton dashboard, a user can simply select the name of a sketch, enter some customizing information, and press upload. Since all sketches work with over-the-air updates, a user can re-select the esp chip and upload a new sketch at anytime. This section covers how to prepare a sketch so that it is compatible with the Clod Sketch Library, and how to add it to the library. **If you just want to use Clod, you do not need to read this section**
+The Clod Sketch Library allows users with little programming knowledge to easily customize and upload sketches to esp devices. From an interface such as the Crouton dashboard, a user can simply select the name of a sketch, enter some customizing information, and press upload. Since all sketches work with over-the-air updates, a user can re-select the esp chip and upload a new sketch at anytime. This section covers how to prepare a sketch so that it is compatible with the Clod Sketch Library, and how to add it to the library. **If you just want to use Clod, you do not need to read this section.**
 
 
 Create Your Own Sketch
 ----------------------
+
+### Custom Sketch Protocol
+
+
 
 
 
@@ -31,9 +35,26 @@ Create Your Own Sketch
 	        // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
 
 
+### But I don't care about this, can I just hardcode something?
+
+Yes. Look at the example clients, MQTT Standard, and the walkthrough. Create a sketch that does the minimum to follow it and upload it to your device manually. Every aspect of Clod, excluding the uploader, will be fully available to your sketch.
+
+
+### What about non-espressif devices?
+
+Currently, the uploader is only compatible with espressif based devices. But future releases of the uploader script can, in theory, easily handle any device or platform that works with Platform IO.
+
+
+Add Your Sketch to the Library
+------------------------------
+
+For now, just add your sketch folder to this repo and submit a pull request. 
 
 
 
 
+Automatic Sketch Library Updates
+--------------------------------
 
+Coming soon: the ability to update the library and/or remove 
 
