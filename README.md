@@ -9,7 +9,26 @@ Create Your Own Sketch
 
 ### Custom Sketch Protocol
 
+##### Why is this Necessary?
 
+Suppose a user wants to upload a sketch that monitors and logs the temperature, we'll call it `Basic_Temp`. Per the [walkthrough](), the sketch needs to know how to respond to `/deviceInfo/` requests and respond appropriately to its endpoint topics. So we'll program the sketch to give the device a name of `Basic Temperature`, a single endpoint of `temperature`, and a path of `/house/`. Easy enough. 
+
+The uploader script will happily upload this sketch to a device. It will lookup information about the esp device, navigate to the sketch's Platform IO project folder, modify the platformio.ini file, and run the Platform IO command. Everything is great.
+
+But what happens when a user wants to monitor the temperature in 5 different locations on the same network? All five devices will be transmitting to `/house/control/basicTemp/temperature`. The Crouton dashboard will display the temperature readings of 5 different devices as if it's a single device. 
+
+Therefore, the protocol allows the user to specify unique device and endpoint names but keep the same basic sketch.
+
+
+
+##### Platform IO File Structure
+
+##### User Customization
+
+##### Hookup Guide
+
+
+The main problem with the 
 
 
 
@@ -35,7 +54,7 @@ Create Your Own Sketch
 	        // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
 
 
-### But I don't care about this, can I just hardcode something?
+### But I don't care about sharing with other people, can I just quickly hack something together for myself?
 
 Yes. Look at the example clients, MQTT Standard, and the walkthrough. Create a sketch that does the minimum to follow it and upload it to your device manually. Every aspect of Clod, excluding the uploader, will be fully available to your sketch.
 
@@ -48,13 +67,11 @@ Currently, the uploader is only compatible with espressif based devices. But fut
 Add Your Sketch to the Library
 ------------------------------
 
-For now, just add your sketch folder to this repo and submit a pull request. 
-
-
+For now, just add your sketch folder to this git and submit a pull request. 
 
 
 Automatic Sketch Library Updates
 --------------------------------
 
-Coming soon: the ability to update the library and/or remove 
+Coming soon: the ability to update the library after installation from within an interface.
 
