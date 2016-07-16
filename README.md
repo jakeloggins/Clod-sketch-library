@@ -66,13 +66,18 @@ To begin the upload process, a device object is sent to the uploader script. Wit
           "value": "n/a"
         }
       },
-      "alertEmail": {
-        "title": "Alert Email",
-        "card-type": "crouton-simple-input",
-        "static_endpoint_id": "alert_input",
+      "alarmLight": {
+        "title": "Alarm Light",
+        "static_endpoint_id": "RGB",
         "values": {
-          "value": "your_email_address@gmail.com"
-        }
+		    "red": 0,
+    		"green": 0,
+    		"blue": 0
+  		},
+		"min": 0,
+		"max": 255,
+		"card-type": "crouton-rgb-slider",
+		"title": "RGB Lights"
       }
     }
 ```
@@ -89,7 +94,7 @@ String lookup(String endpoint_key) {
 
 When the sketch receives a message, it should send the endpoint portion of the MQTT topic to the function. The `lookup` function will return a string, which the sketch can use to know what the endpoint is supposed to do. This frees up the user to customize the name of the device and the endpoint, but avoids hardcoding the main sketch. 
 
-In the example above, the user has named an endpoint `alarm light`. The lookup function associates that name with `RGB`. The sketch is programmed to adjust the values of a neopixel strip whenever the lookup function sends it the string `RGB`. Therefore, if desired, a user can ensure all device and endpoint names are unique.
+In the example above, the user has named an endpoint `Alarm Light`. The lookup function associates that name with `RGB`. The sketch is programmed to adjust the values of a neopixel strip whenever the lookup function sends it the string `RGB`. Therefore, if desired, a user can ensure all device and endpoint names are unique.
 
 
 
