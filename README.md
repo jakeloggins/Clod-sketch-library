@@ -134,7 +134,7 @@ The hookup guide provides an additional set of instructions to the user after th
 
 ### But I don't care about sharing with other people, can I just quickly hack something together for myself?
 
-Yes. Look at the example clients, MQTT Standard, and the walkthrough. Write a sketch that does the minimum to follow those guidelines and upload it to your device manually. Every aspect of Clod, excluding the uploader, will be fully available to your sketch.
+Yes. Look at the example clients, MQTT Standard, and the walkthrough. Write a sketch that does the minimum to follow those guidelines and upload it to your device manually. Every aspect of Clod, excluding the uploader, will be fully available to your device.
 
 
 ### What about non-espressif devices?
