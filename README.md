@@ -9,7 +9,7 @@ Create Your Own Sketch
 
 ### Custom Sketch Protocol
 
-##### Why is this Necessary?
+#### Why is this Necessary?
 
 Suppose a user wants to upload a sketch that monitors and logs the temperature, we'll call it `Basic_Temp`. Per the [walkthrough](), the sketch needs to know how to respond to `/deviceInfo/` requests to its endpoint topics. So we'll program the sketch to give the device a name of `Basic Temperature`, a single endpoint of `temperature`, and a path of `/house/`. Easy enough. 
 
@@ -20,12 +20,12 @@ But what happens when a user wants to monitor the temperature in 5 different loc
 Therefore, the protocol allows the user to specify unique device and endpoint names but keep the same basic sketch.
 
 
-##### Namepins.h
+#### Namepins.h
 
 The uploader script handles user customization by writing to the file `namepins.h` that is included in the main sketch file of `main.cpp`. In this way, customized information received by the uploader script may be incorporated to the sketch without repeatedly hardcoding the main file. Each time a user uploads a sketch, the `namepins.h` file is overwritten.
 
 
-##### Identifcation Variables
+#### Identifcation Variables
 
 Within `namepins.h`, the following variables are created from device object:
 
@@ -36,9 +36,9 @@ Within `namepins.h`, the following variables are created from device object:
 * `String subscribe_path` - The path followed by a `#` symbol to subscribe to all required endpoints.
 
 
-##### Pin Numbers
+#### Pin Numbers
 
-Different espressif models have different I/O pin configurations. To allow a sketch to work with all models, the uploader script reads the `board_type` from within the `espInfo` object and defines letters to pin numbers. For example, a `board_type` of `esp01_1m` would write this into the namepins.h file:
+Different espressif models have different I/O pin configurations. To allow a sketch to work with all models, the uploader script reads the `board_type` from within the `espInfo` object and defines letters to pin numbers. For example, a `board_type` of `esp01_1m` would write this into the `namepins.h` file:
 
 `#define PIN_A 2`
 
@@ -54,15 +54,15 @@ Different espressif models have different I/O pin configurations. To allow a ske
 Therefore, a sketch can refer to PIN_A and the uploader script will decide the appropriate pin number.
 
 
-##### Static Endpoint Id
+#### Static Endpoint Id
 
 
 
-##### Default Endpoints
+#### Default Endpoints
 
 
 
-##### Custom Endpoints
+#### Custom Endpoints
 
 
 
