@@ -25,7 +25,7 @@ The uploader script handles user customization by writing to the file `namepins.
 
 #### Identifcation Variables
 
-Within `namepins.h`, the following variables are created from device object:
+Within `namepins.h`, the following variables are created from the device object:
 
 * `String thisDeviceName` - User customized device name.
 
@@ -54,7 +54,30 @@ Therefore, a sketch can refer to PIN_A and the uploader script will decide the a
 
 #### Static Endpoint Id
 
-The uploader script writes a `String lookup(String endpoint_key)` function into `namepins.h`. Here's an example of the function:
+To begin the upload process, a device object is sent to the uploader script. Within the device object is the endpoints object, which is the main way Clod updates values between users and devices (a detailed look at the device object is in the [walkthrough](https://github.com/jakeloggins/Clod-scripts). Here's an example of a device's endpoints object:
+
+```json
+"endPoints": {
+      "lastTimeTriggered": {
+        "title": "Last Time Triggered",
+        "card-type": "crouton-simple-input",
+        "static_endpoint_id": "time_input",
+        "values": {
+          "value": "n/a"
+        }
+      },
+      "alertEmail": {
+        "title": "Alert Email",
+        "card-type": "crouton-simple-input",
+        "static_endpoint_id": "alert_input",
+        "values": {
+          "value": "your_email_address@gmail.com"
+        }
+      }
+    }
+```
+
+The uploader script writes a `lookup` function into `namepins.h`. Here's an example:
 
 ```arduino
 String lookup(String endpoint_key) {
@@ -63,6 +86,12 @@ String lookup(String endpoint_key) {
 	}
 }
 ```
+
+When the sketch receives a message, it should send the endpoint portion of the MQTT topic to the function. The `lookup` function will return a string, which the sketch can use to know what the endpoint is supposed to do. This frees up the user to customize the name of the device and the endpoint, but avoids hardcoding the main sketch. 
+
+In the example above, the user has named an endpoint `alarm light`. The lookup function associates that name with `RGB`. The sketch is programmed to adjust the values of a neopixel strip whenever the lookup function sends it the string `RGB`. Therefore, if desired, a user can ensure all device and endpoint names are unique.
+
+
 
 #### Default Endpoints
 
