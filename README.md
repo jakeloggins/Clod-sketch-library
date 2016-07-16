@@ -4,10 +4,8 @@ Clod Sketch Library
 The Clod Sketch Library allows users with little programming knowledge to easily customize and upload sketches to esp devices. From an interface such as the Crouton dashboard, a user can simply select the name of a sketch, enter some customizing information, and press upload. Since all sketches work with over-the-air updates, a user can re-select the esp chip and upload a new sketch at anytime. This section covers how to prepare a sketch so that it is compatible with the Clod Sketch Library, and how to add it to the library. **If you just want to use Clod, you do not need to read this section.**
 
 
-Create Your Own Sketch
+Custom Sketch Protocol
 ----------------------
-
-### Custom Sketch Protocol
 
 #### Why is this Necessary?
 
@@ -69,9 +67,9 @@ Therefore, a sketch can refer to PIN_A and the uploader script will decide the a
 
 
 
-##### Hookup Guide
+#### Hookup Guide
 
-##### Platform IO File Structure
+#### Platform IO File Structure
 
 For now, all custom sketches can be found in Crouton's sketches directory. These follow Platform IO's project folder format, which you can read about [here](http://docs.platformio.org/en/latest/ide/atom.html#setting-up-the-project). The Crouton dashboard's uploader interface looks through this directory and generates a list of the project folders. Your sketch should be named main.cpp and placed in the project's `src` folder. Libraries for only your project go in the project's `lib` folder. The `.pioenvs` folder is Platform IO's cache system. Do not edit the `.pioenvs` folder, it will be periodically deleted by Platform IO and ignored within this git.  
 
