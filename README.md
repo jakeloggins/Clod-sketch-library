@@ -33,10 +33,25 @@ Within `namepins.h`, the following variables are created from device object:
 
 * `String thisDevicePath` - User customized device path.
 
-* `String subscribe_path` - The path followed by a `#` symbol to subscribe
+* `String subscribe_path` - The path followed by a `#` symbol to subscribe to all required endpoints.
+
 
 ##### Pin Numbers
 
+Different espressif models have different I/O pin configurations. To allow a sketch to work with all models, the uploader script reads the `board_type` from within the `espInfo` object and defines letters to pin numbers. For example, a `board_type` of `esp01_1m` would write this into the namepins.h file:
+
+`#define PIN_A 2`
+
+... while a `board_type` of `esp07` would write the following:
+
+```
+#define PIN_A 4
+#define PIN_B 5
+#define PIN_C 12
+#define PIN_D 13
+```
+
+Therefore, a sketch can refer to PIN_A and the uploader script will decide the appropriate pin number.
 
 
 ##### Static Endpoint Id
