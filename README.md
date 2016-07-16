@@ -54,7 +54,15 @@ Therefore, a sketch can refer to PIN_A and the uploader script will decide the a
 
 #### Static Endpoint Id
 
+The uploader script writes a `String lookup(String endpoint_key)` function into `namepins.h`. Here's an example of the function:
 
+```arduino
+String lookup(String endpoint_key) {
+	if (endpoint_key == "alarmLight") {
+		return "RGB";
+	}
+}
+```
 
 #### Default Endpoints
 
