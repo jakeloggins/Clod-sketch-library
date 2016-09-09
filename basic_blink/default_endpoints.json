@@ -1,0 +1,18 @@
+ {
+  "blinkLED": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "blink",
+    "title": "Blink Built-in LED",
+    "values": {
+      "value": false
+    },
+    "labels":{ 
+      "true": "On",
+      "false": "Off"
+    },
+    "icons": {
+      "true": "lightbulb-o",
+      "false": "lightbulb-o"
+    },
+  }
+}
