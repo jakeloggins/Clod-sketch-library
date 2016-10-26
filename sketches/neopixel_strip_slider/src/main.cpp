@@ -2,7 +2,6 @@
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-#include <TimeLib.h>
 
 //for LED status
 #include <Ticker.h>
@@ -29,21 +28,73 @@ String local_ip_str = "";
 
 String error_path = "";
 
+
+int redValue = 0;
+int greenValue = 0;
+int blueValue = 0;
+
+boolean neoPixelChange = false;
+
 static uint32_t MQTTtick = 0;
 static uint32_t MQTTlimit = 300;
 
 
 // -- MQTT server setup
   #include <PubSubClient.h>
-  IPAddress server(192, 168, 1, 140);
-  
+  IPAddress server(192, 168, 1, 160);
+
   #define BUFFER_SIZE 100
-  
+
   WiFiClient espClient;
   PubSubClient client(espClient, server, 1883);
   boolean sendConfirm = false;
 
 
+
+// -- NeoPixelBus
+  #include <NeoPixelBus.h>
+
+  const uint16_t PixelCount = 30; // this example assumes 4 pixels, making it smaller will cause a failure
+  const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, ignored for Esp8266
+
+  #define colorSaturation 256
+
+  // three element pixels, in different order and speeds
+  //NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
+  //NeoPixelBus<NeoRgbFeature, Neo400KbpsMethod> strip(PixelCount, PixelPin);
+
+  // You can also use one of these for Esp8266,
+  // each having their own restrictions
+  //
+  // These two are the same as above as the DMA method is the default
+  // NOTE: These will ignore the PIN and use GPI03 pin
+  //NeoPixelBus<NeoGrbFeature, NeoEsp8266Dma800KbpsMethod> strip(PixelCount, PixelPin);
+  //NeoPixelBus<NeoRgbFeature, NeoEsp8266Dma400KbpsMethod> strip(PixelCount, PixelPin);
+
+  // Uart method is good for the Esp-01 or other pin restricted modules
+  // NOTE: These will ignore the PIN and use GPI02 pin
+  NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
+  //NeoPixelBus<NeoRgbFeature, NeoEsp8266Uart400KbpsMethod> strip(PixelCount, PixelPin);
+
+  // The bitbang method is really only good if you are not using WiFi features of the ESP
+  // It works with all but pin 16
+  //NeoPixelBus<NeoGrbFeature, NeoEsp8266BitBang800KbpsMethod> strip(PixelCount, PixelPin);
+  //NeoPixelBus<NeoRgbFeature, NeoEsp8266BitBang400KbpsMethod> strip(PixelCount, PixelPin);
+
+  // four element pixels, RGBW
+  //NeoPixelBus<NeoRgbwFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
+
+  RgbColor red(colorSaturation, 0, 0);
+  RgbColor green(0, colorSaturation, 0);
+  RgbColor blue(0, 0, colorSaturation);
+  RgbColor white(colorSaturation);
+  RgbColor black(0);
+
+  HslColor hslRed(red);
+  HslColor hslGreen(green);
+  HslColor hslBlue(blue);
+  HslColor hslWhite(white);
+  HslColor hslBlack(black);
 
 // -- TICK FUNTION
   void tick_fnc()
@@ -75,11 +126,11 @@ static uint32_t MQTTlimit = 300;
   // HIGH LEVEL OVERVIEW OF ESP AND PERSISTENCE COMMUNICATION
   // --------------------------------------------------------
   // ask persistence/control/device_name/chipID "request states" --  do you have any states with my device_name or chipID
-    // if not, receive reply from deviceInfo/control/device_name "no states" 
+    // if not, receive reply from deviceInfo/control/device_name "no states"
       // send deviceInfo/confirm/device_name {default object} -- send the device info object with default endpoints included
-        // NOTE: This step probably isn't necessary. persistence should always have 
+        // NOTE: This step probably isn't necessary. persistence should always have
 
-    // if yes, receive each endpoint from [device path]/control/[device_name]/[endpoint_key] (camelized card title) 
+    // if yes, receive each endpoint from [device path]/control/[device_name]/[endpoint_key] (camelized card title)
       // receive each endpoint one by one and it's corresponding value
 
         // send endpoint_key to function stored in namepins.h at compile time
@@ -95,7 +146,7 @@ static uint32_t MQTTlimit = 300;
     yield();
     if (millis() - MQTTtick > MQTTlimit) {
       MQTTtick = millis();
-    
+
 
       int commandLoc;
       String command = "";
@@ -106,7 +157,7 @@ static uint32_t MQTTlimit = 300;
       payload = pub.payload_string();
 
       // -- topic parser
-          // syntax: 
+          // syntax:
           // global: / global / path / command / function
           // device setup: / deviceInfo / command / name
           // normal: path / command / name / endpoint
@@ -122,7 +173,7 @@ static uint32_t MQTTlimit = 300;
         command = getValue(topic, '/', 2);
         if ((deviceName == thisDeviceName) && (command == "control")) {
           if (payload == "no states") {
-            // -- do something to send the default states, but now that this is managed by persistence this shouldn't be necessary
+            // -- do something to send the default states, but now that this is managed by persistence so this shouldn't be necessary
             // -- maybe it just resets all the states to 0 or whatever was originally programmed into the sketch
             //sendJSON = true;
           }
@@ -143,17 +194,14 @@ static uint32_t MQTTlimit = 300;
 
 
 
-
-
-
         }
-          
+
       }
       else {
 
         int i;
         int maxitems;
-        
+
         // count number of items
         for (i=1; i<topic.length(); i++) {
           String chunk = getValue(topic, '/', i);
@@ -164,7 +212,7 @@ static uint32_t MQTTlimit = 300;
 
         // get topic variables
         maxitems = i;
-        
+
         for (i=1; i<maxitems; i++) {
           String chunk = getValue(topic, '/', i);
           if (chunk == "control") {
@@ -182,34 +230,33 @@ static uint32_t MQTTlimit = 300;
 
           // send endpoint_key to function stored in namepins.h at compile time
           // function returns static_endpoint_id associated with that endpoint
-        
+
           String lookup_val = lookup(endPoint);
           //Serial.println("looking value incoming...");
           //Serial.println(lookup_val);
 
           // sketch acts on that value as it normally would, using the static_endpoint_id to know for sure what it should do (turn output pin on/off, adjust RGB light, etc)
-          if (lookup_val == "blink") {
+          if (lookup_val == "RGB") {
             // deserialize payload, get valueKey
+            // or just look for value or red,green,blue
+            String findKey = getValue(payload, '"', 1);
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
-            if (findValue == "true") {
-              Serial.end();
-              pinMode(BUILTIN_LED, OUTPUT);
-              ticker.attach(0.6, tick_fnc);
+            if (findKey == "red") {
+              redValue = findValue.toInt();
             }
-            else if (findValue == "false") {
-              ticker.detach();
-              digitalWrite(BUILTIN_LED, HIGH);
-              pinMode(BUILTIN_LED, INPUT);
-              Serial.begin(115200);
+            else if (findKey == "green") {
+              greenValue = findValue.toInt();
             }
-
+            else if (findKey == "blue") {
+              blueValue = findValue.toInt();
+            }
             //neoPixelChange = true;
           }
           /*
           else if (lookup_val == "SECOND STATIC ENDPOINT ID") {
-            
+
           }
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
 
@@ -239,7 +286,6 @@ static uint32_t MQTTlimit = 300;
   }
 
 
-
 void setup() {
 
   Serial.begin(115200);
@@ -252,11 +298,6 @@ void setup() {
     delay(5000);
     ESP.restart();
   }
-
-  Serial.println("Starting UDP");
-  udp.begin(localPort);
-  Serial.print("Local port: ");
-  Serial.println(udp.localPort());
 
 
   // -- OTA
@@ -292,10 +333,11 @@ void setup() {
   local_ip_str = WiFi.localIP().toString();
   Serial.println(local_ip_str);
 
+  // neopixel bus
+  strip.Begin();
+  strip.Show();
 
 }
-
-
 
 
 
@@ -337,16 +379,12 @@ void loop() {
     }
 
 
+  // -- NeoPixel continuous update
+    for(int i=0; i<PixelCount; i++) {
+      strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
+    }
+    strip.Show();
 
-
-  
-  // Do things every NTPLimit seconds
-  if ( millis() - tick > NTPlimit) {
-    tick = millis();
-
-    
-  } 
-  
 
   yield();
 }

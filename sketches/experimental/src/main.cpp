@@ -2,6 +2,7 @@
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <TimeLib.h>
 
 //for LED status
 #include <Ticker.h>
@@ -41,10 +42,10 @@ static uint32_t MQTTlimit = 300;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
-  IPAddress server(192, 168, 1, 140);
-  
+  IPAddress server(192, 168, 1, 160);
+
   #define BUFFER_SIZE 100
-  
+
   WiFiClient espClient;
   PubSubClient client(espClient, server, 1883);
   boolean sendConfirm = false;
@@ -96,6 +97,22 @@ static uint32_t MQTTlimit = 300;
   HslColor hslWhite(white);
   HslColor hslBlack(black);
 
+
+// -- NTP
+  unsigned int localPort = 2390;      // local port to listen for UDP packets
+  /* Don't hardwire the IP address or we won't get the benefits of the pool.
+   *  Lookup the IP address for the host name instead */
+  //IPAddress timeServer(129, 6, 15, 28); // time.nist.gov NTP server
+  IPAddress timeServerIP; // time.nist.gov NTP server address
+  const char* ntpServerName = "time.nist.gov";
+  const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
+  byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
+  // A UDP instance to let us send and receive packets over UDP
+  WiFiUDP udp;
+  // wait time for displaying NTP
+  static uint32_t tick = 0;
+  static uint32_t NTPlimit = 30000;
+
 // -- TICK FUNTION
   void tick_fnc()
   {
@@ -126,11 +143,11 @@ static uint32_t MQTTlimit = 300;
   // HIGH LEVEL OVERVIEW OF ESP AND PERSISTENCE COMMUNICATION
   // --------------------------------------------------------
   // ask persistence/control/device_name/chipID "request states" --  do you have any states with my device_name or chipID
-    // if not, receive reply from deviceInfo/control/device_name "no states" 
+    // if not, receive reply from deviceInfo/control/device_name "no states"
       // send deviceInfo/confirm/device_name {default object} -- send the device info object with default endpoints included
-        // NOTE: This step probably isn't necessary. persistence should always have 
+        // NOTE: This step probably isn't necessary. persistence should always have
 
-    // if yes, receive each endpoint from [device path]/control/[device_name]/[endpoint_key] (camelized card title) 
+    // if yes, receive each endpoint from [device path]/control/[device_name]/[endpoint_key] (camelized card title)
       // receive each endpoint one by one and it's corresponding value
 
         // send endpoint_key to function stored in namepins.h at compile time
@@ -146,7 +163,7 @@ static uint32_t MQTTlimit = 300;
     yield();
     if (millis() - MQTTtick > MQTTlimit) {
       MQTTtick = millis();
-    
+
 
       int commandLoc;
       String command = "";
@@ -157,7 +174,7 @@ static uint32_t MQTTlimit = 300;
       payload = pub.payload_string();
 
       // -- topic parser
-          // syntax: 
+          // syntax:
           // global: / global / path / command / function
           // device setup: / deviceInfo / command / name
           // normal: path / command / name / endpoint
@@ -194,14 +211,17 @@ static uint32_t MQTTlimit = 300;
 
 
 
+
+
+
         }
-          
+
       }
       else {
 
         int i;
         int maxitems;
-        
+
         // count number of items
         for (i=1; i<topic.length(); i++) {
           String chunk = getValue(topic, '/', i);
@@ -212,7 +232,7 @@ static uint32_t MQTTlimit = 300;
 
         // get topic variables
         maxitems = i;
-        
+
         for (i=1; i<maxitems; i++) {
           String chunk = getValue(topic, '/', i);
           if (chunk == "control") {
@@ -230,7 +250,7 @@ static uint32_t MQTTlimit = 300;
 
           // send endpoint_key to function stored in namepins.h at compile time
           // function returns static_endpoint_id associated with that endpoint
-        
+
           String lookup_val = lookup(endPoint);
           //Serial.println("looking value incoming...");
           //Serial.println(lookup_val);
@@ -256,7 +276,7 @@ static uint32_t MQTTlimit = 300;
           }
           /*
           else if (lookup_val == "SECOND STATIC ENDPOINT ID") {
-            
+
           }
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
 
@@ -286,6 +306,63 @@ static uint32_t MQTTlimit = 300;
   }
 
 
+// -- NeoPixel Sunrise Functions
+  void sunrise(uint16_t wait) {
+    uint16_t i, j;
+
+    for(j=0; j<256; j++) {
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (j, 0, 0));
+      }
+      strip.Show();
+      delay(wait);
+    }
+  }
+
+  void offblack() {
+      uint16_t i;
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (0, 0, 0));
+      }
+      strip.Show();
+  }
+
+
+  void flashblue(uint8_t wait, uint8_t flashes) {
+    uint16_t i, z;
+    for (z=0; z<flashes; z++) {
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (0, 0, 255));
+      }
+      strip.Show();
+      delay(wait);
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (0, 0, 0));
+      }
+      strip.Show();
+      delay(wait);
+    }
+  }
+
+  void flashgreen(uint8_t wait, uint8_t flashes) {
+    uint16_t i, z;
+    for (z=0; z<flashes; z++) {
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (0, 255, 0));
+      }
+      strip.Show();
+      delay(wait);
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (0, 0, 0));
+      }
+      strip.Show();
+      delay(wait);
+    }
+  }
+
+
+
+
 void setup() {
 
   Serial.begin(115200);
@@ -298,6 +375,11 @@ void setup() {
     delay(5000);
     ESP.restart();
   }
+
+  Serial.println("Starting UDP");
+  udp.begin(localPort);
+  Serial.print("Local port: ");
+  Serial.println(udp.localPort());
 
 
   // -- OTA
@@ -339,6 +421,33 @@ void setup() {
 
 }
 
+// send an NTP request to the time server at the given address
+  unsigned long sendNTPpacket(IPAddress& address)
+  {
+    //Serial.println("sending NTP packet...");
+    // set all bytes in the buffer to 0
+    memset(packetBuffer, 0, NTP_PACKET_SIZE);
+    // Initialize values needed to form NTP request
+    // (see URL above for details on the packets)
+    packetBuffer[0] = 0b11100011;   // LI, Version, Mode
+    packetBuffer[1] = 0;     // Stratum, or type of clock
+    packetBuffer[2] = 6;     // Polling Interval
+    packetBuffer[3] = 0xEC;  // Peer Clock Precision
+    // 8 bytes of zero for Root Delay & Root Dispersion
+    packetBuffer[12]  = 49;
+    packetBuffer[13]  = 0x4E;
+    packetBuffer[14]  = 49;
+    packetBuffer[15]  = 52;
+
+    // all NTP fields have been given values, now
+    // you can send a packet requesting a timestamp:
+    udp.beginPacket(address, 123); //NTP requests are to port 123
+    yield();
+    udp.write(packetBuffer, NTP_PACKET_SIZE);
+    udp.endPacket();
+  }
+
+
 
 
 void loop() {
@@ -378,12 +487,180 @@ void loop() {
       client.loop();
     }
 
+  /*
+  // -- Device Request Response
+    if (sendJSON) {
+      buildDeviceJson(); // flag set to false inside function
+    }
+  */
+
+  /*
+  // -- Confirm Messages
+    if (sendConfirm) {
+      client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
+      sendConfirm = false;
+    }
+  */
+
+  /*
+  // -- NeoPixel updates
+    if (neoPixelChange) {
+      for(int i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
+      }
+      strip.Show();
+      neoPixelChange = false;
+    }
+  */
 
   // -- NeoPixel continuous update
     for(int i=0; i<PixelCount; i++) {
       strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
     }
     strip.Show();
+
+  /*
+  // -- NeoPixel Sunrise Alarm Code
+    if (millis() - lastcheck > alarmcheck)  {
+      DateTime now = RTC.now();
+      lastcheck = millis();
+      if (alarmminute == now.minute() && alarmhour == now.hour()) {
+         sunrise(4000);
+         sunrise(400);
+         sunrise(40);
+         sunrise(40);
+         sunrise(40);
+         sunrise(40);
+         sunrise(40);
+         sunrise(20);
+         sunrise(20);
+         black();
+      }
+    }
+  */
+
+
+  // Do things every NTPLimit seconds
+  if ( millis() - tick > NTPlimit) {
+    tick = millis();
+
+    /*
+    // -- get server and send NTP packet
+      //get a random server from the pool
+      WiFi.hostByName(ntpServerName, timeServerIP);
+
+      sendNTPpacket(timeServerIP); // send an NTP packet to a time server
+      // wait to see if a reply is available
+      delay(1000);
+
+      int cb = udp.parsePacket();
+      if (!cb) {
+        Serial.println("no packet yet");
+      }
+      else {
+        //Serial.print("packet received, length=");
+        //Serial.println(cb);
+        udp.read(packetBuffer, NTP_PACKET_SIZE); // read the packet into the buffer
+
+        unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
+        unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
+        // combine the four bytes (two words) into a long integer
+        // this is NTP time (seconds since Jan 1 1900):
+        unsigned long secsSince1900 = highWord << 16 | lowWord;
+        const unsigned long seventyYears = 2208988800UL;
+        unsigned long epoch = secsSince1900 - seventyYears;
+
+        int UTChour = (epoch  % 86400L) / 3600;   // (86400 equals secs per day)
+        int UTCmin = (epoch  % 3600) / 60;        // (3600 equals secs per minute)
+        //Serial.println(UTChour);
+
+        Serial.print(year(epoch));
+        Serial.print('-');
+        Serial.print(month(epoch));
+        Serial.print('-');
+        Serial.println(day(epoch));
+
+        Serial.print("The UTC time is ");       // UTC is the time at Greenwich Meridian (GMT)
+        Serial.print(UTChour);
+        Serial.print(':');
+        if ( ((epoch % 3600) / 60) < 10 ) {
+          Serial.print('0');
+        }
+        Serial.print(UTCmin);
+        Serial.print(':');
+        if ( (epoch % 60) < 10 ) {
+          Serial.print('0');
+        }
+        Serial.println(epoch % 60); // print the second
+      }
+    */
+
+    /*
+    // -- begin neropixel test
+
+      delay(1000);
+
+      Serial.println("Colors R, G, B, W...");
+
+      // set the colors,
+      // if they don't match in order, you need to use NeoGrbFeature feature
+      strip.SetPixelColor(0, RgbColor (128, 0, 0));
+      strip.SetPixelColor(1, green);
+      strip.SetPixelColor(2, blue);
+      strip.SetPixelColor(3, white);
+      // the following line demonstrates rgbw color support
+      // if the NeoPixels are rgbw types the following line will compile
+      // if the NeoPixels are anything else, the following line will give an error
+      //strip.SetPixelColor(3, RgbwColor(colorSaturation));
+      strip.Show();
+
+
+      delay(1000);
+
+      Serial.println("Off ...");
+
+      // turn off the pixels
+      strip.SetPixelColor(0, black);
+      strip.SetPixelColor(1, black);
+      strip.SetPixelColor(2, black);
+      strip.SetPixelColor(3, black);
+      strip.Show();
+
+      delay(1000);
+
+      Serial.println("HSL Colors R, G, B, W...");
+
+      // set the colors,
+      // if they don't match in order, you may need to use NeoGrbFeature feature
+      strip.SetPixelColor(0, hslRed);
+      strip.SetPixelColor(1, hslGreen);
+      strip.SetPixelColor(2, hslBlue);
+      strip.SetPixelColor(3, hslWhite);
+      strip.Show();
+
+
+      delay(1000);
+
+      Serial.println("Off again...");
+
+      // turn off the pixels
+      strip.SetPixelColor(0, hslBlack);
+      strip.SetPixelColor(1, hslBlack);
+      strip.SetPixelColor(2, hslBlack);
+      strip.SetPixelColor(3, hslBlack);
+      strip.Show();
+    */
+
+    // -- neopixel sunrise test
+      //sunrise(40);
+      //offblack();
+
+    /*
+    // -- print IP address
+      Serial.println(WiFi.localIP());
+      //Serial.println("..");
+    */
+  }
 
 
   yield();

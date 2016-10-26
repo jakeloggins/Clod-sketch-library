@@ -29,7 +29,7 @@ Ticker ticker;
 #include <ESP8266mDNS.h>
 
 WiFiClient espClient;
-IPAddress default_server(192, 168, 1, 140);
+IPAddress default_server(192, 168, 1, 160);
 PubSubClient client(espClient, default_server);
 boolean sendConfirm = false;
 
@@ -61,9 +61,8 @@ void tick()
 
 
 //define your default values here, if there are different values in config.json, they are overwritten.
-char mqtt_server[40] = "192.168.1.140";
+char mqtt_server[40] = "192.168.1.160";
 char mqtt_port[6] = "1883";
-//char blynk_token[34] = "YOUR_BLYNK_TOKEN";
 
 //flag for saving data
 bool shouldSaveConfig = false;
@@ -148,7 +147,7 @@ void setup() {
 
   // --------------------
   //clean FS, for testing
-    //SPIFFS.format();
+    SPIFFS.format();
   // -------------------
 
   //read configuration from FS json
@@ -352,7 +351,7 @@ void setup() {
     confirm_msg += chip_id;
     confirm_msg += "\", \"board_type\": \"";
     confirm_msg += board_type; // hardcoded from ESPBoardDefs.h
-    
+
     confirm_msg += "\", \"platform\": \"";
     confirm_msg += platform; // hardcoded from ESPBoardDefs.h
     confirm_msg += "\", \"flash_size\": ";
@@ -439,7 +438,7 @@ void loop() {
         Serial.println("not connected");
         if (client.connect("espClient")) {
           Serial.println("MQTT connected");
-          client.publish("/uploader/confirm", "esp connected - main loop"); 
+          client.publish("/uploader/confirm", "esp connected - main loop");
           client.set_callback(callback);
           client.subscribe("/deviceInfo/control/#");
         }
