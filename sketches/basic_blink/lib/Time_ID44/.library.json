@@ -1,0 +1,41 @@
+{
+    "name": "Time", 
+    "repository": {
+        "url": "https://github.com/PaulStoffregen/Time", 
+        "type": "git"
+    }, 
+    "platforms": [], 
+    "url": "http://playground.arduino.cc/Code/Time", 
+    "frameworks": [
+        "arduino"
+    ], 
+    "version": "cb1e416b84", 
+    "authors": [
+        {
+            "url": null, 
+            "maintainer": false, 
+            "email": null, 
+            "name": "Michael Margolis"
+        }, 
+        {
+            "url": null, 
+            "maintainer": false, 
+            "email": null, 
+            "name": "Paul Stoffregen"
+        }
+    ], 
+    "keywords": [
+        "time", 
+        "date", 
+        "hour", 
+        "minute", 
+        "second", 
+        "day", 
+        "week", 
+        "month", 
+        "year", 
+        "rtc"
+    ], 
+    "id": 44, 
+    "description": "Time keeping library"
+}

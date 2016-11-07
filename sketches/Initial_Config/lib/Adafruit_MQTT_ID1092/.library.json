@@ -1,0 +1,31 @@
+{
+    "name": "Adafruit-MQTT", 
+    "repository": {
+        "url": "https://github.com/adafruit/Adafruit_MQTT_Library.git", 
+        "type": "git"
+    }, 
+    "platforms": [
+        "atmelavr", 
+        "espressif"
+    ], 
+    "frameworks": [
+        "arduino"
+    ], 
+    "version": "0.12.2", 
+    "authors": [
+        {
+            "maintainer": false, 
+            "name": "Adafruit Industries", 
+            "url": "https://github.com/adafruit", 
+            "email": null
+        }
+    ], 
+    "keywords": [
+        "wifi", 
+        "mqtt", 
+        "m2m", 
+        "iot"
+    ], 
+    "id": 1092, 
+    "description": "MQTT library that supports the CC3000, FONA, ESP8266, Yun, and generic Arduino Client hardware."
+}

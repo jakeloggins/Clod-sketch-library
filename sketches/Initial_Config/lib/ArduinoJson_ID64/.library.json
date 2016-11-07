@@ -1,0 +1,48 @@
+{
+    "name": "Json", 
+    "repository": {
+        "url": "https://github.com/bblanchon/ArduinoJson.git", 
+        "type": "git"
+    }, 
+    "platforms": [
+        "atmelavr", 
+        "atmelsam", 
+        "timsp430", 
+        "titiva", 
+        "teensy", 
+        "freescalekinetis", 
+        "ststm32", 
+        "nordicnrf51", 
+        "nxplpc", 
+        "espressif", 
+        "siliconlabsefm32", 
+        "linux_arm", 
+        "native"
+    ], 
+    "frameworks": [
+        "arduino"
+    ], 
+    "version": "5.2.0", 
+    "authors": [
+        {
+            "url": "http://blog.benoitblanchon.fr", 
+            "maintainer": false, 
+            "email": null, 
+            "name": "Benoit Blanchon"
+        }
+    ], 
+    "keywords": [
+        "json", 
+        "rest", 
+        "http", 
+        "web"
+    ], 
+    "exclude": [
+        "scripts", 
+        "src/ArduinoJson.h", 
+        "test", 
+        "third-party"
+    ], 
+    "id": 64, 
+    "description": "An elegant and efficient JSON library for embedded systems"
+}
