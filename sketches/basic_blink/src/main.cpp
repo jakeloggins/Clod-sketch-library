@@ -43,7 +43,9 @@ static uint32_t MQTTlimit = 300;
   PubSubClient client(espClient, server, 1883);
   boolean sendConfirm = false;
 
-
+  // wait time for displaying NTP
+  static uint32_t tick = 0;
+  static uint32_t tickLimit = 30000;
 
 // -- TICK FUNTION
   void tick_fnc()
@@ -253,11 +255,6 @@ void setup() {
     ESP.restart();
   }
 
-  Serial.println("Starting UDP");
-  udp.begin(localPort);
-  Serial.print("Local port: ");
-  Serial.println(udp.localPort());
-
 
   // -- OTA
     // OTA options
@@ -340,8 +337,8 @@ void loop() {
 
 
 
-  // Do things every NTPLimit seconds
-  if ( millis() - tick > NTPlimit) {
+  // Do things every tickLimit seconds
+  if ( millis() - tick > tickLimit) {
     tick = millis();
 
 
