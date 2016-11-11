@@ -1,4 +1,4 @@
- {
+{
   "blinkLED": {
     "card-type": "crouton-simple-toggle",
     "static_endpoint_id": "blink",
@@ -13,6 +13,6 @@
     "icons": {
       "true": "lightbulb-o",
       "false": "lightbulb-o"
-    },
+    }
   }
 }
