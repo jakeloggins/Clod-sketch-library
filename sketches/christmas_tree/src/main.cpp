@@ -96,6 +96,8 @@ static uint32_t MQTTlimit = 300;
   HslColor hslWhite(white);
   HslColor hslBlack(black);
 
+  const uint16_t global_wait = 50;
+
 // -- TICK FUNTION
   void tick_fnc()
   {
@@ -254,10 +256,10 @@ static uint32_t MQTTlimit = 300;
             }
             //neoPixelChange = true;
           }
-          /*
-          else if (lookup_val == "SECOND STATIC ENDPOINT ID") {
-
+          else if (lookup_val == "animationMenu") {
+            neoPixelChange = true;
           }
+          /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
 
           }
@@ -385,6 +387,23 @@ void loop() {
     }
     strip.Show();
 
+  // NeoPixel Animation
+  if (NeoPixelChange == true) {
+    rainbow(40);
+    NeoPixelChange = false;
+  }
 
   yield();
+}
+
+void rainbow(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256; j++) {
+    for(i=0; i<TPIXEL; i++) {
+      strip.setPixelColor(i, Wheel((i+j) & 255));
+    }
+    strip.show();
+    delay(wait);
+  }
 }
