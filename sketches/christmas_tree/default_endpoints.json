@@ -16,7 +16,11 @@
     "static_endpoint_id": "animationMenu",
     "title": "Tree Animation",
     "values": {
-      "choices": ["randcolors", "rainbow", "rainbowCycle"]
+      "choices": [
+        "randcolors", 
+        "rainbow", 
+        "rainbowCycle"
+      ]
     }
   }
 }
