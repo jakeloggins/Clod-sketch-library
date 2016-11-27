@@ -98,6 +98,37 @@ static uint32_t MQTTlimit = 300;
 
   const uint16_t global_wait = 50;
 
+  // Input a value 0 to 255 to get a color value.
+  // The colours are a transition r - g - b - back to r.
+  uint32_t Wheel(byte WheelPos) {
+    WheelPos = 255 - WheelPos;
+    if(WheelPos < 85) {
+      return RgbColor(findValue.toInt(255 - WheelPos * 3), findValue.toInt(0), findValue.toInt(WheelPos * 3));
+    } else if(WheelPos < 170) {
+        WheelPos -= 85;
+        return RgbColor(findValue.toInt(0), findValue.toInt(WheelPos * 3), findValue.toInt(255 - WheelPos * 3));
+    } else {
+        WheelPos -= 170;
+        return RgbColor(findValue.toInt(WheelPos * 3), findValue.toInt(255 - WheelPos * 3), findValue.toInt(0));
+    }
+  }
+
+  void rainbow(uint8_t wait) {
+    uint16_t i, j;
+
+    for(j=0; j<256; j++) {
+      for(i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, Wheel((i+j) & 255));
+      }
+      strip.show();
+      delay(wait);
+    }
+  }
+
+
+
+
+
 // -- TICK FUNTION
   void tick_fnc()
   {
@@ -388,38 +419,11 @@ void loop() {
     strip.Show();
 
   // NeoPixel Animation
-  if (NeoPixelChange == true) {
+  if (neoPixelChange == true) {
     rainbow(40);
-    NeoPixelChange = false;
+    neoPixelChange = false;
   }
 
   yield();
-}
-
-void rainbow(uint8_t wait) {
-  uint16_t i, j;
-
-  for(j=0; j<256; j++) {
-    for(i=0; i<PixelCount; i++) {
-      strip.SetPixelColor(i, Wheel((i+j) & 255));
-    }
-    strip.show();
-    delay(wait);
-  }
-}
-
-// Input a value 0 to 255 to get a color value.
-// The colours are a transition r - g - b - back to r.
-uint32_t Wheel(byte WheelPos) {
-  WheelPos = 255 - WheelPos;
-  if(WheelPos < 85) {
-   return RgbColor(255 - WheelPos * 3, 0, WheelPos * 3);
-  } else if(WheelPos < 170) {
-    WheelPos -= 85;
-   return RgbColor(0, WheelPos * 3, 255 - WheelPos * 3);
-  } else {
-   WheelPos -= 170;
-   return RgbColor(WheelPos * 3, 255 - WheelPos * 3, 0);
-  }
 }
 
