@@ -100,7 +100,7 @@ static uint32_t MQTTlimit = 300;
 
   // Input a value 0 to 255 to get a color value.
   // The colours are a transition r - g - b - back to r.
-  uint32_t Wheel(byte WheelPos) {
+  Wheel(byte WheelPos) {
       uint8_t redWheel = 0;
       uint8_t greenWheel = 0;
       uint8_t blueWheel = 0;
