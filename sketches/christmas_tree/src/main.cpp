@@ -135,11 +135,12 @@ static uint32_t MQTTlimit = 300;
 
     for(j=0; j<256; j++) {
       for(i=0; i<PixelCount; i++) {
-        yield();
         strip.SetPixelColor(i, Wheel((i+j) & 255));
       }
       strip.Show();
+      yield();
       delay(wait);
+      yield();
     }
   }
 
@@ -438,9 +439,7 @@ void loop() {
 
   // NeoPixel Animation
   if (neoPixelChange == true) {
-    yield();
     rainbow(40);
-    yield();
     neoPixelChange = false;
   }
 
