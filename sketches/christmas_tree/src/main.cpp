@@ -143,10 +143,6 @@ static uint32_t MQTTlimit = 300;
       strip.Show();
       delay(wait);
     }
-    for(i=0; i<PixelCount; i++) {
-      strip.SetPixelColor(i, black);
-    }
-    strip.Show();
   }
 
 
@@ -446,6 +442,10 @@ void loop() {
   if (neoPixelChange == true) {
     rainbow(100);
     neoPixelChange = false;
+    for(i=0; i<PixelCount; i++) {
+      strip.SetPixelColor(i, black);
+    }
+    strip.Show();
   }
 
   yield();
