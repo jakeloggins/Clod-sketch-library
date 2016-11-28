@@ -73,9 +73,9 @@ static uint32_t MQTTlimit = 300;
 
   // Uart method is good for the Esp-01 or other pin restricted modules
   // NOTE: These will ignore the PIN and use GPI02 pin
-  //NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
+  NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
 
-  NeoPixelBus<NeoGrbFeature, NeoEsp8266AsyncUart800KbpsMethod> strip(PixelCount, PixelPin);
+  //NeoPixelBus<NeoGrbFeature, NeoEsp8266AsyncUart800KbpsMethod> strip(PixelCount, PixelPin);
 
   //NeoPixelBus<NeoRgbFeature, NeoEsp8266Uart400KbpsMethod> strip(PixelCount, PixelPin);
 
