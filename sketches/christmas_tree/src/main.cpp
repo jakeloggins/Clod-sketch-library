@@ -442,7 +442,7 @@ void loop() {
   if (neoPixelChange == true) {
     rainbow(100);
     neoPixelChange = false;
-    for(i=0; i<PixelCount; i++) {
+    for(int i=0; i<PixelCount; i++) {
       strip.SetPixelColor(i, black);
     }
     strip.Show();
