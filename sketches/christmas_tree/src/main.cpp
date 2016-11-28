@@ -100,7 +100,7 @@ static uint32_t MQTTlimit = 300;
 
   // Input a value 0 to 255 to get a color value.
   // The colours are a transition r - g - b - back to r.
-  Wheel(byte WheelPos) {
+  RgbColor Wheel(byte WheelPos) {
       uint8_t redWheel = 0;
       uint8_t greenWheel = 0;
       uint8_t blueWheel = 0;
@@ -110,22 +110,22 @@ static uint32_t MQTTlimit = 300;
         redWheel = (255 - WheelPos * 3);
         greenWheel = 0;
         blueWheel = WheelPos * 3;
-        RgbColor WheelColor(redWheel, greenWheel, blueWheel);
-        return WheelColor;
+        return RgbColor(redWheel, greenWheel, blueWheel);
+        //return WheelColor;
     } else if(WheelPos < 170) {
         WheelPos -= 85;
         redWheel = 0;
         greenWheel = WheelPos * 3;
         blueWheel = (255 - WheelPos * 3);
-        RgbColor WheelColor(redWheel, greenWheel, blueWheel);
-        return WheelColor;
+        return RgbColor(redWheel, greenWheel, blueWheel);
+        //return WheelColor;
     } else {
         WheelPos -= 170;
         redWheel = WheelPos * 3;
         greenWheel = (255 - WheelPos * 3);
         blueWheel = 0;
-        RgbColor WheelColor(redWheel, greenWheel, blueWheel);
-        return WheelColor;
+        return RgbColor(redWheel, greenWheel, blueWheel);
+        //return WheelColor;
     }
   }
 
