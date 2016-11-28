@@ -90,7 +90,79 @@ static uint32_t MQTTlimit = 300;
 
 
   // -- animator
-  NeoPixelAnimator animations(PixelCount, NEO_CENTISECONDS);
+  NeoPixelAnimator RandomColorAnim(PixelCount, NEO_CENTISECONDS);
+
+
+  // fun loop
+    const uint16_t AnimCount = PixelCount / 5 * 2 + 1; // we only need enough animations for the tail and one extra
+    const uint16_t PixelFadeDuration = 300; // third of a second
+    // one second divide by the number of pixels = loop once a second
+    const uint16_t NextPixelMoveDuration = 1000 / PixelCount; // how fast we move through the pixels
+    NeoGamma<NeoGammaTableMethod> colorGamma; // for any fade animations, best to correct gamma
+
+    // what is stored for state is specific to the need, in this case, the colors and
+    // the pixel to animate;
+    // basically what ever you need inside the animation update function
+    struct FunLoopState
+    {
+        RgbColor StartingColor;
+        RgbColor EndingColor;
+        uint16_t IndexPixel; // which pixel this animation is effecting
+    };
+    FunLoopState animationState[AnimCount];
+    NeoPixelAnimator FunLoopAnim(AnimCount);
+    uint16_t frontPixel = 0;  // the front of the loop
+    RgbColor frontColor;  // the color at the front of the loop
+
+
+    void FadeOutAnimUpdate(const AnimationParam& param)
+    {
+        // this gets called for each animation on every time step
+        // progress will start at 0.0 and end at 1.0
+        // we use the blend function on the RgbColor to mix
+        // color based on the progress given to us in the animation
+        RgbColor updatedColor = RgbColor::LinearBlend(
+            animationState[param.index].StartingColor,
+            animationState[param.index].EndingColor,
+            param.progress);
+        // apply the color to the strip
+        strip.SetPixelColor(animationState[param.index].IndexPixel, 
+            colorGamma.Correct(updatedColor));
+    }
+
+    void FunLoopAnimUpdate(const AnimationParam& param)
+    {
+        // wait for this animation to complete,
+        // we are using it as a timer of sorts
+        if (param.state == AnimationState_Completed)
+        {
+            // done, time to restart this position tracking animation/timer
+            FunLoopAnim.RestartAnimation(param.index);
+
+            // pick the next pixel inline to start animating
+            // 
+            frontPixel = (frontPixel + 1) % PixelCount; // increment and wrap
+            if (frontPixel == 0)
+            {
+                // we looped, lets pick a new front color
+                frontColor = HslColor(random(360) / 360.0f, 1.0f, 0.25f);
+            }
+
+            uint16_t indexAnim;
+            // do we have an animation available to use to animate the next front pixel?
+            // if you see skipping, then either you are going to fast or need to increase
+            // the number of animation channels
+            if (FunLoopAnim.NextAvailableAnimation(&indexAnim, 1))
+            {
+                animationState[indexAnim].StartingColor = frontColor;
+                animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
+                animationState[indexAnim].IndexPixel = frontPixel;
+
+                FunLoopAnim.StartAnimation(indexAnim, PixelFadeDuration, FadeOutAnimUpdate);
+            }
+        }
+    }
+
 
 
   RgbColor red(colorSaturation, 0, 0);
@@ -170,7 +242,7 @@ static uint32_t MQTTlimit = 300;
       randomSeed(seed);
   }
 
-  void SetupAnimationSet()
+  void SetupRandomColor()
   {
       // setup some animations
       for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
@@ -202,38 +274,44 @@ static uint32_t MQTTlimit = 300;
           }
 
 
-      // we must supply a function that will define the animation, in this example
-      // we are using "lambda expression" to define the function inline, which gives
-      // us an easy way to "capture" the originalColor and targetColor for the call back.
-      //
-      // this function will get called back when ever the animation needs to change
-      // the state of the pixel, it will provide a animation progress value
-      // from 0.0 (start of animation) to 1.0 (end of animation)
-      //
-      // we use this progress value to define how we want to animate in this case
-      // we call RgbColor::LinearBlend which will return a color blended between
-      // the values given, by the amount passed, hich is also a float value from 0.0-1.0.
-      // then we set the color.
-      //
-      // There is no need for the MyAnimationState struct as the compiler takes care
-      // of those details for us
-      AnimUpdateCallback animUpdate = [=](const AnimationParam& param)
-      {
-          // progress will start at 0.0 and end at 1.0
-          // we convert to the curve we want
-          float progress = easing(param.progress);
+        // we must supply a function that will define the animation, in this example
+        // we are using "lambda expression" to define the function inline, which gives
+        // us an easy way to "capture" the originalColor and targetColor for the call back.
+        //
+        // this function will get called back when ever the animation needs to change
+        // the state of the pixel, it will provide a animation progress value
+        // from 0.0 (start of animation) to 1.0 (end of animation)
+        //
+        // we use this progress value to define how we want to animate in this case
+        // we call RgbColor::LinearBlend which will return a color blended between
+        // the values given, by the amount passed, hich is also a float value from 0.0-1.0.
+        // then we set the color.
+        //
+        // There is no need for the MyAnimationState struct as the compiler takes care
+        // of those details for us
+        
+        
+        AnimUpdateCallback animUpdate = [=](const AnimationParam& param)
+        {
+            // progress will start at 0.0 and end at 1.0
+            // we convert to the curve we want
+            float progress = easing(param.progress);
 
-          // use the curve value to apply to the animation
-          RgbColor updatedColor = RgbColor::LinearBlend(originalColor, targetColor, progress);
-          strip.SetPixelColor(pixel, updatedColor);
-      };
+            // use the curve value to apply to the animation
+            RgbColor updatedColor = RgbColor::LinearBlend(originalColor, targetColor, progress);
+            strip.SetPixelColor(pixel, updatedColor);
+        };
 
-      // now use the animation properties we just calculated and start the animation
-      // which will continue to run and call the update function until it completes
-      animations.StartAnimation(pixel, 10000, animUpdate);
+
+        // now use the animation properties we just calculated and start the animation
+        // which will continue to run and call the update function until it completes
+        RandomColorAnim.StartAnimation(pixel, 10000, animUpdate);
 
       }
   }
+
+
+
 
 
 
@@ -397,7 +475,8 @@ static uint32_t MQTTlimit = 300;
           }
           else if (lookup_val == "animationMenu") {
             //neoPixelChange = true;
-            SetupAnimationSet();
+            //SetupRandomColor();
+            FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
           }
           /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
@@ -530,6 +609,7 @@ void loop() {
     strip.Show();
 
   // NeoPixel Animation
+  /*
   if (neoPixelChange == true) {
     rainbow(100);
     neoPixelChange = false;
@@ -538,10 +618,18 @@ void loop() {
     }
     strip.Show();
   }
+  */
 
-  if (animations.IsAnimating()) {
+
+  if (FunLoopAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
-      animations.UpdateAnimations();
+      FunLoopAnim.UpdateAnimations();
+      strip.Show();
+  }
+
+  if (RandomColorAnim.IsAnimating()) {
+      // the normal loop just needs these two to run the active animations
+      RandomColorAnim.UpdateAnimations();
       strip.Show();
   }
 
