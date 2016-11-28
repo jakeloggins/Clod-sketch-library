@@ -110,19 +110,22 @@ static uint32_t MQTTlimit = 300;
         redWheel = (255 - WheelPos * 3);
         greenWheel = 0;
         blueWheel = WheelPos * 3;
-        return RgbColor WheelColor(redWheel, greenWheel, blueWheel);
+        RgbColor WheelColor(redWheel, greenWheel, blueWheel);
+        return WheelColor;
     } else if(WheelPos < 170) {
         WheelPos -= 85;
         redWheel = 0;
         greenWheel = WheelPos * 3;
         blueWheel = (255 - WheelPos * 3);
-        return RgbColor WheelColor(redWheel, greenWheel, blueWheel);
+        RgbColor WheelColor(redWheel, greenWheel, blueWheel);
+        return WheelColor;
     } else {
         WheelPos -= 170;
         redWheel = WheelPos * 3;
         greenWheel = (255 - WheelPos * 3);
         blueWheel = 0;
-        return RgbColor WheelColor(redWheel, greenWheel, blueWheel);
+        RgbColor WheelColor(redWheel, greenWheel, blueWheel);
+        return WheelColor;
     }
   }
 
