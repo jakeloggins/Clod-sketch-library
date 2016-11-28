@@ -53,6 +53,7 @@ static uint32_t MQTTlimit = 300;
 
 // -- NeoPixelBus
   #include <NeoPixelBus.h>
+  #include <NeoPixelAnimator.h>
 
   const uint16_t PixelCount = 30; // this example assumes 4 pixels, making it smaller will cause a failure
   const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, ignored for Esp8266
@@ -86,6 +87,11 @@ static uint32_t MQTTlimit = 300;
 
   // four element pixels, RGBW
   //NeoPixelBus<NeoRgbwFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
+
+
+  // -- animator
+  NeoPixelAnimator animations(PixelCount, NEO_CENTISECONDS);
+
 
   RgbColor red(colorSaturation, 0, 0);
   RgbColor green(0, colorSaturation, 0);
@@ -145,7 +151,89 @@ static uint32_t MQTTlimit = 300;
     }
   }
 
+  void SetRandomSeed()
+  {
+      uint32_t seed;
 
+      // random works best with a seed that can use 31 bits
+      // analogRead on a unconnected pin tends toward less than four bits
+      seed = analogRead(0);
+      delay(1);
+
+      for (int shifts = 3; shifts < 31; shifts += 3)
+      {
+          seed ^= analogRead(0) << shifts;
+          delay(1);
+      }
+
+      // Serial.println(seed);
+      randomSeed(seed);
+  }
+
+  void SetupAnimationSet()
+  {
+      // setup some animations
+      for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
+      {
+          const uint8_t peak = 128;
+
+          // pick a random duration of the animation for this pixel
+          // since values are centiseconds, the range is 1 - 4 seconds
+          uint16_t time = random(100, 400);
+
+          // each animation starts with the color that was present
+          RgbColor originalColor = strip.GetPixelColor(pixel);
+          // and ends with a random color
+          RgbColor targetColor = RgbColor(random(peak), random(peak), random(peak));
+          // with the random ease function
+          AnimEaseFunction easing;
+
+          switch (random(3))
+          {
+          case 0:
+              easing = NeoEase::CubicIn;
+              break;
+          case 1:
+              easing = NeoEase::CubicOut;
+              break;
+          case 2:
+              easing = NeoEase::QuadraticInOut;
+              break;
+          }
+
+
+      // we must supply a function that will define the animation, in this example
+      // we are using "lambda expression" to define the function inline, which gives
+      // us an easy way to "capture" the originalColor and targetColor for the call back.
+      //
+      // this function will get called back when ever the animation needs to change
+      // the state of the pixel, it will provide a animation progress value
+      // from 0.0 (start of animation) to 1.0 (end of animation)
+      //
+      // we use this progress value to define how we want to animate in this case
+      // we call RgbColor::LinearBlend which will return a color blended between
+      // the values given, by the amount passed, hich is also a float value from 0.0-1.0.
+      // then we set the color.
+      //
+      // There is no need for the MyAnimationState struct as the compiler takes care
+      // of those details for us
+      AnimUpdateCallback animUpdate = [=](const AnimationParam& param)
+      {
+          // progress will start at 0.0 and end at 1.0
+          // we convert to the curve we want
+          float progress = easing(param.progress);
+
+          // use the curve value to apply to the animation
+          RgbColor updatedColor = RgbColor::LinearBlend(originalColor, targetColor, progress);
+          strip.SetPixelColor(pixel, updatedColor);
+      };
+
+      // now use the animation properties we just calculated and start the animation
+      // which will continue to run and call the update function until it completes
+      animations.StartAnimation(pixel, time, animUpdate);
+
+      }
+  }
 
 
 
@@ -308,11 +396,12 @@ static uint32_t MQTTlimit = 300;
             //neoPixelChange = true;
           }
           else if (lookup_val == "animationMenu") {
-            neoPixelChange = true;
+            //neoPixelChange = true;
+            SetupAnimationSet();
           }
           /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
-
+            //
           }
           */
 
@@ -342,6 +431,7 @@ static uint32_t MQTTlimit = 300;
 void setup() {
 
   Serial.begin(115200);
+  while (!Serial); // wait for serial attach
   Serial.println("Booting");
   Serial.println(ESP.getResetInfo());
   WiFi.mode(WIFI_STA);
@@ -387,6 +477,7 @@ void setup() {
   Serial.println(local_ip_str);
 
   // neopixel bus
+  SetRandomSeed();
   strip.Begin();
   strip.Show();
 
@@ -446,6 +537,12 @@ void loop() {
       strip.SetPixelColor(i, black);
     }
     strip.Show();
+  }
+
+  if (animations.IsAnimating()) {
+      // the normal loop just needs these two to run the active animations
+      animations.UpdateAnimations();
+      strip.Show();
   }
 
   yield();
