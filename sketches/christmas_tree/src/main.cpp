@@ -104,6 +104,7 @@ static uint32_t MQTTlimit = 300;
       uint8_t redWheel = 0;
       uint8_t greenWheel = 0;
       uint8_t blueWheel = 0;
+      yield();
       
     WheelPos = 255 - WheelPos;
     if(WheelPos < 85) {
@@ -134,6 +135,7 @@ static uint32_t MQTTlimit = 300;
 
     for(j=0; j<256; j++) {
       for(i=0; i<PixelCount; i++) {
+        yield();
         strip.SetPixelColor(i, Wheel((i+j) & 255));
       }
       strip.Show();
@@ -436,7 +438,9 @@ void loop() {
 
   // NeoPixel Animation
   if (neoPixelChange == true) {
+    yield();
     rainbow(40);
+    yield();
     neoPixelChange = false;
   }
 
