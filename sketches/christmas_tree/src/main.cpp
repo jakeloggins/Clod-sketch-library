@@ -437,7 +437,7 @@ void loop() {
 
   // NeoPixel Animation
   if (neoPixelChange == true) {
-    rainbow(500);
+    rainbow(100);
     neoPixelChange = false;
   }
 
