@@ -745,6 +745,13 @@ void loop() {
   */
 
 
+  if (FunRandomChange.IsAnimating()) {
+      // the normal loop just needs these two to run the active animations
+      FunRandomChange.UpdateAnimations();
+      strip.Show();
+  }
+
+
   if (FunFadeAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
       FunFadeAnim.UpdateAnimations();
