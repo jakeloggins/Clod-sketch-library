@@ -792,7 +792,7 @@ void loop() {
       FunFadeAnim.UpdateAnimations();
       strip.Show();
   }
-  else if (FunFadeount > 0 ) {
+  else if (FunFadeCount > 0 ) {
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     FunFadeCount--;
   }
