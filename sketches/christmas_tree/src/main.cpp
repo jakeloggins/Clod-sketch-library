@@ -638,6 +638,7 @@ static uint32_t MQTTlimit = 300;
 
           //sendConfirm = true;
           client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
+          client.publish(MQTT::Publish(confirmPath, findValue).set_qos(2));
 
       }
     }
