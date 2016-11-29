@@ -178,6 +178,7 @@ static uint32_t MQTTlimit = 300;
     FunLoopState animationState[AnimCount];
     NeoPixelAnimator FunLoopAnim(AnimCount);
     uint16_t frontPixel = 0;  // the front of the loop
+    uint16_t backPixel = 0;  // the front of the loop
     RgbColor frontColor;  // the color at the front of the loop
 
 
@@ -203,7 +204,10 @@ static uint32_t MQTTlimit = 300;
         if (param.state == AnimationState_Completed)
         {
             // set the finished pixel to the front color
-            strip.SetPixelColor(animationState[param.index], frontColor);
+            backPixel = (frontPixel - AnimCount);
+            if (backPixel > 1) {
+              strip.SetPixelColor(backPixel, frontColor);
+            }
 
             // done, time to restart this position tracking animation/timer
             FunLoopAnim.RestartAnimation(param.index);
