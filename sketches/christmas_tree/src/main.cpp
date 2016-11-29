@@ -55,7 +55,7 @@ static uint32_t MQTTlimit = 300;
   #include <NeoPixelBus.h>
   #include <NeoPixelAnimator.h>
 
-  const uint16_t PixelCount = 30; // this example assumes 4 pixels, making it smaller will cause a failure
+  const uint16_t PixelCount = 49; // this example assumes 4 pixels, making it smaller will cause a failure
   const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, ignored for Esp8266
 
   #define colorSaturation 256
@@ -74,7 +74,9 @@ static uint32_t MQTTlimit = 300;
 
   // Uart method is good for the Esp-01 or other pin restricted modules
   // NOTE: These will ignore the PIN and use GPI02 pin
-  NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
+  //NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
+  
+  NeoPixelBus<NeoRgbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
 
   //NeoPixelBus<NeoGrbFeature, NeoEsp8266AsyncUart800KbpsMethod> strip(PixelCount, PixelPin);
 
@@ -347,7 +349,7 @@ static uint32_t MQTTlimit = 300;
 
           // now use the animation properties we just calculated and start the animation
           // which will continue to run and call the update function until it completes
-          RandomColorAnim.StartAnimation(pixel, 10000, animUpdate);
+          RandomColorAnim.StartAnimation(pixel, 1000, animUpdate);
 
         }
     }
