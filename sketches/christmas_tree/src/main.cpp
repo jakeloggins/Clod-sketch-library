@@ -148,9 +148,8 @@ static uint32_t MQTTlimit = 300;
             uint16_t time = random(600, 700);
 
             FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
-            //FunFadeAnimationState[0].EndingColor = RgbColor(0);
-            FunFadeAnimationState[0].EndingColor = strip.GetPixelColor(0);
-
+            FunFadeAnimationState[0].EndingColor = RgbColor(0);
+            
             FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
         }
 
@@ -426,7 +425,8 @@ static uint32_t MQTTlimit = 300;
 
       for(j=0; j<256; j++) {
         for(i=0; i<PixelCount; i++) {
-          strip.SetPixelColor(i, Wheel((i+j) & 255));
+          HslColor newColor(j/360.0f, 1.0f, 0.5f);
+          strip.SetPixelColor(i, newColor);
         }
         strip.Show();
         delay(wait);
@@ -639,9 +639,11 @@ static uint32_t MQTTlimit = 300;
               RandomCount = 10;
               SetupRandomColor();
             }
+            else if (payload.substring(10) == "Rainbow\"}") {
+              rainbow();
+            }
 
 
-          }
           /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
             //
