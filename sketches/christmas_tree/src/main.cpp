@@ -366,7 +366,40 @@ static uint32_t MQTTlimit = 300;
         }
     }
 
+  // -- rainbow, adapted from random color
 
+    NeoPixelAnimator RainbowAnim(PixelCount, NEO_CENTISECONDS);
+
+    void SetupRainbow()
+    {
+        // setup some animations
+          
+          AnimUpdateCallback rainbowUpdate = [=](const AnimationParam& param)
+          {
+              // progress will start at 0.0 and end at 1.0
+              // we convert to the curve we want
+              //float progress = easing(param.progress);
+
+              // use the curve value to apply to the animation
+              //RgbColor updatedColor = RgbColor::LinearBlend(originalColor, targetColor, progress);
+              //strip.SetPixelColor(pixel, updatedColor);
+              
+
+              for(uint16_t j = 0; j < 256; j++) {
+                for(uint16_t pixel = 0; pixel < PixelCount; pixel++) {
+                  HslColor newColor(j/360.0f, 1.0f, 0.5f);
+                  strip.SetPixelColor(pixel, newColor);
+                }
+              }
+          };
+
+          // now use the animation properties we just calculated and start the animation
+          // which will continue to run and call the update function until it completes
+          RainbowAnim.StartAnimation(0, 1000, rainbowUpdate);
+
+
+    }
+    
 
 
 
@@ -387,38 +420,6 @@ static uint32_t MQTTlimit = 300;
   const uint16_t global_wait = 50;
 
   // -- assorted other functions
-
-    // Input a value 0 to 255 to get a color value.
-    // The colours are a transition r - g - b - back to r.
-    RgbColor Wheel(byte WheelPos) {
-        uint8_t redWheel = 0;
-        uint8_t greenWheel = 0;
-        uint8_t blueWheel = 0;
-        yield();
-        
-      WheelPos = 255 - WheelPos;
-      if(WheelPos < 85) {
-          redWheel = (255 - WheelPos * 3);
-          greenWheel = 0;
-          blueWheel = WheelPos * 3;
-          return RgbColor(redWheel, greenWheel, blueWheel);
-          //return WheelColor;
-      } else if(WheelPos < 170) {
-          WheelPos -= 85;
-          redWheel = 0;
-          greenWheel = WheelPos * 3;
-          blueWheel = (255 - WheelPos * 3);
-          return RgbColor(redWheel, greenWheel, blueWheel);
-          //return WheelColor;
-      } else {
-          WheelPos -= 170;
-          redWheel = WheelPos * 3;
-          greenWheel = (255 - WheelPos * 3);
-          blueWheel = 0;
-          return RgbColor(redWheel, greenWheel, blueWheel);
-          //return WheelColor;
-      }
-    }
 
     void rainbow(uint8_t wait) {
       uint16_t i, j;
@@ -640,7 +641,7 @@ static uint32_t MQTTlimit = 300;
               SetupRandomColor();
             }
             else if (payload.substring(10) == "Rainbow\"}") {
-              rainbow(100);
+              SetupRainbow();
             }
 
 
@@ -798,6 +799,8 @@ void loop() {
     FunRandomCount--;
   }
 
+
+
   if (FunFadeAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
       FunFadeAnim.UpdateAnimations();
@@ -809,11 +812,14 @@ void loop() {
   }
 
 
+
   if (FunLoopAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
       FunLoopAnim.UpdateAnimations();
       strip.Show();
   }
+
+
 
   if (RandomColorAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
@@ -824,6 +830,16 @@ void loop() {
     SetupRandomColor();
     RandomCount--;
   }
+
+
+
+  if (RainbowAnim.IsAnimating()) {
+      // the normal loop just needs these two to run the active animations
+      RainbowAnim.UpdateAnimations();
+      strip.Show();
+  }
+
+
 
   yield();
 }
