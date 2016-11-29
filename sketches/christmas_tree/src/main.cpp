@@ -226,7 +226,8 @@ static uint32_t MQTTlimit = 300;
             if (FunLoopAnim.NextAvailableAnimation(&indexAnim, 1))
             {
                 animationState[indexAnim].StartingColor = frontColor;
-                animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
+                //animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
+                animationState[indexAnim].EndingColor = frontColor;
                 animationState[indexAnim].IndexPixel = frontPixel;
 
                 FunLoopAnim.StartAnimation(indexAnim, PixelFadeDuration, FadeOutAnimUpdate);
@@ -763,6 +764,7 @@ void loop() {
       strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
     }
     strip.Show();
+
 
   // NeoPixel Animation
   /*
