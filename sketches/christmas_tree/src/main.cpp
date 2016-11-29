@@ -150,7 +150,7 @@ static uint32_t MQTTlimit = 300;
             FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
             FunFadeAnimationState[0].EndingColor = RgbColor(0);
 
-            FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
+            //FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
         }
 
         // toggle to the next effect state
@@ -204,10 +204,10 @@ static uint32_t MQTTlimit = 300;
         if (param.state == AnimationState_Completed)
         {
             // set the finished pixel to the front color
-            backPixel = (frontPixel - AnimCount);
+            /*backPixel = (frontPixel - AnimCount);
             if (backPixel > 1) {
               strip.SetPixelColor(backPixel, frontColor);
-            }
+            }*/
 
             // done, time to restart this position tracking animation/timer
             FunLoopAnim.RestartAnimation(param.index);
@@ -233,8 +233,7 @@ static uint32_t MQTTlimit = 300;
             if (FunLoopAnim.NextAvailableAnimation(&indexAnim, 1))
             {
                 animationState[indexAnim].StartingColor = frontColor;
-                //animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
-                animationState[indexAnim].StartingColor = frontColor;
+                animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
                 animationState[indexAnim].IndexPixel = frontPixel;
 
                 FunLoopAnim.StartAnimation(indexAnim, PixelFadeDuration, FadeOutAnimUpdate);
