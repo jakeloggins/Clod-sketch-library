@@ -599,22 +599,21 @@ static uint32_t MQTTlimit = 300;
             //neoPixelChange = true;
           }
           else if (lookup_val == "animationMenu") {
-            String findValue = getValue(payload, ':', 2);
-            findValue.remove(findValue.length() - 2);
-            client.publish(MQTT::Publish("/whatever/debug/", findValue).set_qos(2));
 
+            String whatever = payload.subString(9)
+            client.publish(MQTT::Publish("/whatever/debug/", whatever).set_qos(2));
 
-            if (findValue == "Fun Random") {
+            if (payload.subString(9) == "Fun Random\"}") {
               PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
               FunRandomCount = 10;
             }
-            else if (findValue == "Fun Fade") {
+            else if (payload.subString(9) == "Fun Fade\"}") {
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
-            else if (findValue == "Fun Loop") {
+            else if (payload.subString(9) == "Fun Loop\"}") {
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
-            else if (findValue == "Random Color") {
+            else if (payload.subString(9) == "Random Color\"}") {
               SetupRandomColor();
             }
 
