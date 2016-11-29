@@ -600,7 +600,7 @@ static uint32_t MQTTlimit = 300;
           }
           else if (lookup_val == "animationMenu") {
 
-            String whatever = payload.substring(9)
+            String whatever = payload.substring(9);
             client.publish(MQTT::Publish("/whatever/debug/", whatever).set_qos(2));
 
             if (payload.substring(9) == "Fun Random\"}") {
