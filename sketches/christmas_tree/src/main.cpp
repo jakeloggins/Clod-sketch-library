@@ -578,13 +578,14 @@ static uint32_t MQTTlimit = 300;
           //Serial.println("looking value incoming...");
           //Serial.println(lookup_val);
 
+          String findKey = getValue(payload, '"', 1);
+          String findValue = getValue(payload, ':', 1);
+          findValue.remove(findValue.length() - 1);
+
           // sketch acts on that value as it normally would, using the static_endpoint_id to know for sure what it should do (turn output pin on/off, adjust RGB light, etc)
           if (lookup_val == "RGB") {
             // deserialize payload, get valueKey
             // or just look for value or red,green,blue
-            String findKey = getValue(payload, '"', 1);
-            String findValue = getValue(payload, ':', 1);
-            findValue.remove(findValue.length() - 1);
 
             if (findKey == "red") {
               redValue = findValue.toInt();
@@ -598,12 +599,22 @@ static uint32_t MQTTlimit = 300;
             //neoPixelChange = true;
           }
           else if (lookup_val == "animationMenu") {
-            //neoPixelChange = true;
-            //SetupRandomColor();
-            //FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
-            //FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
-            PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
-            FunRandomCount = 10;
+
+            if (findValue == "Fun Random") {
+              PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              FunRandomCount = 10;
+            }
+            else if (findValue == "Fun Fade") {
+              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            }
+            else if (findValue == "Fun Loop") {
+              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+            }
+            else if (findValue == "Random Color") {
+              SetupRandomColor();
+            }
+
+
           }
           /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {

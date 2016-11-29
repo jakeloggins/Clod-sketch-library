@@ -17,9 +17,10 @@
     "title": "Tree Animation",
     "values": {
       "choices": [
-        "randcolors", 
-        "rainbow", 
-        "rainbowCycle"
+        "Fun Random", 
+        "Fun Fade", 
+        "Fun Loop",
+        "Random Color"
       ]
     }
   }
