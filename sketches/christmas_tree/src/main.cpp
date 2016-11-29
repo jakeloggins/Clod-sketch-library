@@ -223,6 +223,56 @@ static uint32_t MQTTlimit = 300;
         }
     }
 
+  // -- fun random change
+
+    NeoPixelAnimator FunRandomChange(PixelCount);
+
+    struct FunRandomChangeState
+    {
+      RgbColor StartingColor;
+      RgbColor EndingColor;
+    };
+
+    FunRandomChangeState FunRandomAnimationState[PixelCount];
+
+
+    // simple blend function
+    void FunRandomBlendAnimUpdate(const AnimationParam& param)
+    {
+        // this gets called for each animation on every time step
+        // progress will start at 0.0 and end at 1.0
+        // we use the blend function on the RgbColor to mix
+        // color based on the progress given to us in the animation
+        RgbColor updatedColor = RgbColor::LinearBlend(
+            FunRandomAnimationState[param.index].StartingColor,
+            FunRandomAnimationState[param.index].EndingColor,
+            param.progress);
+        // apply the color to the strip
+        strip.SetPixelColor(param.index, updatedColor);
+    }
+
+    void PickRandom(float luminance)
+    {
+        // pick random count of pixels to animate
+        uint16_t count = random(PixelCount);
+        while (count > 0)
+        {
+            // pick a random pixel
+            uint16_t pixel = random(PixelCount);
+
+            // pick random time and random color
+            // we use HslColor object as it allows us to easily pick a color
+            // with the same saturation and luminance 
+            uint16_t time = random(100, 400);
+            FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
+            FunRandomAnimationState[pixel].EndingColor = HslColor(random(360) / 360.0f, 1.0f, luminance);
+
+            FunRandomChange.StartAnimation(pixel, time, FunRandomBlendAnimUpdate);
+
+            count--;
+        }
+    }
+
   // -- random color
     NeoPixelAnimator RandomColorAnim(PixelCount, NEO_CENTISECONDS);
     void SetupRandomColor()
@@ -292,6 +342,7 @@ static uint32_t MQTTlimit = 300;
 
         }
     }
+
 
 
 
@@ -548,7 +599,8 @@ static uint32_t MQTTlimit = 300;
             //neoPixelChange = true;
             //SetupRandomColor();
             //FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
-            FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            //FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
           }
           /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
