@@ -147,8 +147,8 @@ static uint32_t MQTTlimit = 300;
             // fade to black
             uint16_t time = random(600, 700);
 
-            FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
-            FunFadeAnimationState[0].EndingColor = RgbColor(0);
+            //FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
+            //FunFadeAnimationState[0].EndingColor = RgbColor(0);
 
             //FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
         }
