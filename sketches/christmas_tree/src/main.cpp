@@ -160,6 +160,8 @@ static uint32_t MQTTlimit = 300;
     const uint16_t NextPixelMoveDuration = 1000 / PixelCount; // how fast we move through the pixels
     NeoGamma<NeoGammaTableMethod> colorGamma; // for any fade animations, best to correct gamma
 
+    uint16_t FunLoopCount = 10;
+
     // what is stored for state is specific to the need, in this case, the colors and
     // the pixel to animate;
     // basically what ever you need inside the animation update function
@@ -187,7 +189,7 @@ static uint32_t MQTTlimit = 300;
             param.progress);
         // apply the color to the strip
         strip.SetPixelColor(animationState[param.index].IndexPixel, 
-            colorGamma.Correct(updatedColor));
+        colorGamma.Correct(updatedColor));
     }
 
     void FunLoopAnimUpdate(const AnimationParam& param)
@@ -206,6 +208,11 @@ static uint32_t MQTTlimit = 300;
             {
                 // we looped, lets pick a new front color
                 frontColor = HslColor(random(360) / 360.0f, 1.0f, 0.25f);
+                FunLoopCount--;
+                if (FunLoopCount == 0) {
+                  FunLoopAnim.StopAnimation();
+                }
+
             }
 
             uint16_t indexAnim;
@@ -604,13 +611,14 @@ static uint32_t MQTTlimit = 300;
             client.publish(MQTT::Publish("/whatever/debug/", whatever).set_qos(2));
 
             if (payload.substring(10) == "Fun Random\"}") {
-              PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
               FunRandomCount = 10;
+              PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
             else if (payload.substring(10) == "Fun Fade\"}") {
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
             else if (payload.substring(10) == "Fun Loop\"}") {
+              FunLoopCount = 10;
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
             else if (payload.substring(10) == "Random Color\"}") {
