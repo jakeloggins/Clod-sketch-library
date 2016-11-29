@@ -96,7 +96,7 @@ static uint32_t MQTTlimit = 300;
     const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
     NeoPixelAnimator FunFadeAnim(AnimationChannels);
 
-    uint16_t FunFadeCount = 10;
+    uint16_t FunFadeCount = 0;
 
     struct FunFadeState
     {
@@ -164,7 +164,7 @@ static uint32_t MQTTlimit = 300;
     const uint16_t NextPixelMoveDuration = 1000 / PixelCount; // how fast we move through the pixels
     NeoGamma<NeoGammaTableMethod> colorGamma; // for any fade animations, best to correct gamma
 
-    uint16_t FunLoopCount = 10;
+    uint16_t FunLoopCount = 0;
 
     // what is stored for state is specific to the need, in this case, the colors and
     // the pixel to animate;
@@ -238,7 +238,7 @@ static uint32_t MQTTlimit = 300;
 
     NeoPixelAnimator FunRandomChange(PixelCount);
 
-    uint16_t FunRandomCount = 10;
+    uint16_t FunRandomCount = 0;
 
     struct FunRandomChangeState
     {
@@ -289,7 +289,7 @@ static uint32_t MQTTlimit = 300;
   // -- random color
     NeoPixelAnimator RandomColorAnim(PixelCount, NEO_CENTISECONDS);
 
-    uint16_t RandomCount = 10;
+    uint16_t RandomCount = 0;
 
     void SetupRandomColor()
     {
