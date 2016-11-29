@@ -227,6 +227,8 @@ static uint32_t MQTTlimit = 300;
 
     NeoPixelAnimator FunRandomChange(PixelCount);
 
+    uint16_t FunRandomCount = 10;
+
     struct FunRandomChangeState
     {
       RgbColor StartingColor;
@@ -601,6 +603,7 @@ static uint32_t MQTTlimit = 300;
             //FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             //FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            FunRandomCount = 10;
           }
           /*
           else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
@@ -749,6 +752,10 @@ void loop() {
       // the normal loop just needs these two to run the active animations
       FunRandomChange.UpdateAnimations();
       strip.Show();
+  }
+  else if (FunRandomCount > 0) {
+    PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+    FunRandomCount--;
   }
 
 
