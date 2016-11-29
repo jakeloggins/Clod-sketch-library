@@ -600,20 +600,20 @@ static uint32_t MQTTlimit = 300;
           }
           else if (lookup_val == "animationMenu") {
 
-            String whatever = payload.subString(9)
+            String whatever = payload.substring(9)
             client.publish(MQTT::Publish("/whatever/debug/", whatever).set_qos(2));
 
-            if (payload.subString(9) == "Fun Random\"}") {
+            if (payload.substring(9) == "Fun Random\"}") {
               PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
               FunRandomCount = 10;
             }
-            else if (payload.subString(9) == "Fun Fade\"}") {
+            else if (payload.substring(9) == "Fun Fade\"}") {
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
-            else if (payload.subString(9) == "Fun Loop\"}") {
+            else if (payload.substring(9) == "Fun Loop\"}") {
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
-            else if (payload.subString(9) == "Random Color\"}") {
+            else if (payload.substring(9) == "Random Color\"}") {
               SetupRandomColor();
             }
 
