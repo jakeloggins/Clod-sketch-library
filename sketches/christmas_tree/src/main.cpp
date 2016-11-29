@@ -354,7 +354,7 @@ static uint32_t MQTTlimit = 300;
 
           // now use the animation properties we just calculated and start the animation
           // which will continue to run and call the update function until it completes
-          RandomColorAnim.StartAnimation(pixel, 1000, animUpdate);
+          RandomColorAnim.StartAnimation(pixel, 500, animUpdate);
 
         }
     }
