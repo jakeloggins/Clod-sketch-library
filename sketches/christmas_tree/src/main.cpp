@@ -640,7 +640,7 @@ static uint32_t MQTTlimit = 300;
               SetupRandomColor();
             }
             else if (payload.substring(10) == "Rainbow\"}") {
-              rainbow();
+              rainbow(100);
             }
 
 
