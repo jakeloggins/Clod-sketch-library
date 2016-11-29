@@ -210,7 +210,7 @@ static uint32_t MQTTlimit = 300;
                 frontColor = HslColor(random(360) / 360.0f, 1.0f, 0.25f);
                 FunLoopCount--;
                 if (FunLoopCount == 0) {
-                  FunLoopAnim.StopAnimation();
+                  FunLoopAnim.StopAnimation(0);
                 }
 
             }
@@ -606,9 +606,6 @@ static uint32_t MQTTlimit = 300;
             //neoPixelChange = true;
           }
           else if (lookup_val == "animationMenu") {
-
-            String whatever = payload.substring(9);
-            client.publish(MQTT::Publish("/whatever/debug/", whatever).set_qos(2));
 
             if (payload.substring(10) == "Fun Random\"}") {
               FunRandomCount = 10;
