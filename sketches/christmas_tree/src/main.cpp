@@ -96,6 +96,8 @@ static uint32_t MQTTlimit = 300;
     const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
     NeoPixelAnimator FunFadeAnim(AnimationChannels);
 
+    uint16_t FunFadeCount = 10;
+
     struct FunFadeState
     {
         RgbColor StartingColor;
@@ -617,7 +619,9 @@ static uint32_t MQTTlimit = 300;
               PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
             else if (payload.substring(10) == "Fun Fade\"}") {
+              FunFadeCount = 10;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+
             }
             else if (payload.substring(10) == "Fun Loop\"}") {
               FunLoopCount = 10;
@@ -788,6 +792,11 @@ void loop() {
       FunFadeAnim.UpdateAnimations();
       strip.Show();
   }
+  else if (FunFadeount > 0 ) {
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+    FunFadeCount--;
+  }
+
 
   if (FunLoopAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
