@@ -286,6 +286,9 @@ static uint32_t MQTTlimit = 300;
 
   // -- random color
     NeoPixelAnimator RandomColorAnim(PixelCount, NEO_CENTISECONDS);
+
+    uint16_t RandomCount = 10;
+
     void SetupRandomColor()
     {
         // setup some animations
@@ -621,6 +624,7 @@ static uint32_t MQTTlimit = 300;
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
             else if (payload.substring(10) == "Random Color\"}") {
+              RandomCount = 10;
               SetupRandomColor();
             }
 
@@ -779,7 +783,6 @@ void loop() {
     FunRandomCount--;
   }
 
-
   if (FunFadeAnim.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
       FunFadeAnim.UpdateAnimations();
@@ -796,6 +799,10 @@ void loop() {
       // the normal loop just needs these two to run the active animations
       RandomColorAnim.UpdateAnimations();
       strip.Show();
+  }
+  else if (RandomCount > 0 ) {
+    SetupRandomColor();
+    RandomCount--;
   }
 
   yield();
