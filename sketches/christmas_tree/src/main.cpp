@@ -619,7 +619,7 @@ static uint32_t MQTTlimit = 300;
               PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
             else if (payload.substring(10) == "Fun Fade\"}") {
-              FunFadeCount = 10;
+              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
 
             }
