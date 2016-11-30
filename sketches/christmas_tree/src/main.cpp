@@ -300,6 +300,7 @@ static uint32_t MQTTlimit = 300;
 
     void SetupRandomColor()
     {
+
         // setup some animations
         for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
         {
@@ -372,31 +373,65 @@ static uint32_t MQTTlimit = 300;
 
     void SetupRainbow()
     {
+
+        // pick a random color for the starting pixel
+         uint16_t startingFrontHueValue = random(1, 255);
+
         // setup some animations
-          
+        for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
+        {
+
+          // each animation starts with the starting color, plus the pixel number, rolling over after 255
+          uint16_t pixelOrigHueValue = startingFrontHueValue + pixel;
+
+          if (pixelOrigHueValue > 255) {
+            pixelOrigHueValue = pixelOrigHueValue - 255;
+          }
+          HslColor pixelOriginalHue (pixelOrigHueValue, 1.0f, 0.5f);
+
+          // and ends with the original plus 254 rolled over
+          uint16_t pixelFinalHueValue = pixelOrigHueValue + 254;
+
+          if (pixelFinalHueValue > 255) {
+            pixelFinalHueValue = pixelFinalHueValue - 255;
+          }
+          HslColor pixelFinalHue (pixelFinalHueValue, 1.0f, 0.5f);
+
+
+          // with the random ease function
+          AnimEaseFunction easing;
+
+          switch (random(3))
+          {
+          case 0:
+              easing = NeoEase::CubicIn;
+              break;
+          case 1:
+              easing = NeoEase::CubicOut;
+              break;
+          case 2:
+              easing = NeoEase::QuadraticInOut;
+              break;
+          }
+
           AnimUpdateCallback rainbowUpdate = [=](const AnimationParam& param)
           {
+              
               // progress will start at 0.0 and end at 1.0
               // we convert to the curve we want
-              //float progress = easing(param.progress);
+              float progress = easing(param.progress);
 
               // use the curve value to apply to the animation
-              //RgbColor updatedColor = RgbColor::LinearBlend(originalColor, targetColor, progress);
-              //strip.SetPixelColor(pixel, updatedColor);
+              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelFinalHue, progress);
+              strip.SetPixelColor(pixel, updatedColor);
               
-
-              for(uint16_t j = 0; j < 256; j++) {
-                for(uint16_t pixel = 0; pixel < PixelCount; pixel++) {
-                  HslColor newColor(j/360.0f, 1.0f, 0.5f);
-                  strip.SetPixelColor(pixel, newColor);
-                }
-              }
           };
 
           // now use the animation properties we just calculated and start the animation
           // which will continue to run and call the update function until it completes
           RainbowAnim.StartAnimation(0, 1000, rainbowUpdate);
 
+        }
 
     }
     
@@ -420,19 +455,6 @@ static uint32_t MQTTlimit = 300;
   const uint16_t global_wait = 50;
 
   // -- assorted other functions
-
-    void rainbow(uint8_t wait) {
-      uint16_t i, j;
-
-      for(j=0; j<256; j++) {
-        for(i=0; i<PixelCount; i++) {
-          HslColor newColor(j/360.0f, 1.0f, 0.5f);
-          strip.SetPixelColor(i, newColor);
-        }
-        strip.Show();
-        delay(wait);
-      }
-    }
 
     void SetRandomSeed()
     {
