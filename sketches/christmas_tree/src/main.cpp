@@ -154,7 +154,7 @@ static uint32_t MQTTlimit = 300;
         }
 
         // toggle to the next effect state
-        effectState = (effectState + 1) % 2;
+        //effectState = (effectState + 1) % 2;
     }
 
   // -- fun loop
