@@ -387,7 +387,9 @@ static uint32_t MQTTlimit = 300;
           if (pixelOrigHueValue > 255) {
             pixelOrigHueValue = pixelOrigHueValue - 255;
           }
-          HslColor pixelOriginalHue (pixelOrigHueValue/360.0f, 1.0f, 0.5f);
+          float pixelOriginHueValueFloat = (float) pixelOriginalHueValue;
+
+          HslColor pixelOriginalHue (pixelOrigHueValueFloat/360.0f, 1.0f, 0.5f);
 
           // and ends with the original plus 254 rolled over
           uint16_t pixelFinalHueValue = pixelOrigHueValue + 254;
@@ -395,7 +397,9 @@ static uint32_t MQTTlimit = 300;
           if (pixelFinalHueValue > 255) {
             pixelFinalHueValue = pixelFinalHueValue - 255;
           }
-          HslColor pixelFinalHue (pixelFinalHueValue/360.0f, 1.0f, 0.5f);
+          float pixelOriginHueValueFloat = (float) pixelOriginalHueValue;
+
+          HslColor pixelFinalHue (pixelFinalHueValueFloat/360.0f, 1.0f, 0.5f);
 
 
           // with the random ease function
