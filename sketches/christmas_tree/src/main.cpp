@@ -154,7 +154,7 @@ static uint32_t MQTTlimit = 300;
         }
 
         // toggle to the next effect state
-        //effectState = (effectState + 1) % 2;
+        effectState = (effectState + 1) % 2;
     }
 
   // -- fun loop
@@ -788,10 +788,12 @@ void loop() {
 
 
   // -- NeoPixel continuous update
+    /* 
     for(int i=0; i<PixelCount; i++) {
       strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
     }
     strip.Show();
+    */
 
 
   // NeoPixel Animation
