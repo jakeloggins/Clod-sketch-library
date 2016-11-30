@@ -91,7 +91,7 @@ static uint32_t MQTTlimit = 300;
   //NeoPixelBus<NeoRgbwFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
 
 
-  // -- fun fade
+  // -- fun fade -- currently sticks, change animation effect state overrides to fade to black
     uint16_t effectState = 0;  // general purpose variable used to store effect state
     const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
     NeoPixelAnimator FunFadeAnim(AnimationChannels);
@@ -157,7 +157,7 @@ static uint32_t MQTTlimit = 300;
         effectState = (effectState + 1) % 2;
     }
 
-  // -- fun loop
+  // -- fun loop -- attempting to recreate color wipe
     const uint16_t AnimCount = PixelCount / 5 * 2 + 1; // we only need enough animations for the tail and one extra
     const uint16_t PixelFadeDuration = 300; // third of a second
     // one second divide by the number of pixels = loop once a second
@@ -204,10 +204,10 @@ static uint32_t MQTTlimit = 300;
         if (param.state == AnimationState_Completed)
         {
             // set the finished pixel to the front color
-            /*backPixel = (frontPixel - AnimCount);
+            backPixel = (frontPixel - AnimCount);
             if (backPixel > 1) {
               strip.SetPixelColor(backPixel, frontColor);
-            }*/
+            }
 
             // done, time to restart this position tracking animation/timer
             FunLoopAnim.RestartAnimation(param.index);
