@@ -203,11 +203,6 @@ static uint32_t MQTTlimit = 300;
         // we are using it as a timer of sorts
         if (param.state == AnimationState_Completed)
         {
-            // set the finished pixel to the front color
-            backPixel = (frontPixel - AnimCount);
-            if (backPixel > 1) {
-              strip.SetPixelColor(backPixel, frontColor);
-            }
 
             // done, time to restart this position tracking animation/timer
             FunLoopAnim.RestartAnimation(param.index);
