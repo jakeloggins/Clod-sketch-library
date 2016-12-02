@@ -209,7 +209,7 @@ static uint32_t MQTTlimit = 300;
             // pick the next pixel inline to start animating
             //frontPixel = (frontPixel + 1) % PixelCount; // increment and wrap
 
-            frontPixel = (PixelCount - 1) % PixelCount; // increment and wrap
+            frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
 
             if (frontPixel == 0)
             {
