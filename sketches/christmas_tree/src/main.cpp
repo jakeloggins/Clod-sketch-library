@@ -157,12 +157,19 @@ static uint32_t MQTTlimit = 300;
         effectState = (effectState + 1) % 2;
     }
 
-  // -- fun loop -- attempting reverse
+  // -- fun loop -- new global variables and custom animations
+
+  
     const uint16_t AnimCount = PixelCount / 5 * 2 + 1; // we only need enough animations for the tail and one extra
     const uint16_t PixelFadeDuration = 300; // third of a second
     // one second divide by the number of pixels = loop once a second
     const uint16_t NextPixelMoveDuration = 1000 / PixelCount; // how fast we move through the pixels
     NeoGamma<NeoGammaTableMethod> colorGamma; // for any fade animations, best to correct gamma
+
+    boolean animReverse = false;
+    boolean wipeSingle = false;
+    boolean keepRandom = false;
+
 
     uint16_t FunLoopCount = 0;
 
@@ -207,9 +214,18 @@ static uint32_t MQTTlimit = 300;
             FunLoopAnim.RestartAnimation(param.index);
 
             // pick the next pixel inline to start animating
-            //frontPixel = (frontPixel + 1) % PixelCount; // increment and wrap
 
-            frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
+
+            // -- reverse
+            if (animReverse) {
+              frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
+              
+            }
+            // -- forward
+            else {
+              frontPixel = (frontPixel + 1) % PixelCount; // increment and wrap
+            }
+
 
             if (frontPixel == 0)
             {
@@ -228,9 +244,24 @@ static uint32_t MQTTlimit = 300;
             // the number of animation channels
             if (FunLoopAnim.NextAvailableAnimation(&indexAnim, 1))
             {
+
+              // wipe -- fade back to front randomly chosen color
+              if (wipeSingle) {
+               animationState[indexAnim].EndingColor = frontColor;
+              }
+
+              // wipe single -- fade back to the color before the animation
+              else if (keepRandom) {
+                animationState[indexAnim].EndingColor = strip.GetPixelColor(0);
+              }
+
+              // flare -- fade to black
+              else {
+                animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
+              }
+
+
                 animationState[indexAnim].StartingColor = frontColor;
-                animationState[indexAnim].EndingColor = frontColor;
-                //animationState[indexAnim].EndingColor = RgbColor(0, 0, 0);
                 animationState[indexAnim].IndexPixel = frontPixel;
 
                 FunLoopAnim.StartAnimation(indexAnim, PixelFadeDuration, FadeOutAnimUpdate);
@@ -647,7 +678,11 @@ static uint32_t MQTTlimit = 300;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
 
             }
+
             else if (payload.substring(10) == "Fun Loop\"}") {
+              animReverse = false;
+              wipeSingle = false;
+              keepRandom = false;
               FunLoopCount = 10;
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
