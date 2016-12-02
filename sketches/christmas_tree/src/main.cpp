@@ -157,7 +157,7 @@ static uint32_t MQTTlimit = 300;
         effectState = (effectState + 1) % 2;
     }
 
-  // -- fun loop -- attempting to recreate color wipe
+  // -- fun loop -- attempting reverse
     const uint16_t AnimCount = PixelCount / 5 * 2 + 1; // we only need enough animations for the tail and one extra
     const uint16_t PixelFadeDuration = 300; // third of a second
     // one second divide by the number of pixels = loop once a second
@@ -178,7 +178,6 @@ static uint32_t MQTTlimit = 300;
     FunLoopState animationState[AnimCount];
     NeoPixelAnimator FunLoopAnim(AnimCount);
     uint16_t frontPixel = 0;  // the front of the loop
-    uint16_t backPixel = 0;  // the front of the loop
     RgbColor frontColor;  // the color at the front of the loop
 
 
@@ -208,8 +207,10 @@ static uint32_t MQTTlimit = 300;
             FunLoopAnim.RestartAnimation(param.index);
 
             // pick the next pixel inline to start animating
-            // 
-            frontPixel = (frontPixel + 1) % PixelCount; // increment and wrap
+            //frontPixel = (frontPixel + 1) % PixelCount; // increment and wrap
+
+            frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
+
             if (frontPixel == 0)
             {
                 // we looped, lets pick a new front color
