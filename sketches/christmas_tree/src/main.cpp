@@ -218,7 +218,7 @@ static uint32_t MQTTlimit = 300;
 
             // -- reverse
             if (animReverse) {
-              frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
+              frontPixel = abs((frontPixel - 1)) % PixelCount; // increment and wrap
               
             }
             // -- forward
