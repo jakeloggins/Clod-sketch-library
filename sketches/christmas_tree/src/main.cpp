@@ -186,6 +186,7 @@ static uint32_t MQTTlimit = 300;
     NeoPixelAnimator FunLoopAnim(AnimCount);
     uint16_t frontPixel = 0;  // the front of the loop
     RgbColor frontColor;  // the color at the front of the loop
+    uint16_t loopCounter = 0;
 
 
     void FadeOutAnimUpdate(const AnimationParam& param)
@@ -218,8 +219,11 @@ static uint32_t MQTTlimit = 300;
 
             // -- reverse
             if (animReverse) {
-              frontPixel = abs((frontPixel - 1)) % PixelCount; // increment and wrap
-              
+              //frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
+              frontPixel = PixelCount - loopCounter;
+              loopCounter = (loopCounter + 1) % PixelCount;
+
+
             }
             // -- forward
             else {
