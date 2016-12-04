@@ -221,7 +221,7 @@ static uint32_t MQTTlimit = 300;
             if (animReverse) {
               //frontPixel = (frontPixel - 1) % PixelCount; // increment and wrap
               frontPixel = PixelCount - loopCounter;
-              loopCounter = (loopCounter + 1) % PixelCount;
+              loopCounter = (loopCounter + 1) % (PixelCount + 1);
 
 
             }
