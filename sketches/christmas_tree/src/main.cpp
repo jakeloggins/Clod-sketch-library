@@ -208,8 +208,8 @@ static uint32_t MQTTlimit = 300;
 
                 FunFadeAnimationState[0].StartingColor = target;
                 FunFadeAnimationState[0].EndingColor = secondaryTarget;
-                FunFadeAnimationState[0].SecondaryStartingColor = target;
-                FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
+                FunFadeAnimationState[0].SecondaryStartingColor = secondaryTarget;
+                FunFadeAnimationState[0].SecondaryEndingColor = target;
 
               }
             }
