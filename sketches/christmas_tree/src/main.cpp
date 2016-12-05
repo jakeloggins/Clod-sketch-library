@@ -258,7 +258,7 @@ static uint32_t MQTTlimit = 300;
 
               // pulse -- fade back to the color before the animation
               else if (keepOrig) {
-                animationState[indexAnim].EndingColor = strip.GetPixelColor(indexAnim);
+                animationState[indexAnim].EndingColor = strip.GetPixelColor(frontPixel);
               }
 
               // flare -- fade to black
