@@ -692,6 +692,10 @@ static uint32_t MQTTlimit = 300;
               FunRandomCount = 10;
               PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
+
+
+
+
             else if (payload.substring(10) == "Fun Fade\"}") {
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
               effectState = 0;
@@ -737,27 +741,9 @@ static uint32_t MQTTlimit = 300;
 
 
             else if (payload.substring(10) == "Random Color\"}") {
-              clearFirst = false;
-              allWhite = false;
               RandomCount = 10;
               SetupRandomColor();
             }
-            else if (payload.substring(10) == "Random Sparkle\"}") {
-              clearFirst = true;
-              allWhite = false;
-              RandomCount = 10;
-              SetupRandomColor();
-            }
-            else if (payload.substring(10) == "White Sparkle\"}") {
-              clearFirst = true;
-              allWhite = true;
-              RandomCount = 10;
-              SetupRandomColor();
-            }
-
-
-
-
 
             else if (payload.substring(10) == "Rainbow\"}") {
               SetupRainbow();

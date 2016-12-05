@@ -18,14 +18,14 @@
     "values": {
       "choices": [
         "Fun Random", 
+        "Random Sparkle",
+        "White Sparkle",
         "Flare",
         "Flare Reverse",
         "Color Wipe",
         "Color Wipe Reverse",
         "Fun Loop",
         "Random Color",
-        "Random Sparkle",
-        "White Sparkle",
         "Rainbow"
       ]
     }
