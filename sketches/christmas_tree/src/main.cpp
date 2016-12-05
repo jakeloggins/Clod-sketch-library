@@ -91,6 +91,27 @@ static uint32_t MQTTlimit = 300;
   //NeoPixelBus<NeoRgbwFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
 
 
+  // solid color stuff
+
+    RgbColor red(colorSaturation, 0, 0);
+    RgbColor green(0, colorSaturation, 0);
+    RgbColor blue(0, 0, colorSaturation);
+    RgbColor white(colorSaturation);
+    RgbColor black(0);
+
+    HslColor hslRed(red);
+    HslColor hslGreen(green);
+    HslColor hslBlue(blue);
+    HslColor hslWhite(white);
+    HslColor hslBlack(black);
+
+  const uint16_t global_wait = 50;
+
+
+
+
+  boolean solidOverride = true;
+
   // -- fun fade -- currently sticks, change animation effect state overrides to fade to black
     uint16_t effectState = 0;  // general purpose variable used to store effect state
     const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
@@ -98,10 +119,15 @@ static uint32_t MQTTlimit = 300;
 
     uint16_t FunFadeCount = 0;
 
+    boolean colorStick = false;
+    boolean alternateColors = false;
+    boolean clearFirst = false; 
+
     struct FunFadeState
     {
         RgbColor StartingColor;
         RgbColor EndingColor;
+        RgbColor SecondaryEndingColor;
     };
     
     // one entry per pixel to match the animation timing manager
@@ -119,26 +145,71 @@ static uint32_t MQTTlimit = 300;
             FunFadeAnimationState[param.index].EndingColor,
             param.progress);
 
-        // apply the color to the strip
-        for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
-        {
-            strip.SetPixelColor(pixel, updatedColor);
+        if (alternateColors) {
+          RgbColor updatedSecondaryColor = RgbColor::LinearBlend(
+              FunFadeAnimationState[param.index].StartingColor,
+              FunFadeAnimationState[param.index].SecondaryEndingColor,
+              param.progress);
+
+          // apply the color to the strip
+          for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
+          {
+            // if pixel is odd number, set to updatedPrimary, otherwise set updatedSecondary
+            if ((pixel % 2) == 0) {
+              strip.SetPixelColor(pixel, updatedColor);
+            }
+            else {
+             strip.SetPixelColor(pixel, updatedSecondaryColor); 
+            }
+          }
+
+        } else {
+
+          // apply the color to the strip
+          for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
+          {
+              strip.SetPixelColor(pixel, updatedColor);
+          }
+
         }
+
+
     }
 
     void FadeInFadeOutRinseRepeat(float luminance)
     {
+        if (colorStick) {
+          effectState = 0;
+        }
+
         if (effectState == 0)
         {
             // Fade upto a random color
             // we use HslColor object as it allows us to easily pick a hue
             // with the same saturation and luminance so the colors picked
             // will have similiar overall brightness
-            RgbColor target = HslColor(random(360) / 360.0f, 1.0f, luminance);
             uint16_t time = random(800, 2000);
 
-            FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
-            FunFadeAnimationState[0].EndingColor = target;
+
+            if (alternateColors) {
+              RgbColor target = red;
+              RgbColor secondaryTarget = green; 
+              FunFadeAnimationState[0].EndingColor = target;
+              FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
+            }
+            else {
+              RgbColor target = HslColor(random(360) / 360.0f, 1.0f, luminance);
+              FunFadeAnimationState[0].EndingColor = target;
+            }
+
+            
+            if (clearFirst) {
+              FunFadeAnimationState[0].StartingColor = RgbColor(0);
+            }
+            else {
+              FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
+            }
+
 
             FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
         }
@@ -286,7 +357,7 @@ static uint32_t MQTTlimit = 300;
 
     FunRandomChangeState FunRandomAnimationState[PixelCount];
 
-    boolean clearFirst = false;
+    // boolean clearFirst = false; // declared in fun fade section
     boolean allWhite = false;
 
     // simple blend function
@@ -485,22 +556,6 @@ static uint32_t MQTTlimit = 300;
 
 
 
-  // solid color stuff
-
-    RgbColor red(colorSaturation, 0, 0);
-    RgbColor green(0, colorSaturation, 0);
-    RgbColor blue(0, 0, colorSaturation);
-    RgbColor white(colorSaturation);
-    RgbColor black(0);
-
-    HslColor hslRed(red);
-    HslColor hslGreen(green);
-    HslColor hslBlue(blue);
-    HslColor hslWhite(white);
-    HslColor hslBlack(black);
-
-  const uint16_t global_wait = 50;
-
   // -- assorted other functions
 
     void SetRandomSeed()
@@ -673,6 +728,9 @@ static uint32_t MQTTlimit = 300;
 
           // sketch acts on that value as it normally would, using the static_endpoint_id to know for sure what it should do (turn output pin on/off, adjust RGB light, etc)
           if (lookup_val == "RGB") {
+
+            solidOverride = true;
+
             // deserialize payload, get valueKey
             // or just look for value or red,green,blue
             String findKey = getValue(payload, '"', 1);
@@ -691,6 +749,8 @@ static uint32_t MQTTlimit = 300;
             //neoPixelChange = true;
           }
           else if (lookup_val == "animationMenu") {
+
+            solidOverride = false;
 
             if (payload.substring(10) == "Fun Random\"}") {
               clearFirst = false;
@@ -714,12 +774,55 @@ static uint32_t MQTTlimit = 300;
 
 
 
-            else if (payload.substring(10) == "Fun Fade\"}") {
+            else if (payload.substring(10) == "Fade Strip In Out\"}") {
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
-              effectState = 0;
+              colorStick = false;
+              clearFirst = false;
+              alternateColors = false;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
-
             }
+
+
+            else if (payload.substring(10) == "Fade Strip In\"}") {
+              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              colorStick = true;
+              clearFirst = false;
+              alternateColors = false;
+              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            }
+
+            else if (payload.substring(10) == "Clear and Fade Strip In\"}") {
+              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              colorStick = true;
+              clearFirst = true;
+              alternateColors = false;
+              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            }
+
+            else if (payload.substring(10) == "Alternate Fade In\"}") {
+              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              colorStick = true;
+              clearFirst = false;
+              alternateColors = true;
+              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            }
+
+            else if (payload.substring(10) == "Alternate Fade In Out\"}") {
+              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              colorStick = true;
+              clearFirst = false;
+              alternateColors = true;
+              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+            }
+
+
+
+
+
+
+
+
+
 
             else if (payload.substring(10) == "Flare\"}") {
               animReverse = false;
@@ -891,25 +994,12 @@ void loop() {
 
 
   // -- NeoPixel continuous update
-    /* 
-    for(int i=0; i<PixelCount; i++) {
-      strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
-    }
+    if (solidOverride) {
+      for(int i=0; i<PixelCount; i++) {
+        strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
+      }
     strip.Show();
-    */
-
-
-  // NeoPixel Animation
-  /*
-  if (neoPixelChange == true) {
-    rainbow(100);
-    neoPixelChange = false;
-    for(int i=0; i<PixelCount; i++) {
-      strip.SetPixelColor(i, black);
     }
-    strip.Show();
-  }
-  */
 
 
   if (FunRandomChange.IsAnimating()) {
@@ -930,7 +1020,6 @@ void loop() {
       strip.Show();
   }
   else if (FunFadeCount > 0 ) {
-    effectState = 0;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     FunFadeCount--;
   }
