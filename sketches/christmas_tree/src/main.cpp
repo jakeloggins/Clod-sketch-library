@@ -170,7 +170,6 @@ static uint32_t MQTTlimit = 300;
     boolean wipeSingle = false;
     boolean keepOrig = false;
 
-
     uint16_t FunLoopCount = 0;
 
     // what is stored for state is specific to the need, in this case, the colors and
@@ -256,7 +255,7 @@ static uint32_t MQTTlimit = 300;
                animationState[indexAnim].EndingColor = frontColor;
               }
 
-              // pulse -- fade back to the color before the animation
+              // pulse -- fade back to the color before the animation -- this doesn't work so I removed it from the menu
               else if (keepOrig) {
                 animationState[indexAnim].EndingColor = strip.GetPixelColor(frontPixel);
               }
@@ -423,8 +422,9 @@ static uint32_t MQTTlimit = 300;
           }
           float pixelOrigHueValueFloat = (float) pixelOrigHueValue;
 
-          HslColor pixelOriginalHue (pixelOrigHueValueFloat/360.0f, 1.0f, 0.5f);
+          HslColor pixelOriginalHue ((pixelOrigHueValueFloat / 360.0f), 1.0f, 0.5f);
 
+          HslColor pixelFinalHue ((pixelOrigHueValueFloat - 1.0) / 360.0f, 1.0f, 0.5f);
 
 
           // with the random ease function
@@ -451,7 +451,7 @@ static uint32_t MQTTlimit = 300;
               float progress = easing(param.progress);
 
               // use the curve value to apply to the animation
-              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelOriginalHue, progress);
+              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelFinalHue, progress);
               strip.SetPixelColor(pixel, updatedColor);
               
           };
@@ -713,7 +713,6 @@ static uint32_t MQTTlimit = 300;
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
 
-
             else if (payload.substring(10) == "Color Wipe Reverse\"}") {
               animReverse = true;
               wipeSingle = true;
@@ -721,40 +720,6 @@ static uint32_t MQTTlimit = 300;
               FunLoopCount = 10;
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
-
-
-
-
-            else if (payload.substring(10) == "Pulse\"}") {
-              animReverse = false;
-              wipeSingle = false;
-              keepOrig = true;
-              FunLoopCount = 10;
-
-
-              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
-            }
-
-
-            else if (payload.substring(10) == "Pulse Reverse\"}") {
-              animReverse = true;
-              wipeSingle = false;
-              keepOrig = true;
-              FunLoopCount = 10;
-              
-
-              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
-            }
-
-
-
-
-
-
-
-
-
-
 
 
             else if (payload.substring(10) == "Random Color\"}") {
