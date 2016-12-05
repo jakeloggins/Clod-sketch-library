@@ -187,8 +187,6 @@ static uint32_t MQTTlimit = 300;
     RgbColor frontColor;  // the color at the front of the loop
     uint16_t loopCounter = 0;
 
-    RgbColor OrigColor = strip.GetPixelColor(0);
-
 
     void FadeOutAnimUpdate(const AnimationParam& param)
     {
@@ -448,10 +446,10 @@ static uint32_t MQTTlimit = 300;
               
               // progress will start at 0.0 and end at 1.0
               // we convert to the curve we want
-              float progress = easing(param.progress);
+              //float progress = easing(param.progress);
 
               // use the curve value to apply to the animation
-              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelFinalHue, progress);
+              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelFinalHue, 1.0f);
               strip.SetPixelColor(pixel, updatedColor);
               
           };
