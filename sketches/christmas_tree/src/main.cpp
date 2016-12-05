@@ -422,7 +422,7 @@ static uint32_t MQTTlimit = 300;
 
           HslColor pixelOriginalHue ((pixelOrigHueValueFloat / 360.0f), 1.0f, 0.5f);
 
-          HslColor pixelFinalHue ((pixelOrigHueValueFloat - 1.0) / 360.0f, 1.0f, 0.5f);
+          HslColor pixelFinalHue ((pixelOrigHueValueFloat - 1.0f) / 360.0f, 1.0f, 0.5f);
 
 
           // with the random ease function
