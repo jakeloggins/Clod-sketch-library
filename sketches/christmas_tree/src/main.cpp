@@ -188,6 +188,8 @@ static uint32_t MQTTlimit = 300;
     RgbColor frontColor;  // the color at the front of the loop
     uint16_t loopCounter = 0;
 
+    RgbColor OrigColor = strip.GetPixelColor(0);
+
 
     void FadeOutAnimUpdate(const AnimationParam& param)
     {
@@ -254,9 +256,9 @@ static uint32_t MQTTlimit = 300;
                animationState[indexAnim].EndingColor = frontColor;
               }
 
-              // wipe single -- fade back to the color before the animation
+              // pulse -- fade back to the color before the animation
               else if (keepOrig) {
-                animationState[indexAnim].EndingColor = strip.GetPixelColor(0);
+                animationState[indexAnim].EndingColor = strip.GetPixelColor(indexAnim);
               }
 
               // flare -- fade to black
@@ -728,6 +730,8 @@ static uint32_t MQTTlimit = 300;
               wipeSingle = false;
               keepOrig = true;
               FunLoopCount = 10;
+
+
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
 
@@ -737,6 +741,8 @@ static uint32_t MQTTlimit = 300;
               wipeSingle = false;
               keepOrig = true;
               FunLoopCount = 10;
+              
+
               FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
             }
 
