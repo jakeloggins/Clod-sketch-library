@@ -286,6 +286,8 @@ static uint32_t MQTTlimit = 300;
 
     FunRandomChangeState FunRandomAnimationState[PixelCount];
 
+    boolean clearFirst = false;
+    boolean allWhite = false;
 
     // simple blend function
     void FunRandomBlendAnimUpdate(const AnimationParam& param)
@@ -315,8 +317,20 @@ static uint32_t MQTTlimit = 300;
             // we use HslColor object as it allows us to easily pick a color
             // with the same saturation and luminance 
             uint16_t time = random(100, 400);
-            FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
-            FunRandomAnimationState[pixel].EndingColor = HslColor(random(360) / 360.0f, 1.0f, luminance);
+
+            if (clearFirst) {
+               FunRandomAnimationState[pixel].StartingColor = RgbColor(0, 0, 0);
+            }
+            else {
+              FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
+            }
+
+            if (allWhite) {
+              FunRandomAnimationState[pixel].EndingColor = RgbColor(255, 255, 255);
+            }
+            else {
+              FunRandomAnimationState[pixel].EndingColor = HslColor(random(360) / 360.0f, 1.0f, luminance);
+            }
 
             FunRandomChange.StartAnimation(pixel, time, FunRandomBlendAnimUpdate);
 
@@ -723,9 +737,28 @@ static uint32_t MQTTlimit = 300;
 
 
             else if (payload.substring(10) == "Random Color\"}") {
+              clearFirst = false;
+              allWhite = false;
               RandomCount = 10;
               SetupRandomColor();
             }
+            else if (payload.substring(10) == "Random Sparkle\"}") {
+              clearFirst = true;
+              allWhite = false;
+              RandomCount = 10;
+              SetupRandomColor();
+            }
+            else if (payload.substring(10) == "White Sparkle\"}") {
+              clearFirst = true;
+              allWhite = true;
+              RandomCount = 10;
+              SetupRandomColor();
+            }
+
+
+
+
+
             else if (payload.substring(10) == "Rainbow\"}") {
               SetupRainbow();
             }
