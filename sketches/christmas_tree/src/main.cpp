@@ -306,6 +306,15 @@ static uint32_t MQTTlimit = 300;
 
     void PickRandom(float luminance)
     {
+
+        // clear all pixels first
+        if (clearFirst) {
+          for (uint16_t pixel = 0; pixel < PixelCount; pixel++) {
+            strip.SetPixelColor(pixel, RgbColor(0));
+          }
+        }
+
+
         // pick random count of pixels to animate
         uint16_t count = random(PixelCount);
         while (count > 0)
@@ -318,12 +327,7 @@ static uint32_t MQTTlimit = 300;
             // with the same saturation and luminance 
             uint16_t time = random(100, 400);
 
-            if (clearFirst) {
-               FunRandomAnimationState[pixel].StartingColor = RgbColor(0);
-            }
-            else {
-              FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
-            }
+            FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
 
             if (allWhite) {
               FunRandomAnimationState[pixel].EndingColor = RgbColor(255);
