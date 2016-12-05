@@ -319,14 +319,14 @@ static uint32_t MQTTlimit = 300;
             uint16_t time = random(100, 400);
 
             if (clearFirst) {
-               FunRandomAnimationState[pixel].StartingColor = RgbColor(0, 0, 0);
+               FunRandomAnimationState[pixel].StartingColor = RgbColor(0);
             }
             else {
               FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
             }
 
             if (allWhite) {
-              FunRandomAnimationState[pixel].EndingColor = RgbColor(255, 255, 255);
+              FunRandomAnimationState[pixel].EndingColor = RgbColor(255);
             }
             else {
               FunRandomAnimationState[pixel].EndingColor = HslColor(random(360) / 360.0f, 1.0f, luminance);
@@ -689,10 +689,24 @@ static uint32_t MQTTlimit = 300;
           else if (lookup_val == "animationMenu") {
 
             if (payload.substring(10) == "Fun Random\"}") {
+              clearFirst = false;
+              allWhite = false;
               FunRandomCount = 10;
               PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
 
+            else if (payload.substring(10) == "Random Sparkle\"}") {
+              clearFirst = true;
+              allWhite = false;
+              FunRandomCount = 10;
+              PickRandom(0.2f);
+            }
+            else if (payload.substring(10) == "White Sparkle\"}") {
+              clearFirst = true;
+              allWhite = true;
+              FunRandomCount = 10;
+              PickRandom(0.2f);
+            }
 
 
 
@@ -702,8 +716,6 @@ static uint32_t MQTTlimit = 300;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
 
             }
-
-
 
             else if (payload.substring(10) == "Flare\"}") {
               animReverse = false;
