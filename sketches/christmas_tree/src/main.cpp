@@ -194,21 +194,22 @@ static uint32_t MQTTlimit = 300;
             if (alternateColors) {
               RgbColor target = RgbColor(255, 0, 0);
               RgbColor secondaryTarget = RgbColor(0, 255, 0); 
+              FunFadeAnimationState[0].StartingColor = RgbColor(0);
               FunFadeAnimationState[0].EndingColor = target;
               FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
             }
             else {
               RgbColor target = HslColor(random(360) / 360.0f, 1.0f, luminance);
               FunFadeAnimationState[0].EndingColor = target;
+              if (clearFirst) {
+                FunFadeAnimationState[0].StartingColor = RgbColor(0);
+              }
+              else {
+                FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
+              }
             }
 
             
-            if (clearFirst) {
-              FunFadeAnimationState[0].StartingColor = RgbColor(0);
-            }
-            else {
-              FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
-            }
 
 
             FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
@@ -776,7 +777,7 @@ static uint32_t MQTTlimit = 300;
 
             else if (payload.substring(10) == "Fade Strip In Out\"}") {
               effectState = 0;
-              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              FunFadeCount = 19; 
               colorStick = false;
               clearFirst = false;
               alternateColors = false;
@@ -786,7 +787,7 @@ static uint32_t MQTTlimit = 300;
 
             else if (payload.substring(10) == "Fade Strip In\"}") {
               effectState = 0;
-              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              FunFadeCount = 20;
               colorStick = true;
               clearFirst = false;
               alternateColors = false;
@@ -795,7 +796,7 @@ static uint32_t MQTTlimit = 300;
 
             else if (payload.substring(10) == "Clear and Fade Strip In\"}") {
               effectState = 0;
-              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              FunFadeCount = 20; 
               colorStick = true;
               clearFirst = true;
               alternateColors = false;
@@ -804,7 +805,7 @@ static uint32_t MQTTlimit = 300;
 
             else if (payload.substring(10) == "Alternate Fade In\"}") {
               effectState = 0;
-              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              FunFadeCount = 20; 
               colorStick = true;
               clearFirst = false;
               alternateColors = true;
@@ -813,7 +814,7 @@ static uint32_t MQTTlimit = 300;
 
             else if (payload.substring(10) == "Alternate Fade In Out\"}") {
               effectState = 0;
-              FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
+              FunFadeCount = 20; 
               colorStick = false;
               clearFirst = false;
               alternateColors = true;
