@@ -219,12 +219,7 @@ static uint32_t MQTTlimit = 300;
             else {
               RgbColor target = HslColor(random(360) / 360.0f, 1.0f, luminance);
               FunFadeAnimationState[0].EndingColor = target;
-              if (clearFirst) {
-                FunFadeAnimationState[0].StartingColor = RgbColor(0);
-              }
-              else {
-                FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
-              }
+              FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
             }
 
             
@@ -394,16 +389,20 @@ static uint32_t MQTTlimit = 300;
         strip.SetPixelColor(param.index, updatedColor);
     }
 
+    void ClearFirst() {
+      // clear all pixels first
+        for (uint16_t pixel = 0; pixel < PixelCount; pixel++) {
+          strip.SetPixelColor(pixel, RgbColor(0));
+        }    
+    }
+
+
     void PickRandom(float luminance)
     {
 
-        // clear all pixels first
         if (clearFirst) {
-          for (uint16_t pixel = 0; pixel < PixelCount; pixel++) {
-            strip.SetPixelColor(pixel, RgbColor(0));
-          }
+          ClearFirst();
         }
-
 
         // pick random count of pixels to animate
         uint16_t count = random(PixelCount);
@@ -797,7 +796,6 @@ static uint32_t MQTTlimit = 300;
               effectState = 0;
               FunFadeCount = 19; 
               colorStick = false;
-              clearFirst = false;
               alternateColors = false;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
@@ -807,7 +805,6 @@ static uint32_t MQTTlimit = 300;
               effectState = 0;
               FunFadeCount = 20;
               colorStick = true;
-              clearFirst = false;
               alternateColors = false;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
@@ -816,7 +813,7 @@ static uint32_t MQTTlimit = 300;
               effectState = 0;
               FunFadeCount = 20; 
               colorStick = true;
-              clearFirst = true;
+              ClearFirst();
               alternateColors = false;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
@@ -825,7 +822,6 @@ static uint32_t MQTTlimit = 300;
               effectState = 0;
               FunFadeCount = 20; 
               colorStick = true;
-              clearFirst = false;
               alternateColors = true;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
@@ -834,7 +830,6 @@ static uint32_t MQTTlimit = 300;
               effectState = 0;
               FunFadeCount = 20; 
               colorStick = false;
-              clearFirst = false;
               alternateColors = true;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
