@@ -458,7 +458,7 @@ static uint32_t MQTTlimit = 300;
 
           // now use the animation properties we just calculated and start the animation
           // which will continue to run and call the update function until it completes
-          RainbowAnim.StartAnimation(0, 1000, rainbowUpdate);
+          RainbowAnim.StartAnimation(pixel, 1000, rainbowUpdate);
 
         }
 
