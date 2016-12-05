@@ -33,6 +33,15 @@ int redValue = 0;
 int greenValue = 0;
 int blueValue = 0;
 
+int primaryRedValue = 0;
+int primaryGreenValue = 0;
+int primaryBlueValue = 0;
+
+int secondaryRedValue = 0;
+int secondaryGreenValue = 0;
+int secondaryBlueValue = 0;
+
+
 boolean neoPixelChange = false;
 
 static uint32_t MQTTtick = 0;
@@ -193,8 +202,8 @@ static uint32_t MQTTlimit = 300;
 
             // alternate colors section
             if (alternateColors) {
-              RgbColor target = RgbColor(255, 0, 0);
-              RgbColor secondaryTarget = RgbColor(0, 255, 0); 
+              RgbColor target = RgbColor(primaryRedValue, primaryGreenValue, primaryBlueValue);
+              RgbColor secondaryTarget = RgbColor(secondaryRedValue, secondaryGreenValue, secondaryBlueValue); 
 
               if ((FunFadeCount % 2) == 0) {
 
@@ -764,8 +773,47 @@ static uint32_t MQTTlimit = 300;
             else if (findKey == "blue") {
               blueValue = findValue.toInt();
             }
-            //neoPixelChange = true;
+
           }
+          else if (lookup_val == "primaryColor") {
+
+            // deserialize payload, get valueKey
+            // or just look for value or red,green,blue
+            String findKey = getValue(payload, '"', 1);
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            if (findKey == "red") {
+              primaryRedValue = findValue.toInt();
+            }
+            else if (findKey == "green") {
+              primaryGreenValue = findValue.toInt();
+            }
+            else if (findKey == "blue") {
+              primaryBlueValue = findValue.toInt();
+            }
+
+          }
+          if (lookup_val == "secondaryColor") {
+
+            // deserialize payload, get valueKey
+            // or just look for value or red,green,blue
+            String findKey = getValue(payload, '"', 1);
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            if (findKey == "red") {
+              secondaryRedValue = findValue.toInt();
+            }
+            else if (findKey == "green") {
+              secondaryGreenValue = findValue.toInt();
+            }
+            else if (findKey == "blue") {
+              secondaryBlueValue = findValue.toInt();
+            }
+
+          }
+                    
           else if (lookup_val == "animationMenu") {
 
             solidOverride = false;
