@@ -671,7 +671,7 @@ static uint32_t MQTTlimit = 300;
       String endPoint = "";
 
       topic = pub.topic();
-      payload = pub.payload_string();
+      //payload = pub.payload_string(); // -- trying a hack to avoid processing a large payload when persistence sends device to dashboard
 
       // -- topic parser
           // syntax:
@@ -689,6 +689,9 @@ static uint32_t MQTTlimit = 300;
         deviceName = getValue(topic, '/', 3);
         command = getValue(topic, '/', 2);
         if ((deviceName == thisDeviceName) && (command == "control")) {
+
+          payload = pub.payload_string();
+          
           if (payload == "no states") {
             // -- do something to send the default states, but now that this is managed by persistence so this shouldn't be necessary
             // -- maybe it just resets all the states to 0 or whatever was originally programmed into the sketch
@@ -716,6 +719,8 @@ static uint32_t MQTTlimit = 300;
       }
       else {
 
+        payload = pub.payload_string();
+        
         int i;
         int maxitems;
 
