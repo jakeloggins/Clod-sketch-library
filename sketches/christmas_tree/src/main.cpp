@@ -127,6 +127,7 @@ static uint32_t MQTTlimit = 300;
     {
         RgbColor StartingColor;
         RgbColor EndingColor;
+        RgbColor SecondaryStartingColor;
         RgbColor SecondaryEndingColor;
     };
     
@@ -147,7 +148,7 @@ static uint32_t MQTTlimit = 300;
 
         if (alternateColors) {
           RgbColor updatedSecondaryColor = RgbColor::LinearBlend(
-              FunFadeAnimationState[param.index].StartingColor,
+              FunFadeAnimationState[param.index].SecondaryStartingColor,
               FunFadeAnimationState[param.index].SecondaryEndingColor,
               param.progress);
 
@@ -190,14 +191,31 @@ static uint32_t MQTTlimit = 300;
             // will have similiar overall brightness
             uint16_t time = random(800, 2000);
 
-
+            // alternate colors section
             if (alternateColors) {
               RgbColor target = RgbColor(255, 0, 0);
               RgbColor secondaryTarget = RgbColor(0, 255, 0); 
-              FunFadeAnimationState[0].StartingColor = RgbColor(0);
-              FunFadeAnimationState[0].EndingColor = target;
-              FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
+
+              if ((FunFadeCount % 2) == 0) {
+
+                FunFadeAnimationState[0].StartingColor = secondaryTarget;
+                FunFadeAnimationState[0].EndingColor = target;
+                FunFadeAnimationState[0].SecondaryStartingColor = target;
+                FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
+
+              }
+              else {
+
+                FunFadeAnimationState[0].StartingColor = target;
+                FunFadeAnimationState[0].EndingColor = secondaryTarget;
+                FunFadeAnimationState[0].SecondaryStartingColor = target;
+                FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
+
+              }
             }
+
+            // everything else
+
             else {
               RgbColor target = HslColor(random(360) / 360.0f, 1.0f, luminance);
               FunFadeAnimationState[0].EndingColor = target;
