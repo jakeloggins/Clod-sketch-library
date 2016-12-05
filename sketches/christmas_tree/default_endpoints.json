@@ -11,24 +11,24 @@
       "blue": 0
     }
   },
-  "primaryAnimationColor": {
+  "primaryColor": {
     "min": 0,
     "max": 255,
     "card-type": "crouton-rgb-slider",
     "static_endpoint_id": "primaryColor",
-    "title": "Primary Animation Color",
+    "title": "Primary Color",
     "values": {
       "red": 0,
       "green": 0,
       "blue": 0
     }
   },
-  "secondaryAnimationColor": {
+  "secondaryColor": {
     "min": 0,
     "max": 255,
     "card-type": "crouton-rgb-slider",
     "static_endpoint_id": "secondaryColor",
-    "title": "Secondary Animation Color",
+    "title": "Secondary Color",
     "values": {
       "red": 0,
       "green": 0,
