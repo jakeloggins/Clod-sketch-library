@@ -408,6 +408,23 @@ static uint32_t MQTTlimit = 300;
         // pick a random color for the starting pixel
          uint16_t startingFrontHueValue = random(1, 255);
 
+        // with the random ease function
+        AnimEaseFunction easing;
+
+        switch (random(3))
+        {
+        case 0:
+            easing = NeoEase::CubicIn;
+            break;
+        case 1:
+            easing = NeoEase::CubicOut;
+            break;
+        case 2:
+            easing = NeoEase::QuadraticInOut;
+            break;
+        }
+
+
         // setup some animations
         for (uint16_t pixel = 0; pixel < PixelCount; pixel++)
         {
@@ -425,21 +442,6 @@ static uint32_t MQTTlimit = 300;
           HslColor pixelFinalHue ((pixelOrigHueValueFloat - 1.0f) / 360.0f, 1.0f, 0.5f);
 
 
-          // with the random ease function
-          AnimEaseFunction easing;
-
-          switch (random(3))
-          {
-          case 0:
-              easing = NeoEase::CubicIn;
-              break;
-          case 1:
-              easing = NeoEase::CubicOut;
-              break;
-          case 2:
-              easing = NeoEase::QuadraticInOut;
-              break;
-          }
 
           AnimUpdateCallback rainbowUpdate = [=](const AnimationParam& param)
           {
