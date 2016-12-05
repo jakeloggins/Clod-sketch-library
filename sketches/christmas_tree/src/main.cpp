@@ -449,7 +449,7 @@ static uint32_t MQTTlimit = 300;
               //float progress = easing(param.progress);
 
               // use the curve value to apply to the animation
-              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelFinalHue, 1.0f);
+              HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendClockwiseDirection>(pixelOriginalHue, pixelFinalHue, 0.5f);
               strip.SetPixelColor(pixel, updatedColor);
               
           };
