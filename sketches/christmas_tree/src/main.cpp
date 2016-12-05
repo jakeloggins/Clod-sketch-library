@@ -192,8 +192,8 @@ static uint32_t MQTTlimit = 300;
 
 
             if (alternateColors) {
-              RgbColor target = red;
-              RgbColor secondaryTarget = green; 
+              RgbColor target = RgbColor(255, 0, 0);
+              RgbColor secondaryTarget = RgbColor(0, 255, 0); 
               FunFadeAnimationState[0].EndingColor = target;
               FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
             }
@@ -775,6 +775,7 @@ static uint32_t MQTTlimit = 300;
 
 
             else if (payload.substring(10) == "Fade Strip In Out\"}") {
+              effectState = 0;
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
               colorStick = false;
               clearFirst = false;
@@ -784,6 +785,7 @@ static uint32_t MQTTlimit = 300;
 
 
             else if (payload.substring(10) == "Fade Strip In\"}") {
+              effectState = 0;
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
               colorStick = true;
               clearFirst = false;
@@ -792,6 +794,7 @@ static uint32_t MQTTlimit = 300;
             }
 
             else if (payload.substring(10) == "Clear and Fade Strip In\"}") {
+              effectState = 0;
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
               colorStick = true;
               clearFirst = true;
@@ -800,6 +803,7 @@ static uint32_t MQTTlimit = 300;
             }
 
             else if (payload.substring(10) == "Alternate Fade In\"}") {
+              effectState = 0;
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
               colorStick = true;
               clearFirst = false;
@@ -808,8 +812,9 @@ static uint32_t MQTTlimit = 300;
             }
 
             else if (payload.substring(10) == "Alternate Fade In Out\"}") {
+              effectState = 0;
               FunFadeCount = 20; // count is 2x normal because it counts fading up and fading down
-              colorStick = true;
+              colorStick = false;
               clearFirst = false;
               alternateColors = true;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
