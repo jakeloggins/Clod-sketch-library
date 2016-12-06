@@ -21,32 +21,35 @@ Ticker ticker;
     // stores const char ssid and const char password
 
 
-String chip_id = String(ESP.getChipId());
-String confirmPath = "";
-String confirmPayload = "";
-String local_ip_str = "";
+  String chip_id = String(ESP.getChipId());
+  String confirmPath = "";
+  String confirmPayload = "";
+  String local_ip_str = "";
 
-String error_path = "";
-
-
-int redValue = 0;
-int greenValue = 0;
-int blueValue = 0;
-
-int primaryRedValue = 0;
-int primaryGreenValue = 0;
-int primaryBlueValue = 0;
-
-int secondaryRedValue = 0;
-int secondaryGreenValue = 0;
-int secondaryBlueValue = 0;
+  String error_path = "";
 
 
-boolean neoPixelChange = false;
+  int redValue = 0;
+  int greenValue = 0;
+  int blueValue = 0;
 
-static uint32_t MQTTtick = 0;
-static uint32_t MQTTlimit = 300;
+  int primaryRedValue = 0;
+  int primaryGreenValue = 0;
+  int primaryBlueValue = 0;
 
+  int secondaryRedValue = 0;
+  int secondaryGreenValue = 0;
+  int secondaryBlueValue = 0;
+
+
+  boolean neoPixelChange = false;
+
+  boolean isAnimating = false;
+
+  static uint32_t MQTTtick = 0;
+  static uint32_t MQTTlimit = 300;
+
+long lastMQTT = 0;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -604,7 +607,102 @@ static uint32_t MQTTlimit = 300;
         randomSeed(seed);
     }
 
+    void StopAllAnimations() {
+      FunRandomCount = 0;
+      FunFadeCount = 0;
+      FunLoopCount = 0;
+      RandomCount = 0;
+    }
 
+// -- NeoPixelAnimationFunctions
+
+  void FunRandom() {                
+    clearFirst = false;
+    allWhite = false;
+    FunRandomCount = 10;
+    PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+
+
+  void RandomSparkle() {                
+    clearFirst = true;
+    allWhite = false;
+    FunRandomCount = 10;
+    PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+  
+  void WhiteSparkle() {                
+    clearFirst = true;
+    allWhite = true;
+    FunRandomCount = 10;
+    PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+
+  void FadeStripInOut() {
+    effectState = 0;
+    FunFadeCount = 19; 
+    colorStick = false;
+    alternateColors = false;
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+  void FadeStripIn() {
+    effectState = 0;
+    FunFadeCount = 20;
+    colorStick = true;
+    alternateColors = false;
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+  void ClearAndFadeStripIn() {
+    effectState = 0;
+    FunFadeCount = 20; 
+    colorStick = true;
+    ClearFirst();
+    alternateColors = false;
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+  void AlternateFadeIn() {
+    effectState = 0;
+    FunFadeCount = 20; 
+    colorStick = true;
+    alternateColors = true;
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+  }
+  void AlternateFadeInOut() {
+    effectState = 0;
+    FunFadeCount = 20; 
+    colorStick = false;
+    alternateColors = true;
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright              
+  }
+
+  void Flare() {
+    animReverse = false;
+    wipeSingle = false;
+    keepOrig = false;
+    FunLoopCount = 10;
+    FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+  }
+  void FlareReverse() {
+    animReverse = true;
+    wipeSingle = false;
+    keepOrig = false;
+    FunLoopCount = 10;
+    FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+  }
+  void ColorWipe() {
+    animReverse = false;
+    wipeSingle = true;
+    keepOrig = false;
+    FunLoopCount = 10;
+    FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+  }
+  void ColorWipeReverse() {
+    animReverse = true;
+    wipeSingle = true;
+    keepOrig = false;
+    FunLoopCount = 10;
+    FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);                
+  }
 
 
 
@@ -720,7 +818,7 @@ static uint32_t MQTTlimit = 300;
       else {
 
         payload = pub.payload_string();
-        
+
         int i;
         int maxitems;
 
@@ -761,6 +859,8 @@ static uint32_t MQTTlimit = 300;
           // sketch acts on that value as it normally would, using the static_endpoint_id to know for sure what it should do (turn output pin on/off, adjust RGB light, etc)
           if (lookup_val == "RGB") {
 
+            lastMQTT = millis();
+            StopAllAnimations();
             solidOverride = true;
 
             // deserialize payload, get valueKey
@@ -821,7 +921,11 @@ static uint32_t MQTTlimit = 300;
                     
           else if (lookup_val == "animationMenu") {
 
+            lastMQTT = millis();
+            StopAllAnimations();
+
             solidOverride = false;
+
 
             if (payload.substring(10) == "Fun Random\"}") {
               clearFirst = false;
@@ -886,14 +990,6 @@ static uint32_t MQTTlimit = 300;
               alternateColors = true;
               FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
-
-
-
-
-
-
-
-
 
 
             else if (payload.substring(10) == "Flare\"}") {
@@ -1065,6 +1161,9 @@ void loop() {
     }
 
 
+  isAnimating = false;
+
+
   // -- NeoPixel continuous update
     if (solidOverride) {
       for(int i=0; i<PixelCount; i++) {
@@ -1074,15 +1173,20 @@ void loop() {
     }
 
 
+
+
   if (FunRandomChange.IsAnimating()) {
       // the normal loop just needs these two to run the active animations
       FunRandomChange.UpdateAnimations();
       strip.Show();
+      isAnimating = true;
   }
   else if (FunRandomCount > 0) {
     PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     FunRandomCount--;
+    isAnimating = true;
   }
+
 
 
 
@@ -1090,11 +1194,14 @@ void loop() {
       // the normal loop just needs these two to run the active animations
       FunFadeAnim.UpdateAnimations();
       strip.Show();
+      isAnimating = true;
   }
   else if (FunFadeCount > 0 ) {
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     FunFadeCount--;
+    isAnimating = true;
   }
+
 
 
 
@@ -1102,7 +1209,9 @@ void loop() {
       // the normal loop just needs these two to run the active animations
       FunLoopAnim.UpdateAnimations();
       strip.Show();
+      isAnimating = true;
   }
+
 
 
 
@@ -1110,11 +1219,14 @@ void loop() {
       // the normal loop just needs these two to run the active animations
       RandomColorAnim.UpdateAnimations();
       strip.Show();
+      isAnimating = true;
   }
   else if (RandomCount > 0 ) {
     SetupRandomColor();
     RandomCount--;
+    isAnimating = true;
   }
+
 
 
 
@@ -1122,9 +1234,58 @@ void loop() {
       // the normal loop just needs these two to run the active animations
       RainbowAnim.UpdateAnimations();
       strip.Show();
+      isAnimating = true;
   }
 
 
+  if (isAnimating == false) {
+
+    if (millis() - lastMQTT > 5000) {
+
+      int animationRandom = random(0,11);
+    
+      switch (animationRandom) {
+        case 0:
+          FunRandom();
+          break;
+        case 1:
+          RandomSparkle();
+          break;
+        case 2:
+          WhiteSparkle();
+          break;
+        case 3:
+          FadeStripInOut();
+          break;
+        case 4:
+          FadeStripIn();
+          break;
+        case 5:
+          AlternateFadeIn();
+          break;
+        case 6:
+          Flare();
+          break;
+        case 7:
+          FlareReverse();
+          break;
+        case 8:
+          ColorWipe();
+          break;
+        case 9:
+          ColorWipeReverse();
+          break;
+        case 10:
+          RandomCount = 10;
+          SetupRandomColor();
+          break;
+        case 11:
+          SetupRainbow();
+          break;
+      }
+    }
+    
+  }
 
   yield();
 }
