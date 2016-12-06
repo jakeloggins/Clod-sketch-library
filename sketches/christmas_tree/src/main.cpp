@@ -612,6 +612,7 @@ long lastMQTT = 0;
       FunFadeCount = 0;
       FunLoopCount = 0;
       RandomCount = 0;
+      FunLoopAnim.StopAnimation(0);
     }
 
 // -- NeoPixelAnimationFunctions
