@@ -223,7 +223,7 @@ Ticker ticker;
                 FunFadeAnimationState[0].EndingColor = target;
                 FunFadeAnimationState[0].SecondaryStartingColor = target;
                 FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
-               
+
               }
             }
 
@@ -933,102 +933,56 @@ Ticker ticker;
 
 
             if (payload.substring(10) == "Fun Random\"}") {
-              clearFirst = false;
-              allWhite = false;
-              FunRandomCount = 10;
-              PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              FunRandom();
             }
 
             else if (payload.substring(10) == "Random Sparkle\"}") {
-              clearFirst = true;
-              allWhite = false;
-              FunRandomCount = 10;
-              PickRandom(0.2f);
+              RandomSparkle();
             }
             else if (payload.substring(10) == "White Sparkle\"}") {
-              clearFirst = true;
-              allWhite = true;
-              FunRandomCount = 10;
-              PickRandom(0.2f);
+              WhiteSparkle();
             }
 
 
 
             else if (payload.substring(10) == "Fade Strip In Out\"}") {
-              effectState = 0;
-              FunFadeCount = 19; 
-              colorStick = false;
-              alternateColors = false;
-              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              FadeStripInOut();
             }
 
 
             else if (payload.substring(10) == "Fade Strip In\"}") {
-              effectState = 0;
-              FunFadeCount = 20;
-              colorStick = true;
-              alternateColors = false;
-              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              FadeStripIn();
             }
 
             else if (payload.substring(10) == "Clear and Fade Strip In\"}") {
-              effectState = 0;
-              FunFadeCount = 20; 
-              colorStick = true;
-              ClearFirst();
-              alternateColors = false;
-              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              ClearAndFadeStripIn();
             }
 
             else if (payload.substring(10) == "Alternate Fade In\"}") {
-              effectState = 0;
-              FunFadeCount = 20; 
-              colorStick = true;
-              alternateColors = true;
-              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              AlternateFadeIn();
             }
 
             else if (payload.substring(10) == "Alternate Fade In Out\"}") {
-              effectState = 0;
-              FunFadeCount = 20; 
-              colorStick = false;
-              alternateColors = true;
-              FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
+              AlternateFadeInOut();
             }
 
 
             else if (payload.substring(10) == "Flare\"}") {
-              animReverse = false;
-              wipeSingle = false;
-              keepOrig = false;
-              FunLoopCount = 10;
-              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+              Flare();
             }
 
             else if (payload.substring(10) == "Flare Reverse\"}") {
-              animReverse = true;
-              wipeSingle = false;
-              keepOrig = false;
-              FunLoopCount = 10;
-              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+              FlareReverse();
             }
 
 
 
             else if (payload.substring(10) == "Color Wipe\"}") {
-              animReverse = false;
-              wipeSingle = true;
-              keepOrig = false;
-              FunLoopCount = 10;
-              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+              ColorWipe();
             }
 
             else if (payload.substring(10) == "Color Wipe Reverse\"}") {
-              animReverse = true;
-              wipeSingle = true;
-              keepOrig = false;
-              FunLoopCount = 10;
-              FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
+              ColorWipeReverse();
             }
 
 
@@ -1245,26 +1199,55 @@ void loop() {
 
     if (millis() - lastMQTT > 5000) {
 
-      int animationRandom = random(0,4);
+      int animationRandom = random(0,12);
       solidOverride = false;
     
+
       switch (animationRandom) {
         case 0:
-          FadeStripIn();
+          FunRandom();
           break;
         case 1:
-          AlternateFadeIn();
+          RandomSparkle();
           break;
         case 2:
-          ColorWipe();
+          WhiteSparkle();
           break;
         case 3:
-          ColorWipeReverse();
+          FadeStripInOut();
           break;
         case 4:
+          FadeStripIn();
+          break;
+        case 5:
+          AlternateFadeIn();
+          break;
+        case 6:
+          AlternateFadeInOut();
+          break;
+        case 7:
+          Flare();
+          break;
+        case 8:
+          FlareReverse();
+          break;
+        case 9:
+          ColorWipe();
+          break;
+        case 10:
+          ColorWipeReverse();
+          break;
+        case 11:
+          RandomCount = 10;
+          SetupRandomColor();
+          break;
+        case 12:
           SetupRainbow();
           break;
-      }
+      }      
+
+
+
 
       /*
       switch (animationRandom) {
