@@ -208,7 +208,7 @@ Ticker ticker;
               RgbColor target = RgbColor(primaryRedValue, primaryGreenValue, primaryBlueValue);
               RgbColor secondaryTarget = RgbColor(secondaryRedValue, secondaryGreenValue, secondaryBlueValue); 
 
-              if ((FunFadeCount % 2) == 0 || (FunFadeCount == 0)) {
+              if ((FunFadeCount % 2) == 0) {
 
                 FunFadeAnimationState[0].StartingColor = secondaryTarget;
                 FunFadeAnimationState[0].EndingColor = target;
@@ -663,14 +663,14 @@ Ticker ticker;
   }
   void AlternateFadeIn() {
     effectState = 0;
-    FunFadeCount = 20; 
+    FunFadeCount = 19; 
     colorStick = true;
     alternateColors = true;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
   }
   void AlternateFadeInOut() {
     effectState = 0;
-    FunFadeCount = 20; 
+    FunFadeCount = 19; 
     colorStick = false;
     alternateColors = true;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright              
