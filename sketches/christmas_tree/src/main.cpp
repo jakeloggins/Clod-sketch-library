@@ -1200,8 +1200,8 @@ void loop() {
       isAnimating = true;
   }
   else if (FunFadeCount > 0 ) {
-    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     FunFadeCount--;
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     isAnimating = true;
   }
 
