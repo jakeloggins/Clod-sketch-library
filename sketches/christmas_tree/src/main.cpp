@@ -1244,9 +1244,28 @@ void loop() {
 
     if (millis() - lastMQTT > 5000) {
 
-      int animationRandom = random(0,11);
+      int animationRandom = random(0,4);
       solidOverride = false;
     
+      switch (animationRandom) {
+        case 0:
+          FadeStripIn();
+          break;
+        case 1:
+          AlternateFadeIn();
+          break;
+        case 2:
+          ColorWipe();
+          break;
+        case 3:
+          ColorWipeReverse();
+          break;
+        case 4:
+          SetupRainbow();
+          break;
+      }
+
+      /*
       switch (animationRandom) {
         case 0:
           FunRandom();
@@ -1286,6 +1305,7 @@ void loop() {
           SetupRainbow();
           break;
       }
+      */
     }
     
   }
