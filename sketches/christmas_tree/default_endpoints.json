@@ -18,7 +18,7 @@
     "static_endpoint_id": "primaryColor",
     "title": "Primary Color",
     "values": {
-      "red": 0,
+      "red": 255,
       "green": 0,
       "blue": 0
     }
@@ -31,7 +31,7 @@
     "title": "Secondary Color",
     "values": {
       "red": 0,
-      "green": 0,
+      "green": 255,
       "blue": 0
     }
   },
