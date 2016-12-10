@@ -210,19 +210,20 @@ Ticker ticker;
 
               if ((FunFadeCount % 2) == 0) {
 
-                FunFadeAnimationState[0].StartingColor = secondaryTarget;
-                FunFadeAnimationState[0].EndingColor = target;
-                FunFadeAnimationState[0].SecondaryStartingColor = target;
-                FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
-
-              }
-              else {
-
                 FunFadeAnimationState[0].StartingColor = target;
                 FunFadeAnimationState[0].EndingColor = secondaryTarget;
                 FunFadeAnimationState[0].SecondaryStartingColor = secondaryTarget;
                 FunFadeAnimationState[0].SecondaryEndingColor = target;
 
+
+              }
+              else {
+
+                FunFadeAnimationState[0].StartingColor = secondaryTarget;
+                FunFadeAnimationState[0].EndingColor = target;
+                FunFadeAnimationState[0].SecondaryStartingColor = target;
+                FunFadeAnimationState[0].SecondaryEndingColor = secondaryTarget;
+               
               }
             }
 
@@ -663,14 +664,14 @@ Ticker ticker;
   }
   void AlternateFadeIn() {
     effectState = 0;
-    FunFadeCount = 19; 
+    FunFadeCount = 20; 
     colorStick = true;
     alternateColors = true;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
   }
   void AlternateFadeInOut() {
     effectState = 0;
-    FunFadeCount = 19; 
+    FunFadeCount = 20; 
     colorStick = false;
     alternateColors = true;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright              
