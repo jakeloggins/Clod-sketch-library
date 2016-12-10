@@ -208,7 +208,7 @@ Ticker ticker;
               RgbColor target = RgbColor(primaryRedValue, primaryGreenValue, primaryBlueValue);
               RgbColor secondaryTarget = RgbColor(secondaryRedValue, secondaryGreenValue, secondaryBlueValue); 
 
-              if ((FunFadeCount % 2) == 0) {
+              if ((FunFadeCount % 2) == 0 || (FunFadeCount == 0)) {
 
                 FunFadeAnimationState[0].StartingColor = secondaryTarget;
                 FunFadeAnimationState[0].EndingColor = target;
