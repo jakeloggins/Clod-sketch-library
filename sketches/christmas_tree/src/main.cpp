@@ -49,7 +49,7 @@ Ticker ticker;
   static uint32_t MQTTtick = 0;
   static uint32_t MQTTlimit = 300;
 
-long lastMQTT = 0;
+  long lastMQTT = 0;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -845,9 +845,12 @@ long lastMQTT = 0;
           }
         }
 
-        //Serial.println("device and endpoint incoming...");
-        //Serial.println(deviceName);
-        //Serial.println(endPoint);
+
+        if (deviceName == thisDeviceName) {
+
+          //Serial.println("device and endpoint incoming...");
+          //Serial.println(deviceName);
+          //Serial.println(endPoint);
 
           // send endpoint_key to function stored in namepins.h at compile time
           // function returns static_endpoint_id associated with that endpoint
@@ -900,7 +903,7 @@ long lastMQTT = 0;
             }
 
           }
-          if (lookup_val == "secondaryColor") {
+          else if (lookup_val == "secondaryColor") {
 
             // deserialize payload, get valueKey
             // or just look for value or red,green,blue
@@ -1038,11 +1041,7 @@ long lastMQTT = 0;
             }
 
 
-          /*
-          else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
-            //
-          }
-          */
+
 
 
           // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
@@ -1057,9 +1056,11 @@ long lastMQTT = 0;
 
           //sendConfirm = true;
           client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
+
         }
       }
     }
+  }
 
 
 
@@ -1244,6 +1245,7 @@ void loop() {
     if (millis() - lastMQTT > 5000) {
 
       int animationRandom = random(0,11);
+      solidOverride = false;
     
       switch (animationRandom) {
         case 0:
