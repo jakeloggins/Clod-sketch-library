@@ -28,17 +28,18 @@ Ticker ticker;
 
   String error_path = "";
 
+  String lastSelected = "";
 
   int redValue = 0;
   int greenValue = 0;
   int blueValue = 0;
 
-  int primaryRedValue = 0;
+  int primaryRedValue = 255;
   int primaryGreenValue = 0;
   int primaryBlueValue = 0;
 
   int secondaryRedValue = 0;
-  int secondaryGreenValue = 0;
+  int secondaryGreenValue = 255;
   int secondaryBlueValue = 0;
 
 
@@ -207,6 +208,7 @@ Ticker ticker;
             if (alternateColors) {
               RgbColor target = RgbColor(primaryRedValue, primaryGreenValue, primaryBlueValue);
               RgbColor secondaryTarget = RgbColor(secondaryRedValue, secondaryGreenValue, secondaryBlueValue); 
+              time = random(500,1000);
 
               if ((FunFadeCount % 2) == 0) {
 
@@ -706,7 +708,53 @@ Ticker ticker;
     FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);                
   }
 
+  void chooseAnimation() {
 
+    if (lastSelected == "Fun Random\"}") {
+      FunRandom();
+    }
+    else if (lastSelected == "Random Sparkle\"}") {
+      RandomSparkle();
+    }
+    else if (lastSelected == "White Sparkle\"}") {
+      WhiteSparkle();
+    }
+    else if (lastSelected == "Fade Strip In Out\"}") {
+      FadeStripInOut();
+    }
+    else if (lastSelected == "Fade Strip In\"}") {
+      FadeStripIn();
+    }
+    else if (lastSelected == "Clear and Fade Strip In\"}") {
+      ClearAndFadeStripIn();
+    }
+    else if (lastSelected == "Alternate Fade In\"}") {
+      AlternateFadeIn();
+    }
+    else if (lastSelected == "Alternate Fade In Out\"}") {
+      AlternateFadeInOut();
+    }
+    else if (lastSelected == "Flare\"}") {
+      Flare();
+    }
+    else if (lastSelected == "Flare Reverse\"}") {
+      FlareReverse();
+    }
+    else if (lastSelected == "Color Wipe\"}") {
+      ColorWipe();
+    }
+    else if (lastSelected == "Color Wipe Reverse\"}") {
+      ColorWipeReverse();
+    }
+    else if (lastSelected == "Random Color\"}") {
+      RandomCount = 10;
+      SetupRandomColor();
+    }
+    else if (lastSelected == "Rainbow\"}") {
+      SetupRainbow();
+    }
+
+  }
 
 
 
@@ -930,71 +978,11 @@ Ticker ticker;
             StopAllAnimations();
 
             solidOverride = false;
+            
+            lastSelected = payload.substring(10);
 
 
-            if (payload.substring(10) == "Fun Random\"}") {
-              FunRandom();
-            }
-
-            else if (payload.substring(10) == "Random Sparkle\"}") {
-              RandomSparkle();
-            }
-            else if (payload.substring(10) == "White Sparkle\"}") {
-              WhiteSparkle();
-            }
-
-
-
-            else if (payload.substring(10) == "Fade Strip In Out\"}") {
-              FadeStripInOut();
-            }
-
-
-            else if (payload.substring(10) == "Fade Strip In\"}") {
-              FadeStripIn();
-            }
-
-            else if (payload.substring(10) == "Clear and Fade Strip In\"}") {
-              ClearAndFadeStripIn();
-            }
-
-            else if (payload.substring(10) == "Alternate Fade In\"}") {
-              AlternateFadeIn();
-            }
-
-            else if (payload.substring(10) == "Alternate Fade In Out\"}") {
-              AlternateFadeInOut();
-            }
-
-
-            else if (payload.substring(10) == "Flare\"}") {
-              Flare();
-            }
-
-            else if (payload.substring(10) == "Flare Reverse\"}") {
-              FlareReverse();
-            }
-
-
-
-            else if (payload.substring(10) == "Color Wipe\"}") {
-              ColorWipe();
-            }
-
-            else if (payload.substring(10) == "Color Wipe Reverse\"}") {
-              ColorWipeReverse();
-            }
-
-
-            else if (payload.substring(10) == "Random Color\"}") {
-              RandomCount = 10;
-              SetupRandomColor();
-            }
-
-            else if (payload.substring(10) == "Rainbow\"}") {
-              SetupRainbow();
-            }
-
+            chooseAnimation();
 
 
 
@@ -1197,12 +1185,11 @@ void loop() {
 
   if (isAnimating == false) {
 
-    if (millis() - lastMQTT > 5000) {
+    if (millis() - lastMQTT > 1800000) { // 30 minute timer before animations start
 
       int animationRandom = random(0,12);
       solidOverride = false;
     
-
       switch (animationRandom) {
         case 0:
           FunRandom();
@@ -1246,50 +1233,10 @@ void loop() {
           break;
       }      
 
-
-
-
-      /*
-      switch (animationRandom) {
-        case 0:
-          FunRandom();
-          break;
-        case 1:
-          RandomSparkle();
-          break;
-        case 2:
-          WhiteSparkle();
-          break;
-        case 3:
-          FadeStripInOut();
-          break;
-        case 4:
-          FadeStripIn();
-          break;
-        case 5:
-          AlternateFadeIn();
-          break;
-        case 6:
-          Flare();
-          break;
-        case 7:
-          FlareReverse();
-          break;
-        case 8:
-          ColorWipe();
-          break;
-        case 9:
-          ColorWipeReverse();
-          break;
-        case 10:
-          RandomCount = 10;
-          SetupRandomColor();
-          break;
-        case 11:
-          SetupRainbow();
-          break;
-      }
-      */
+    }
+    else {
+      solidOverride = false;
+      chooseAnimation();
     }
     
   }
