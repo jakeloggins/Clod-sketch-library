@@ -1187,6 +1187,7 @@ void loop() {
 
     if (millis() - lastMQTT > 1800000) { // 30 minute timer before animations start
 
+      solidOverride = false;
       int animationRandom = random(0,12);
     
       switch (animationRandom) {
@@ -1234,8 +1235,9 @@ void loop() {
 
     }
     else {
-      solidOverride = false;
-      chooseAnimation();
+      if (!solidOverride) {
+        chooseAnimation();
+      }
     }
     
   }
