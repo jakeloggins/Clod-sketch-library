@@ -788,7 +788,7 @@ Ticker ticker;
       confirmPath += "/";
       confirmPath += RGBendpoint;
 
-      client.publish(MQTT::Publish(confirmPath, "{\"red\": 0, \"green\": 0, \"blue\": 0 }").set_qos(2));
+      client.publish(MQTT::Publish(confirmPath, "{\"red\":0,\"green\":0,\"blue\":0}").set_qos(2));
 
     }
 
@@ -1229,9 +1229,12 @@ void loop() {
 
     if (millis() - lastMQTT > 5000 && (timeoutPlay)) { // 30 minute timer before animations start 
 
+      if (solidOverride) {
+        setRGBtoZero();
+      }
+
       solidOverride = false;
       int animationRandom = random(0,12);
-      setRGBtoZero();
     
       switch (animationRandom) {
         case 0:
