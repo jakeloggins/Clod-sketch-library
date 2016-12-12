@@ -986,6 +986,20 @@ Ticker ticker;
 
             chooseAnimation();
           }
+          else if (lookup_val == "timeoutPlay") {
+
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            if (findValue == "true") {
+              timeoutPlay = true;
+            }
+            else {
+              timeoutPlay = false;
+            }
+
+            
+          }
 
 
 

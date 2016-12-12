@@ -57,5 +57,21 @@
         "Rainbow"
       ]
     }
+  },
+  "animateAfterTimeout": {
+    "values": {
+      "value": true
+    },
+    "labels":{
+      "true": "Yes",
+      "false": "No"
+    },
+    "icons": {
+      "true": "thumbs-up",
+      "false": "thumbs-down"
+    },
+    "card-type": "crouton-simple-toggle",
+    "title": "Animate After Timeout",
+    "static_endpoint_id": "timeoutPlay"
   }
 }
