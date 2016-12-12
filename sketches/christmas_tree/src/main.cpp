@@ -1200,7 +1200,10 @@ void loop() {
 
   if (isAnimating == false) {
 
-    if (millis() - lastMQTT > 1800000 && (timeoutPlay)) { // 30 minute timer before animations start 
+    // 1800000 - usual timeout
+    // 5000 - quick timeout for testing
+
+    if (millis() - lastMQTT > 5000 && (timeoutPlay)) { // 30 minute timer before animations start 
 
       solidOverride = false;
       int animationRandom = random(0,12);
