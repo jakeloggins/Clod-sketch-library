@@ -30,6 +30,8 @@ Ticker ticker;
 
   String lastSelected = "";
 
+  String RGBendpoint = "";
+
   int redValue = 0;
   int greenValue = 0;
   int blueValue = 0;
@@ -41,6 +43,8 @@ Ticker ticker;
   int secondaryRedValue = 0;
   int secondaryGreenValue = 255;
   int secondaryBlueValue = 0;
+
+
 
 
   boolean neoPixelChange = false;
@@ -773,6 +777,24 @@ Ticker ticker;
 
 // -- MQTT functions
 
+  void setRGBtoZero() {
+
+    if (RGBendpoint != "") {
+
+      confirmPath = "";
+      confirmPath = thisDevicePath;
+      confirmPath += "/confirm/";
+      confirmPath += thisDeviceName;
+      confirmPath += "/";
+      confirmPath += RGBendpoint;
+
+      client.publish(MQTT::Publish(confirmPath, "{\"red\": 0, \"green\": 0, \"blue\": 0 }").set_qos(2));
+
+    }
+
+  }
+
+
   String getValue(String data, char separator, int index)
   {
    yield();
@@ -917,6 +939,8 @@ Ticker ticker;
             lastMQTT = millis();
             StopAllAnimations();
             solidOverride = true;
+
+            RGBendpoint = endPoint;
 
             // deserialize payload, get valueKey
             // or just look for value or red,green,blue
@@ -1207,6 +1231,7 @@ void loop() {
 
       solidOverride = false;
       int animationRandom = random(0,12);
+      setRGBtoZero();
     
       switch (animationRandom) {
         case 0:
