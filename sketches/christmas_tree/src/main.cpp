@@ -47,6 +47,8 @@ Ticker ticker;
 
   boolean isAnimating = false;
 
+  boolean timeoutPlay = true;
+
   static uint32_t MQTTtick = 0;
   static uint32_t MQTTlimit = 300;
 
@@ -983,7 +985,7 @@ Ticker ticker;
 
 
             chooseAnimation();
-
+          }
 
 
 
@@ -1000,7 +1002,6 @@ Ticker ticker;
           //sendConfirm = true;
           client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
 
-        }
       }
     }
   }
@@ -1185,7 +1186,7 @@ void loop() {
 
   if (isAnimating == false) {
 
-    if (millis() - lastMQTT > 1800000) { // 30 minute timer before animations start
+    if (millis() - lastMQTT > 1800000 && (timeoutPlay)) { // 30 minute timer before animations start 
 
       solidOverride = false;
       int animationRandom = random(0,12);
