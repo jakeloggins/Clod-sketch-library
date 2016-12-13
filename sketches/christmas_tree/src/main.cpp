@@ -53,10 +53,12 @@ Ticker ticker;
 
   boolean timeoutPlay = true;
 
-  static uint32_t MQTTtick = 0;
-  static uint32_t MQTTlimit = 300;
+  uint32_t MQTTtick = 0;
+  uint32_t MQTTlimit = 300;
 
   long lastMQTT = 0;
+  long timeoutMinutes = 0;
+  long timeoutSeconds = 0;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -94,7 +96,7 @@ Ticker ticker;
   // Uart method is good for the Esp-01 or other pin restricted modules
   // NOTE: These will ignore the PIN and use GPI02 pin
   //NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
-  
+
   NeoPixelBus<NeoRgbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
 
   //NeoPixelBus<NeoGrbFeature, NeoEsp8266AsyncUart800KbpsMethod> strip(PixelCount, PixelPin);
@@ -127,8 +129,6 @@ Ticker ticker;
   const uint16_t global_wait = 50;
 
 
-
-
   boolean solidOverride = true;
 
   // -- fun fade -- currently sticks, change animation effect state overrides to fade to black
@@ -140,7 +140,7 @@ Ticker ticker;
 
     boolean colorStick = false;
     boolean alternateColors = false;
-    boolean clearFirst = false; 
+    boolean clearFirst = false;
 
     struct FunFadeState
     {
@@ -149,7 +149,7 @@ Ticker ticker;
         RgbColor SecondaryStartingColor;
         RgbColor SecondaryEndingColor;
     };
-    
+
     // one entry per pixel to match the animation timing manager
     FunFadeState FunFadeAnimationState[AnimationChannels];
 
@@ -179,7 +179,7 @@ Ticker ticker;
               strip.SetPixelColor(pixel, updatedColor);
             }
             else {
-             strip.SetPixelColor(pixel, updatedSecondaryColor); 
+             strip.SetPixelColor(pixel, updatedSecondaryColor);
             }
           }
 
@@ -213,7 +213,7 @@ Ticker ticker;
             // alternate colors section
             if (alternateColors) {
               RgbColor target = RgbColor(primaryRedValue, primaryGreenValue, primaryBlueValue);
-              RgbColor secondaryTarget = RgbColor(secondaryRedValue, secondaryGreenValue, secondaryBlueValue); 
+              RgbColor secondaryTarget = RgbColor(secondaryRedValue, secondaryGreenValue, secondaryBlueValue);
               time = random(500,1000);
 
               if ((FunFadeCount % 2) == 0) {
@@ -243,7 +243,7 @@ Ticker ticker;
               FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
             }
 
-            
+
 
 
             FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
@@ -255,7 +255,7 @@ Ticker ticker;
 
             FunFadeAnimationState[0].StartingColor = strip.GetPixelColor(0);
             FunFadeAnimationState[0].EndingColor = RgbColor(0);
-            
+
             FunFadeAnim.StartAnimation(0, time, BlendAnimUpdate);
         }
 
@@ -265,7 +265,7 @@ Ticker ticker;
 
   // -- fun loop -- new global variables and custom animations
 
-  
+
     const uint16_t AnimCount = PixelCount / 5 * 2 + 1; // we only need enough animations for the tail and one extra
     const uint16_t PixelFadeDuration = 300; // third of a second
     // one second divide by the number of pixels = loop once a second
@@ -305,7 +305,7 @@ Ticker ticker;
             animationState[param.index].EndingColor,
             param.progress);
         // apply the color to the strip
-        strip.SetPixelColor(animationState[param.index].IndexPixel, 
+        strip.SetPixelColor(animationState[param.index].IndexPixel,
         colorGamma.Correct(updatedColor));
     }
 
@@ -414,7 +414,7 @@ Ticker ticker;
       // clear all pixels first
         for (uint16_t pixel = 0; pixel < PixelCount; pixel++) {
           strip.SetPixelColor(pixel, RgbColor(0));
-        }    
+        }
     }
 
 
@@ -434,7 +434,7 @@ Ticker ticker;
 
             // pick random time and random color
             // we use HslColor object as it allows us to easily pick a color
-            // with the same saturation and luminance 
+            // with the same saturation and luminance
             uint16_t time = random(100, 400);
 
             FunRandomAnimationState[pixel].StartingColor = strip.GetPixelColor(pixel);
@@ -505,8 +505,8 @@ Ticker ticker;
           //
           // There is no need for the MyAnimationState struct as the compiler takes care
           // of those details for us
-          
-          
+
+
           AnimUpdateCallback animUpdate = [=](const AnimationParam& param)
           {
               // progress will start at 0.0 and end at 1.0
@@ -573,7 +573,7 @@ Ticker ticker;
 
           AnimUpdateCallback rainbowUpdate = [=](const AnimationParam& param)
           {
-              
+
               // progress will start at 0.0 and end at 1.0
               // we convert to the curve we want
               float progress = easing(param.progress);
@@ -581,7 +581,7 @@ Ticker ticker;
               // use the curve value to apply to the animation
               HslColor updatedColor = HslColor::LinearBlend<NeoHueBlendLongestDistance>(pixelOriginalHue, pixelFinalHue, progress);
               strip.SetPixelColor(pixel, updatedColor);
-              
+
           };
 
           // now use the animation properties we just calculated and start the animation
@@ -591,7 +591,7 @@ Ticker ticker;
         }
 
     }
-    
+
 
 
 
@@ -626,7 +626,7 @@ Ticker ticker;
 
 // -- NeoPixelAnimationFunctions
 
-  void FunRandom() {                
+  void FunRandom() {
     clearFirst = false;
     allWhite = false;
     FunRandomCount = 10;
@@ -634,14 +634,14 @@ Ticker ticker;
   }
 
 
-  void RandomSparkle() {                
+  void RandomSparkle() {
     clearFirst = true;
     allWhite = false;
     FunRandomCount = 10;
     PickRandom(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
   }
-  
-  void WhiteSparkle() {                
+
+  void WhiteSparkle() {
     clearFirst = true;
     allWhite = true;
     FunRandomCount = 10;
@@ -650,7 +650,7 @@ Ticker ticker;
 
   void FadeStripInOut() {
     effectState = 0;
-    FunFadeCount = 19; 
+    FunFadeCount = 19;
     colorStick = false;
     alternateColors = false;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
@@ -664,7 +664,7 @@ Ticker ticker;
   }
   void ClearAndFadeStripIn() {
     effectState = 0;
-    FunFadeCount = 20; 
+    FunFadeCount = 20;
     colorStick = true;
     ClearFirst();
     alternateColors = false;
@@ -672,17 +672,17 @@ Ticker ticker;
   }
   void AlternateFadeIn() {
     effectState = 0;
-    FunFadeCount = 20; 
+    FunFadeCount = 20;
     colorStick = true;
     alternateColors = true;
     FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
   }
   void AlternateFadeInOut() {
     effectState = 0;
-    FunFadeCount = 20; 
+    FunFadeCount = 20;
     colorStick = false;
     alternateColors = true;
-    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright              
+    FadeInFadeOutRinseRepeat(0.2f); // 0.0 = black, 0.25 is normal, 0.5 is bright
   }
 
   void Flare() {
@@ -711,7 +711,7 @@ Ticker ticker;
     wipeSingle = true;
     keepOrig = false;
     FunLoopCount = 10;
-    FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);                
+    FunLoopAnim.StartAnimation(0, NextPixelMoveDuration, FunLoopAnimUpdate);
   }
 
   void chooseAnimation() {
@@ -781,6 +781,10 @@ Ticker ticker;
 
     if (RGBendpoint != "") {
 
+      redValue = 0;
+      greenValue = 0;
+      blueValue = 0;
+
       confirmPath = "";
       confirmPath = thisDevicePath;
       confirmPath += "/confirm/";
@@ -789,6 +793,7 @@ Ticker ticker;
       confirmPath += RGBendpoint;
 
       client.publish(MQTT::Publish(confirmPath, "{\"red\":0,\"green\":0,\"blue\":0}").set_qos(2));
+
 
     }
 
@@ -863,7 +868,7 @@ Ticker ticker;
         if ((deviceName == thisDeviceName) && (command == "control")) {
 
           payload = pub.payload_string();
-          
+
           if (payload == "no states") {
             // -- do something to send the default states, but now that this is managed by persistence so this shouldn't be necessary
             // -- maybe it just resets all the states to 0 or whatever was originally programmed into the sketch
@@ -997,14 +1002,14 @@ Ticker ticker;
             }
 
           }
-                    
+
           else if (lookup_val == "animationMenu") {
 
             lastMQTT = millis();
             StopAllAnimations();
 
             solidOverride = false;
-            
+
             lastSelected = payload.substring(10);
 
 
@@ -1022,8 +1027,23 @@ Ticker ticker;
               timeoutPlay = false;
             }
 
-            
+
           }
+
+          else if (lookup_val == "timeoutLength") {
+
+            // grab number, multiply by 60000, assign it to timer variable
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+            timeoutMinutes = findValue.toInt();
+            timeoutSeconds = (timeoutMinutes * 60000);
+
+
+          }
+
+
+          // create color order and method switch case, set up pointer as specified by makuna
+
 
 
 
@@ -1227,7 +1247,7 @@ void loop() {
     // 1800000 - usual timeout
     // 5000 - quick timeout for testing
 
-    if (millis() - lastMQTT > 5000 && (timeoutPlay)) { // 30 minute timer before animations start 
+    if (millis() - lastMQTT > timeoutSeconds && (timeoutPlay)) { // 30 minute timer before animations start
 
       if (solidOverride) {
         setRGBtoZero();
@@ -1235,7 +1255,7 @@ void loop() {
 
       solidOverride = false;
       int animationRandom = random(0,12);
-    
+
       switch (animationRandom) {
         case 0:
           FunRandom();
@@ -1277,7 +1297,7 @@ void loop() {
         case 12:
           SetupRainbow();
           break;
-      }      
+      }
 
     }
     else {
@@ -1285,9 +1305,9 @@ void loop() {
         chooseAnimation();
       }
     }
-    
+
   }
+
 
   yield();
 }
-

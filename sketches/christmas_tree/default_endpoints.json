@@ -73,5 +73,13 @@
     "card-type": "crouton-simple-toggle",
     "title": "Animate After Timeout",
     "static_endpoint_id": "timeoutPlay"
+  },
+  "lengthOfTimeout": {
+    "values": {
+      "value": 30
+    },
+    "card-type": "crouton-simple-input",
+    "title": "Length of Timeout",
+    "static_endpoint_id": "timeoutLength"
   }
 }
