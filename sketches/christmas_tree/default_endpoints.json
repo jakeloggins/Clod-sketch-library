@@ -81,12 +81,5 @@
     "card-type": "crouton-simple-input",
     "title": "Length of Timeout",
     "static_endpoint_id": "timeoutLength"
-  },
-  "youTubeStream": {
-    "values": {
-      "youtubeID": "Ga3maNZ0x0w"
-    },
-    "card-type": "crouton-video-youtube",
-    "title": "YouTube Stream"
   }
 }
