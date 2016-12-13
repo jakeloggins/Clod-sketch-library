@@ -1037,12 +1037,13 @@ Ticker ticker;
             // {"value":"30"}
 
 
-            String findValue = getValue(payload, ':', 2);
+            String findValue = getValue(payload, ':', 1);
             
             // debug
             client.publish(MQTT::Publish("/debug/findValue", findValue).set_qos(2));
 
-            findValue.remove(findValue.length() - 2);
+            findValue.remove(0,1); // removes the first quote
+            findValue.remove(findValue.length() - 2); // removes the last quote and bracket
 
             // debug
             client.publish(MQTT::Publish("/debug/lengthRemoved", findValue).set_qos(2));
