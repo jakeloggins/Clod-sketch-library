@@ -57,8 +57,8 @@ Ticker ticker;
   uint32_t MQTTlimit = 300;
 
   long lastMQTT = 0;
-  long timeoutMinutes = 0;
-  long timeoutSeconds = 0;
+  long timeoutMinutes = 30;
+  long timeoutSeconds = 1800000;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -1034,7 +1034,7 @@ Ticker ticker;
 
             // grab number, multiply by 60000, assign it to timer variable
             String findValue = getValue(payload, ':', 1);
-            findValue.remove(findValue.length() - 1);
+            findValue.remove(findValue.length() - 2);
             timeoutMinutes = findValue.toInt();
             timeoutSeconds = (timeoutMinutes * 60000);
 

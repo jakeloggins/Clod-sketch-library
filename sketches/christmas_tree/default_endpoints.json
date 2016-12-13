@@ -76,7 +76,7 @@
   },
   "lengthOfTimeout": {
     "values": {
-      "value": 30
+      "value": "30"
     },
     "card-type": "crouton-simple-input",
     "title": "Length of Timeout",
