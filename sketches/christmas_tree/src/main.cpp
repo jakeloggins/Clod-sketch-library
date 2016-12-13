@@ -1033,10 +1033,24 @@ Ticker ticker;
           else if (lookup_val == "timeoutLength") {
 
             // grab number, multiply by 60000, assign it to timer variable
+
+            // {"value":"30"}
+
+
             String findValue = getValue(payload, ':', 1);
+            
+            // debug
+            client.publish(MQTT::Publish("/debug/findValue", findValue).set_qos(2));
+
             findValue.remove(findValue.length() - 2);
-            timeoutMinutes = findValue.toInt();
+
+            // debug
+            client.publish(MQTT::Publish("/debug/lengthRemoved", findValue).set_qos(2));
+
+            timeoutMinutes = long(findValue.toInt());
             timeoutSeconds = (timeoutMinutes * 60000);
+
+            client.publish(MQTT::Publish("/debug/timeoutSeconds", findValue).set_qos(2));
 
 
           }
