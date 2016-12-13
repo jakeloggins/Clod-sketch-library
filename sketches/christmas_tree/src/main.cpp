@@ -1037,7 +1037,7 @@ Ticker ticker;
             // {"value":"30"}
 
 
-            String findValue = getValue(payload, ':', 1);
+            String findValue = getValue(payload, ':', 2);
             
             // debug
             client.publish(MQTT::Publish("/debug/findValue", findValue).set_qos(2));
