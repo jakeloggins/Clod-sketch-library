@@ -1247,7 +1247,7 @@ void loop() {
     // 1800000 - usual timeout
     // 5000 - quick timeout for testing
 
-    if (millis() - lastMQTT > timeoutSeconds && (timeoutPlay)) { // 30 minute timer before animations start
+    if ((millis() - lastMQTT > timeoutSeconds) && (timeoutPlay)) { // 30 minute timer before animations start
 
       if (solidOverride) {
         setRGBtoZero();
