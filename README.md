@@ -54,7 +54,7 @@ Therefore, a sketch can refer to PIN_A and the uploader script will decide the a
 
 #### Static Endpoint Id
 
-To begin the upload process, a device object is sent to the uploader script. Within the device object is the endpoints object, which is the main way Clod updates values between users and devices (a detailed look at the device object is in the [walkthrough](https://github.com/jakeloggins/Clod-scripts). Here's an example of a device's endpoints object:
+To begin the upload process, a device object is sent to the uploader script. Within the device object is the endpoints object, which is the main way Clod updates values between users and devices (a detailed look at the device object is in the [walkthrough](https://github.com/jakeloggins/Clod-scripts/blob/master/README.md). Here's an example of a device's endpoints object:
 
 ```json
 "endPoints": {
