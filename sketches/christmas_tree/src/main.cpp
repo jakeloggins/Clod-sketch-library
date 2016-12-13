@@ -1034,34 +1034,18 @@ Ticker ticker;
 
             // grab number, multiply by 60000, assign it to timer variable
 
-            // {"value":"30"}
-
-
             String findValue = getValue(payload, ':', 1);
-            
-            // debug
-            client.publish(MQTT::Publish("/debug/findValue", findValue).set_qos(2));
-
             findValue.remove(0,1); // removes the first quote
             findValue.remove(findValue.length() - 2); // removes the last quote and bracket
-
-            // debug
-            client.publish(MQTT::Publish("/debug/lengthRemoved", findValue).set_qos(2));
 
             timeoutMinutes = long(findValue.toInt());
             timeoutSeconds = (timeoutMinutes * 60000);
 
-            client.publish(MQTT::Publish("/debug/timeoutSeconds", findValue).set_qos(2));
-
-
           }
 
 
-          // create color order and method switch case, set up pointer as specified by makuna
 
-
-
-
+          
           // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
 
           confirmPath = "";
