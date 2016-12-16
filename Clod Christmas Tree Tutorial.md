@@ -4,7 +4,7 @@ Clod Christmas Tree Tutorial
 
 ### Intro
 
-This project allows you to easily animate and control a strand of NeoPixels (WS2811/WS2812) with an ESP8266 microcontroller and a Raspberry Pi. You can choose colors and a wide range of animations via a simple web interface or MQTT message. The ESP8266 is programmed with an arduino sketch that interacts with a Raspberry Pi running [Clod](), which provides additional functionality such as OTA uploading, persistence, scheduling, and web dashboard controls.
+This project allows you to easily animate and control a strand of NeoPixels (WS2811/WS2812) with an ESP8266 microcontroller and a Raspberry Pi. You can choose colors and a wide range of animations via a simple web interface or MQTT message. The ESP8266 is programmed with an arduino sketch that interacts with a Raspberry Pi running [Clod](https://github.com/jakeloggins/Clod), which provides additional functionality such as OTA uploading, persistence, scheduling, and web dashboard controls.
 
 The animations come from the excellent [NeoPixelBus](https://github.com/Makuna/NeoPixelBus) library.
 
@@ -15,9 +15,9 @@ Here's a video of the tree in action:
 
 ### Prerequisites
 
-* [Clod]() installed and running on a Raspberry Pi
+* [Clod](https://github.com/jakeloggins/Clod) installed and running on a Raspberry Pi
 
-* An Espressif Chip [flashed]() with the Clod Initial_Config sketch, or other Clod sketch
+* An Espressif Chip [flashed](https://github.com/jakeloggins/Clod/blob/master/esp-install.md) with the Clod Initial_Config sketch, or other Clod sketch
 
 * A strand of neopixels, or WS2812 / WS2811 LED strip
 
@@ -30,7 +30,7 @@ Here's a video of the tree in action:
 
 * Best practices, at a minimum, means ensuring proper logic level conversion from the 3.3v ESP8266 to the 5v NeoPixels and a large capacitor across the power terminals.
 
-* Once everything is wired properly, follow the instructions to set up [Clod]() and [flash]() the chip.
+* Once everything is wired properly, follow the instructions to set up [Clod](https://github.com/jakeloggins/Clod) and [flash](https://github.com/jakeloggins/Clod/blob/master/esp-install.md) the chip.
 
 * Upload the christmas_tree sketch and add the device (this is demonstrated at the beginning of the video).
 
@@ -78,7 +78,7 @@ The main file I'll be explaining so that you can make changes to the code is [ma
 
 For simple changes, the only sections that matter are the chooseAnimation() function, the lookup_val if/else statements within the MQTT callback, and the switch case within the main loop. If you don't like an animation, comment it out from the chooseAnimation() function and the switch case. The chooseAnimation() is called when an option is slected from the menu. The switch case decides which animations play randomly after the timeout.
 
-For slightly more complicated changes, you need to understand Clod and endpoints. Every user control in the video can be found in the [default_endpoints.json]() file. Here's what the RGB slider in that file looks like:
+For slightly more complicated changes, you need to understand Clod and endpoints. Every user control in the video can be found in the [default_endpoints.json](https://github.com/jakeloggins/Clod-sketch-library/blob/master/sketches/christmas_tree/default_endpoints.json) file. Here's what the RGB slider in that file looks like:
 
 ```
   "solidTreeColor": {
@@ -124,48 +124,9 @@ if (lookup_val == "RGB") {
 	}
 }
 
-...
-
-else if (lookup_val == "animationMenu") {
-
-	lastMQTT = millis();
-	StopAllAnimations();
-
-	solidOverride = false;
-
-	lastSelected = payload.substring(10);
-
-	chooseAnimation();
-}
-
-else if (lookup_val == "timeoutPlay") {
-
-	String findValue = getValue(payload, ':', 1);
-	findValue.remove(findValue.length() - 1);
-
-	if (findValue == "true") {
-	  timeoutPlay = true;
-	}
-	else {
-	  timeoutPlay = false;
-	}
-}
-
-else if (lookup_val == "timeoutLength") {
-
-	// grab number, multiply by 60000, assign it to timer variable
-
-	String findValue = getValue(payload, ':', 1);
-	findValue.remove(0,1); // removes the first quote
-	findValue.remove(findValue.length() - 2); // removes the last quote and bracket
-
-	timeoutMinutes = long(findValue.toInt());
-	timeoutSeconds = (timeoutMinutes * 60000);
-
-}
 ```
 
-For our purposes, lookup_val IS the static_endpoint_id. How that assignment happens is covered elsewhere in the documentation. The user moves the "Solid Tree Color" RGB slider, the sketch knows from the static_endpoint_id that it should grab the value and store it in something `redValue`, `greenValue`, or `blueValue`.
+For our purposes, lookup_val is the static_endpoint_id. How that assignment happens is covered [elsewhere](https://github.com/jakeloggins/Clod-sketch-library#custom-sketch-protocol) in the documentation. Anyway, the user moves the "Solid Tree Color" RGB slider, the sketch knows from the `static_endpoint_id` that it should grab the value and store it in the variable `redValue`, `greenValue`, or `blueValue`.
 
 Later on in the sketch, in the main loop, we use those values to set the strip color (among other things):
 
@@ -178,3 +139,27 @@ Later on in the sketch, in the main loop, we use those values to set the strip c
 }
 ``` 
 
+There are many different types of controls available which you can use anyway you would like in your sketch. Here's another example:
+
+```
+  "animateAfterTimeout": {
+    "values": {
+      "value": true
+    },
+    "labels":{
+      "true": "Yes",
+      "false": "No"
+    },
+    "icons": {
+      "true": "thumbs-up",
+      "false": "thumbs-down"
+    },
+    "card-type": "crouton-simple-toggle",
+    "title": "Animate After Timeout",
+    "static_endpoint_id": "timeoutPlay"
+  },
+ ```
+
+This control is called a simple toggle. I specified the thumbs-up and thumbs-down icon to displayed in the font awesome font. If it is set to true, the sketch will choose and play a random animation after the timeout (also set by yet another user control) has been met. If the toggle is set to false, the last animation will repeat or the tree remain a solid color.
+
+This should be a fairly decent introduction to Clod, or a quick way to hack the sketch to your liking. Thanks for reading!
