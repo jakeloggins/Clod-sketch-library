@@ -126,7 +126,7 @@ if (lookup_val == "RGB") {
 
 ```
 
-For our purposes, lookup_val is the static_endpoint_id. How that assignment happens is covered [elsewhere](https://github.com/jakeloggins/Clod-sketch-library#custom-sketch-protocol) in the documentation. Anyway, the user moves the "Solid Tree Color" RGB slider, the sketch knows from the `static_endpoint_id` that it should grab the value and store it in the variable `redValue`, `greenValue`, or `blueValue`.
+For our purposes, lookup_val is the static_endpoint_id. How that assignment happens is covered [elsewhere](https://github.com/jakeloggins/Clod-sketch-library#custom-sketch-protocol) in the documentation. Anyway the user moves the "Solid Tree Color" RGB slider, the sketch knows from the `static_endpoint_id` that it should grab the value and store it in the variable `redValue`, `greenValue`, or `blueValue`.
 
 Later on in the sketch, in the main loop, we use those values to set the strip color (among other things):
 
@@ -160,6 +160,6 @@ There are many different types of controls available which you can use anyway yo
   },
  ```
 
-This control is called a simple toggle. I specified the thumbs-up and thumbs-down icon to displayed in the font awesome font. If it is set to true, the sketch will choose and play a random animation after the timeout (also set by yet another user control) has been met. If the toggle is set to false, the last animation will repeat or the tree remain a solid color.
+This control is called a simple toggle. I specified the thumbs-up and thumbs-down icon to displayed in the font awesome iconset. If it is set to true, the sketch will choose and play a random animation after the timeout (also set by yet another user control) has been met. If the toggle is set to false, the last animation will repeat or the tree remain a solid color.
 
 This should be a fairly decent introduction to Clod, or a quick way to hack the sketch to your liking. Thanks for reading!
