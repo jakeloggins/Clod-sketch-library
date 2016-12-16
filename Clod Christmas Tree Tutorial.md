@@ -24,7 +24,7 @@ Here's a video of the tree in action:
 
 ### Hardware
 
-* I used [these lights](https://www.amazon.com/Agile-shop-Ws2811-Pixels-Digital-Addressable/dp/B017HAWXF0/ref=sr_1_5?ie=UTF8&qid=1481844073&sr=8-5&keywords=ws2811+christmas+lights) for the video above. They pop up from different sellers all across Amazon, so you might have to look around [here's the search term I used](https://www.amazon.com/s/ref=nb_sb_ss_i_5_7?url=search-alias%3Daps&field-keywords=ws2811+christmas+lights&sprefix=ws2811+%2Caps%2C201&crid=1A22FG0JFHN8C).
+* I used [these lights](https://www.amazon.com/Agile-shop-Ws2811-Pixels-Digital-Addressable/dp/B017HAWXF0/ref=sr_1_5?ie=UTF8&qid=1481844073&sr=8-5&keywords=ws2811+christmas+lights) for the video above. They pop up from different sellers all across Amazon, so you might have to look around. [Here's the search term I used](https://www.amazon.com/s/ref=nb_sb_ss_i_5_7?url=search-alias%3Daps&field-keywords=ws2811+christmas+lights&sprefix=ws2811+%2Caps%2C201&crid=1A22FG0JFHN8C).
 
 * Read and follow the [Adafruit Best Practices](https://learn.adafruit.com/adafruit-neopixel-uberguide/best-practices) for supplying electricity to your NeoPixel strip and ESP8266
 
