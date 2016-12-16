@@ -1,0 +1,101 @@
+ {
+  "solidTreeColor": {
+    "min": 0,
+    "max": 255,
+    "card-type": "crouton-rgb-slider",
+    "static_endpoint_id": "RGB",
+    "title": "Solid Tree Color",
+    "values": {
+      "red": 0,
+      "green": 0,
+      "blue": 0
+    }
+  },
+  "primaryColor": {
+    "min": 0,
+    "max": 255,
+    "card-type": "crouton-rgb-slider",
+    "static_endpoint_id": "primaryColor",
+    "title": "Primary Color",
+    "values": {
+      "red": 255,
+      "green": 0,
+      "blue": 0
+    }
+  },
+  "secondaryColor": {
+    "min": 0,
+    "max": 255,
+    "card-type": "crouton-rgb-slider",
+    "static_endpoint_id": "secondaryColor",
+    "title": "Secondary Color",
+    "values": {
+      "red": 0,
+      "green": 255,
+      "blue": 0
+    }
+  },
+  "treeAnimation": {
+    "card-type": "crouton-simple-dropdown",
+    "static_endpoint_id": "animationMenu",
+    "title": "Tree Animation",
+    "values": {
+      "choices": [
+        "Fun Random", 
+        "Random Sparkle",
+        "White Sparkle",
+        "Fade Strip In Out",
+        "Fade Strip In",
+        "Clear and Fade Strip In",
+        "Alternate Fade In",
+        "Alternate Fade In Out",
+        "Flare",
+        "Flare Reverse",
+        "Color Wipe",
+        "Color Wipe Reverse",
+        "Random Color",
+        "Rainbow"
+      ]
+    }
+  },
+  "animateAfterTimeout": {
+    "values": {
+      "value": true
+    },
+    "labels":{
+      "true": "Yes",
+      "false": "No"
+    },
+    "icons": {
+      "true": "thumbs-up",
+      "false": "thumbs-down"
+    },
+    "card-type": "crouton-simple-toggle",
+    "title": "Animate After Timeout",
+    "static_endpoint_id": "timeoutPlay"
+  },
+  "playFromMSGEQ7": {
+    "values": {
+      "value": true
+    },
+    "labels":{
+      "true": "Yes",
+      "false": "No"
+    },
+    "icons": {
+      "true": "volume-up",
+      "false": "volume-down"
+    },
+    "card-type": "crouton-simple-toggle",
+    "title": "Play From MSGEQ7",
+    "static_endpoint_id": "musicPlay"
+  },
+  "lengthOfTimeout": {
+    "values": {
+      "value": "30"
+    },
+    "card-type": "crouton-simple-input",
+    "title": "Length of Timeout",
+    "static_endpoint_id": "timeoutLength"
+  }
+}
