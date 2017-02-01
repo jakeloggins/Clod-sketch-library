@@ -1,2 +1,2 @@
-String board_type = "esp01_1m";
+String board_type = "esp12e";
 String platform = "espressif";

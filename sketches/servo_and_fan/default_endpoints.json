@@ -1,0 +1,13 @@
+{
+  "testServo": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "servo",
+    "title": "Servo",
+    "values": {
+      "value": 0
+    },
+    "min": 0,
+    "max": 180,
+    "units": "degrees",
+  }
+}

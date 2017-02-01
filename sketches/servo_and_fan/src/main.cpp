@@ -2,10 +2,21 @@
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <TimeLib.h>
 
 //for LED status
 #include <Ticker.h>
 Ticker ticker;
+
+// -- Servo setup
+
+  #include <Servo.h>
+  Servo firstServo;
+  int selectedPos;
+  int actualPos;
+  int pos;
+  static uint32_t lastMove = 0;
+  static uint32_t moveLimit = 100;
 
 
 // -- global info --
@@ -21,23 +32,15 @@ Ticker ticker;
     // stores const char ssid and const char password
 
 
-String chip_id = String(ESP.getChipId());
-String confirmPath = "";
-String confirmPayload = "";
-String local_ip_str = "";
+  String chip_id = String(ESP.getChipId());
+  String confirmPath = "";
+  String confirmPayload = "";
+  String local_ip_str = "";
 
-String error_path = "";
+  String error_path = "";
 
-
-int redValue = 0;
-int greenValue = 0;
-int blueValue = 0;
-
-boolean neoPixelChange = false;
-
-static uint32_t MQTTtick = 0;
-static uint32_t MQTTlimit = 300;
-
+  static uint32_t MQTTtick = 0;
+  static uint32_t MQTTlimit = 300;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -49,52 +52,9 @@ static uint32_t MQTTlimit = 300;
   PubSubClient client(espClient, server, 1883);
   boolean sendConfirm = false;
 
-
-
-// -- NeoPixelBus
-  #include <NeoPixelBus.h>
-
-  const uint16_t PixelCount = 30; // this example assumes 4 pixels, making it smaller will cause a failure
-  const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, ignored for Esp8266-01
-
-  #define colorSaturation 256
-
-  // three element pixels, in different order and speeds
-  //NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
-  //NeoPixelBus<NeoRgbFeature, Neo400KbpsMethod> strip(PixelCount, PixelPin);
-
-  // You can also use one of these for Esp8266,
-  // each having their own restrictions
-  //
-  // These two are the same as above as the DMA method is the default
-  // NOTE: These will ignore the PIN and use GPI03 pin
-  //NeoPixelBus<NeoGrbFeature, NeoEsp8266Dma800KbpsMethod> strip(PixelCount, PixelPin);
-  //NeoPixelBus<NeoRgbFeature, NeoEsp8266Dma400KbpsMethod> strip(PixelCount, PixelPin);
-
-  // Uart method is good for the Esp-01 or other pin restricted modules
-  // NOTE: These will ignore the PIN and use GPI02 pin
-  NeoPixelBus<NeoGrbFeature, NeoEsp8266Uart800KbpsMethod> strip(PixelCount, PixelPin);
-  //NeoPixelBus<NeoRgbFeature, NeoEsp8266Uart400KbpsMethod> strip(PixelCount, PixelPin);
-
-  // The bitbang method is really only good if you are not using WiFi features of the ESP
-  // It works with all but pin 16
-  //NeoPixelBus<NeoGrbFeature, NeoEsp8266BitBang800KbpsMethod> strip(PixelCount, PixelPin);
-  //NeoPixelBus<NeoRgbFeature, NeoEsp8266BitBang400KbpsMethod> strip(PixelCount, PixelPin);
-
-  // four element pixels, RGBW
-  //NeoPixelBus<NeoRgbwFeature, Neo800KbpsMethod> strip(PixelCount, PixelPin);
-
-  RgbColor red(colorSaturation, 0, 0);
-  RgbColor green(0, colorSaturation, 0);
-  RgbColor blue(0, 0, colorSaturation);
-  RgbColor white(colorSaturation);
-  RgbColor black(0);
-
-  HslColor hslRed(red);
-  HslColor hslGreen(green);
-  HslColor hslBlue(blue);
-  HslColor hslWhite(white);
-  HslColor hslBlack(black);
+  // wait time for displaying NTP
+  static uint32_t tick = 0;
+  static uint32_t tickLimit = 30000;
 
 // -- TICK FUNTION
   void tick_fnc()
@@ -173,7 +133,7 @@ static uint32_t MQTTlimit = 300;
         command = getValue(topic, '/', 2);
         if ((deviceName == thisDeviceName) && (command == "control")) {
           if (payload == "no states") {
-            // -- do something to send the default states, but now that this is managed by persistence so this shouldn't be necessary
+            // -- do something to send the default states, but now that this is managed by persistence this shouldn't be necessary
             // -- maybe it just resets all the states to 0 or whatever was originally programmed into the sketch
             //sendJSON = true;
           }
@@ -191,6 +151,9 @@ static uint32_t MQTTlimit = 300;
           else {
             // -- persistence will no longer send the default object, if it's an arduino based esp chip, it will just send the control messages to /[device_path]/control/[device_name]/[endpoint_key]
           }
+
+
+
 
 
 
@@ -236,29 +199,35 @@ static uint32_t MQTTlimit = 300;
           //Serial.println(lookup_val);
 
           // sketch acts on that value as it normally would, using the static_endpoint_id to know for sure what it should do (turn output pin on/off, adjust RGB light, etc)
-          if (lookup_val == "RGB") {
+          if (lookup_val == "blink") {
             // deserialize payload, get valueKey
-            // or just look for value or red,green,blue
-            String findKey = getValue(payload, '"', 1);
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
-            if (findKey == "red") {
-              redValue = findValue.toInt();
+            if (findValue == "true") {
+              Serial.end();
+              pinMode(BUILTIN_LED, OUTPUT);
+              ticker.attach(0.6, tick_fnc);
             }
-            else if (findKey == "green") {
-              greenValue = findValue.toInt();
+            else if (findValue == "false") {
+              ticker.detach();
+              digitalWrite(BUILTIN_LED, HIGH);
+              pinMode(BUILTIN_LED, INPUT);
+              Serial.begin(115200);
             }
-            else if (findKey == "blue") {
-              blueValue = findValue.toInt();
-            }
+
             //neoPixelChange = true;
           }
-          /*
-          else if (lookup_val == "SECOND STATIC ENDPOINT ID") {
+          
+          else if (lookup_val == "servo") {
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            selectedPos = findValue.toInt();
 
           }
-          else if (lookup_val == "THIRD STATIC ENDPOINT ID") {
+          /*
+          else if (lookup_val == "fan") {
 
           }
           */
@@ -284,6 +253,7 @@ static uint32_t MQTTlimit = 300;
 
 
   }
+
 
 
 void setup() {
@@ -333,11 +303,12 @@ void setup() {
   local_ip_str = WiFi.localIP().toString();
   Serial.println(local_ip_str);
 
-  // neopixel bus
-  strip.Begin();
-  strip.Show();
+  firstServo.attach(PIN_A);
+
 
 }
+
+
 
 
 
@@ -378,12 +349,27 @@ void loop() {
       client.loop();
     }
 
-
-  // -- NeoPixel continuous update
-    for(int i=0; i<PixelCount; i++) {
-      strip.SetPixelColor(i, RgbColor (redValue, greenValue, blueValue));
+  // -- servo move
+  if (selectedPos != actualPos) {
+    if (millis() - lastMove > moveLimit) {
+      lastMove = millis();
+        if (selectedPos < actualPos) {
+          pos = actualPos - 1;
+          firstServo.write(pos);
+        }
+        else if (selectedPos > actualPos) {
+          pos = actualPos + 1;
+          firstServo.write(pos);
+        }
     }
-    strip.Show();
+  }
+
+
+
+  // Do things every tickLimit seconds
+  if ( millis() - tick > tickLimit) {
+    tick = millis();
+  }
 
 
   yield();
