@@ -351,6 +351,8 @@ void loop() {
 
   // -- servo move
   if (selectedPos != actualPos) {
+    Serial.println(selectedPos);
+    Serial.println(actualPos);
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
         if (selectedPos < actualPos) {
