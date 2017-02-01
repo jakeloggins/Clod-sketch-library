@@ -358,10 +358,12 @@ void loop() {
         if (selectedPos < actualPos) {
           pos = actualPos - 1;
           firstServo.write(pos);
+          actualPos = pos;
         }
         else if (selectedPos > actualPos) {
           pos = actualPos + 1;
           firstServo.write(pos);
+          actualPos = pos;
         }
     }
   }
