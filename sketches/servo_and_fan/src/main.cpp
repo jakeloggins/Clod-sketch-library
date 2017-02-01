@@ -16,7 +16,7 @@ Ticker ticker;
   int actualPos;
   int pos;
   static uint32_t lastMove = 0;
-  static uint32_t moveLimit = 50;
+  static uint32_t moveLimit = 100;
 
 
 // -- global info --
@@ -353,6 +353,8 @@ void loop() {
   if (selectedPos != actualPos) {
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
+      firstServo.write(selectedPos);
+        /*
         if (selectedPos < actualPos) {
           pos = actualPos - 1;
           firstServo.write(pos);
@@ -363,6 +365,7 @@ void loop() {
           firstServo.write(pos);
           actualPos = pos;
         }
+        */
     }
   }
 
