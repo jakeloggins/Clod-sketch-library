@@ -16,7 +16,7 @@ Ticker ticker;
   int actualPos;
   int pos;
   static uint32_t lastMove = 0;
-  static uint32_t moveLimit = 100;
+  static uint32_t moveLimit = 50;
 
 
 // -- global info --
@@ -351,8 +351,6 @@ void loop() {
 
   // -- servo move
   if (selectedPos != actualPos) {
-    Serial.println(selectedPos);
-    Serial.println(actualPos);
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
         if (selectedPos < actualPos) {
