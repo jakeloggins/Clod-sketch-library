@@ -12,9 +12,9 @@ Ticker ticker;
 
   #include <Servo.h>
   Servo firstServo;
-  int selectedPos = 5;
+  int selectedPos;
   int selectedOpen = 175;
-  int selectedClose;
+  int selectedClose = 5;
   int actualPos;
   int pos;
   static uint32_t lastMove = 0;
