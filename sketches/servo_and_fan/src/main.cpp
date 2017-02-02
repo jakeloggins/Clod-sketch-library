@@ -18,7 +18,7 @@ Ticker ticker;
   int actualPos;
   int pos;
   static uint32_t lastMove = 0;
-  static uint32_t moveLimit = 400;
+  static uint32_t moveLimit = 1000;
 
 
 // -- global info --
@@ -42,7 +42,7 @@ Ticker ticker;
   String error_path = "";
 
   static uint32_t MQTTtick = 0;
-  static uint32_t MQTTlimit = 400;
+  static uint32_t MQTTlimit = 1000;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
