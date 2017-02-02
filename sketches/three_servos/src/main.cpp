@@ -12,9 +12,7 @@ Ticker ticker;
 
   #include <Servo.h>
   Servo firstServo;
-  int selectedPos = 5;
-  int selectedOpen = 175;
-  int selectedClose;
+  int selectedPos;
   int actualPos;
   int pos;
   static uint32_t lastMove = 0;
@@ -221,32 +219,13 @@ Ticker ticker;
             //neoPixelChange = true;
           }
           
-          else if (lookup_val == "servoOpen") {
+          else if (lookup_val == "servo") {
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
-            selectedOpen = findValue.toInt();
+            selectedPos = findValue.toInt();
 
           }
-          else if (lookup_val == "servoClose") {
-            String findValue = getValue(payload, ':', 1);
-            findValue.remove(findValue.length() - 1);
-
-            selectedClose = findValue.toInt();
-
-          }
-          else if (lookup_val == "servoToggle") {
-            String findValue = getValue(payload, ':', 1);
-            findValue.remove(findValue.length() - 1);
-
-            if (findValue == "true") {
-              selectedPos = selectedOpen;
-            }
-            else if (findValue == "false") {
-              selectedPos = selectedClose;
-            }
-          }
-          
           /*
           else if (lookup_val == "fan") {
 
@@ -400,8 +379,3 @@ void loop() {
 
   yield();
 }
-
-
-// make on off switch
-// add fan
-// add 2 more servos and save as separate project
