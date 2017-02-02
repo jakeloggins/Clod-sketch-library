@@ -218,7 +218,6 @@ Ticker ticker;
               Serial.begin(115200);
             }
 
-            //neoPixelChange = true;
           }
           
           else if (lookup_val == "servoOpen") {
@@ -255,7 +254,7 @@ Ticker ticker;
 
 
           // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
-
+          yield();
           confirmPath = "";
           confirmPath = thisDevicePath;
           confirmPath += "/confirm/";
@@ -374,7 +373,7 @@ void loop() {
   if (selectedPos != actualPos) {
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
-      firstServo.write(selectedPos);
+      //firstServo.write(selectedPos);
         /*
         if (selectedPos < actualPos) {
           pos = actualPos - 1;
