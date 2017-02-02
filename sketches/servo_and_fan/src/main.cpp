@@ -42,7 +42,7 @@ Ticker ticker;
   String error_path = "";
 
   static uint32_t MQTTtick = 0;
-  static uint32_t MQTTlimit = 1000;
+  static uint32_t MQTTlimit = 500;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -102,15 +102,16 @@ Ticker ticker;
 
 
 
+  // -- MQTTtick and MQTTlimit are here so that a massive flood of MQTT messages don't overwhelm the chip and cause it to restart.
+  // -- But it doesn't really work that well. Increasing the limit time only helps slightly. Ideally, something external would introduce 
+  // -- a 200ms - 300ms delay between consecutive messages.
   String topic;
   String payload;
   void callback(const MQTT::Publish& pub) {
     yield();
+
     if (millis() - MQTTtick > MQTTlimit) {
-      Serial.println(MQTTtick);
       MQTTtick = millis();
-
-
 
       int commandLoc;
       String command = "";
@@ -376,18 +377,6 @@ void loop() {
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
       firstServo.write(selectedPos);
-        /*
-        if (selectedPos < actualPos) {
-          pos = actualPos - 1;
-          firstServo.write(pos);
-          actualPos = pos;
-        }
-        else if (selectedPos > actualPos) {
-          pos = actualPos + 1;
-          firstServo.write(pos);
-          actualPos = pos;
-        }
-        */
     }
   }
 
