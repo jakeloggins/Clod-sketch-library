@@ -18,7 +18,7 @@ Ticker ticker;
   int actualPos;
   int pos;
   static uint32_t lastMove = 0;
-  static uint32_t moveLimit = 100;
+  static uint32_t moveLimit = 400;
 
 
 // -- global info --
@@ -42,7 +42,7 @@ Ticker ticker;
   String error_path = "";
 
   static uint32_t MQTTtick = 0;
-  static uint32_t MQTTlimit = 300;
+  static uint32_t MQTTlimit = 400;
 
 // -- MQTT server setup
   #include <PubSubClient.h>
@@ -373,7 +373,7 @@ void loop() {
   if (selectedPos != actualPos) {
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
-      //firstServo.write(selectedPos);
+      firstServo.write(selectedPos);
         /*
         if (selectedPos < actualPos) {
           pos = actualPos - 1;
