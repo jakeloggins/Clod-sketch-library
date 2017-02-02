@@ -107,7 +107,9 @@ Ticker ticker;
   void callback(const MQTT::Publish& pub) {
     yield();
     if (millis() - MQTTtick > MQTTlimit) {
+      Serial.prinln(MQTTtick);
       MQTTtick = millis();
+
 
 
       int commandLoc;
@@ -401,6 +403,5 @@ void loop() {
 }
 
 
-// make on off switch
 // add fan
 // add 2 more servos and save as separate project
