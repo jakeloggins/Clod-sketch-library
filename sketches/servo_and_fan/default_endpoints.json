@@ -36,5 +36,34 @@
       "true": "circle-o",
       "false": "circle"
     }
-  }
+  },
+  "continuousServo": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "fan",
+    "title": "Continuous Servo",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "On",
+      "false": "Off"
+    },
+    "icons": {
+      "true": "toggle-on",
+      "false": "toggle-off"
+    }
+  },
+  "continuousServoSpeed": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "fanSpeed",
+    "title": "Servo Open Position",
+    "values": {
+      "value": 90
+    },
+    "min": 0,
+    "max": 160,
+    "units": "degrees"
+  },
+
+
 }

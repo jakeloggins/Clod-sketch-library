@@ -12,6 +12,7 @@ Ticker ticker;
 
   #include <Servo.h>
   Servo firstServo;
+  Servo fanServo;
   int selectedPos;
   int selectedOpen = 175;
   int selectedClose = 5;
@@ -19,6 +20,9 @@ Ticker ticker;
   int pos;
   static uint32_t lastMove = 0;
   static uint32_t moveLimit = 1000;
+
+  int selectedFanSpeed = 90;
+
 
 
 // -- global info --
@@ -249,11 +253,26 @@ Ticker ticker;
             }
           }
           
-          /*
           else if (lookup_val == "fan") {
 
+            if (findValue == "true") {
+              // write to selectedFanSpeed
+              firstServo.write(selectedFanSpeed);
+            }
+            else if (findValue == "false") {
+              // write to 0
+              firstServo.write(0);
+            }
+
           }
-          */
+          else if (lookup_val == "fanSpeed") {
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+            
+            selectedFanSpeed = findValue.toInt();
+          
+          }
+         
 
 
           // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
@@ -327,6 +346,8 @@ void setup() {
   Serial.println(local_ip_str);
 
   firstServo.attach(PIN_A);
+  fanServo.attach(PIN_B);
+  fanServo.write(0);
 
 
 }
@@ -392,5 +413,5 @@ void loop() {
 }
 
 
-// add fan
+// add fan/motor with PWM
 // add 2 more servos and save as separate project
