@@ -254,7 +254,9 @@ Ticker ticker;
           }
           
           else if (lookup_val == "fan") {
-
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+            
             if (findValue == "true") {
               // write to selectedFanSpeed
               firstServo.write(selectedFanSpeed);
