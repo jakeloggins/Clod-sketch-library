@@ -1,0 +1,67 @@
+{
+  "testServoOpen": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "servoOpen",
+    "title": "Servo Open Position",
+    "values": {
+      "value": 175
+    },
+    "min": 0,
+    "max": 180,
+    "units": "degrees"
+  },
+  "testServoClose": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "servoClose",
+    "title": "Servo Close Position",
+    "values": {
+      "value": 5
+    },
+    "min": 0,
+    "max": 180,
+    "units": "degrees"
+  },
+  "testServoToggle": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "servoToggle",
+    "title": "Servo",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "Open",
+      "false": "Close"
+    },
+    "icons": {
+      "true": "circle-o",
+      "false": "circle"
+    }
+  },
+  "continuousServo": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "fan",
+    "title": "Continuous Servo",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "On",
+      "false": "Off"
+    },
+    "icons": {
+      "true": "toggle-on",
+      "false": "toggle-off"
+    }
+  },
+  "continuousServoSpeed": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "fanSpeed",
+    "title": "Continuous Servo Speed",
+    "values": {
+      "value": 90
+    },
+    "min": 0,
+    "max": 160,
+    "units": "degrees"
+  }
+}
