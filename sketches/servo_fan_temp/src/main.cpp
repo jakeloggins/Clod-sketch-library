@@ -24,7 +24,7 @@ Ticker ticker;
   int selectedFanSpeed = 90;
 
 // -- temp setup
-int counter = 1;
+int counter = 5;
 int temp = 15;
 
 // -- global info --
