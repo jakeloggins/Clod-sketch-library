@@ -38,8 +38,8 @@ int temp = 15;
   #include <wifilogin.h>
     // located in platformio library folder (usually [home]/.platformio/lib)
     // stores const char ssid and const char password
-
-
+  
+  boolean controlFlag = false;
   String chip_id = String(ESP.getChipId());
   String confirmPath = "";
   String confirmPayload = "";
@@ -186,7 +186,7 @@ int temp = 15;
 
         // get topic variables
         maxitems = i;
-
+        controlFlag = false;
         for (i=1; i<maxitems; i++) {
           String chunk = getValue(topic, '/', i);
           if (chunk == "control") {
@@ -194,9 +194,12 @@ int temp = 15;
             command = chunk;
             deviceName = getValue(topic, '/', i + 1);
             endPoint = getValue(topic, '/', i + 2);
+            controlFlag = true;
             break;
           }
         }
+
+        if (controlFlag) {
 
         //Serial.println("device and endpoint incoming...");
         //Serial.println(deviceName);
@@ -292,6 +295,8 @@ int temp = 15;
 
           //sendConfirm = true;
           client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
+
+        }
 
       }
     }
