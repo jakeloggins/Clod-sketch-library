@@ -56,7 +56,7 @@
   "continuousServoSpeed": {
     "card-type": "crouton-simple-slider",
     "static_endpoint_id": "fanSpeed",
-    "title": "Servo Open Position",
+    "title": "Continuous Servo Speed",
     "values": {
       "value": 90
     },

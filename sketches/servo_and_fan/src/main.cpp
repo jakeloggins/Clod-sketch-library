@@ -272,6 +272,7 @@ Ticker ticker;
             findValue.remove(findValue.length() - 1);
             
             selectedFanSpeed = findValue.toInt();
+            fanServo.write(selectedFanSpeed);
           
           }
          
