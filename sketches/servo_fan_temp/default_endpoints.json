@@ -63,5 +63,17 @@
     "min": 0,
     "max": 160,
     "units": "degrees"
+  },
+  "temperature": {
+    "values": {
+        "labels": [1],
+        "series": [[60]],
+        "update": null 
+    },
+    "max": 20,
+    "low": 0,
+    "high": 100,
+    "card-type": "crouton-chart-line",
+    "title": "Temperature (F)"
   }
 }

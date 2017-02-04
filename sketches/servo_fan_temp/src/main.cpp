@@ -23,7 +23,9 @@ Ticker ticker;
 
   int selectedFanSpeed = 90;
 
-
+// -- temp setup
+int counter = 1;
+int temp = 15;
 
 // -- global info --
   #include <namepins.h>
@@ -405,11 +407,33 @@ void loop() {
   }
 
 
-
   // Do things every tickLimit seconds
   if ( millis() - tick > tickLimit) {
     tick = millis();
+
+    counter += 1;
+    temp += 1;
+
+    // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
+    yield();
+    confirmPath = "";
+    confirmPath = thisDevicePath;
+    confirmPath += "/confirm/";
+    confirmPath += thisDeviceName;
+    confirmPath += "/";
+    confirmPath += "temperature";
+    
+    confirmPayload = "{\"update\": {\"labels\":[";
+    confirmPayload += String(counter);
+    confirmPayload += "],\"series\":[[";
+    confirmPayload += String(temp);
+    confirmPayload += "]]}}";
+
+    //sendConfirm = true;
+    client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
+
   }
+
 
 
   yield();
