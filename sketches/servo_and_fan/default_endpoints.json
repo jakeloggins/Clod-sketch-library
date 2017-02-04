@@ -63,7 +63,5 @@
     "min": 0,
     "max": 160,
     "units": "degrees"
-  },
-
-
+  }
 }
