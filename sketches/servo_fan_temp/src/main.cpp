@@ -435,10 +435,6 @@ void loop() {
     confirmPayload += String(temp);
     confirmPayload += "]]}}";
 
-    //sendConfirm = true;
-    if (client.connected()) {
-      client.loop();
-    }
     client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
 
   }
