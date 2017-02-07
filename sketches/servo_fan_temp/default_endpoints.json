@@ -66,9 +66,12 @@
   },
   "temperature": {
     "values": {
-        "labels": [1,2,3,4,5],
-        "series": [[60,55,50,45,40]],
-        "update": null
+        "labels": [1,2,3,4],
+        "series": [[60,55,50,45]],
+        "update": {
+          "labels": [5],
+          "series": [[40]]
+        }
     },
     "max": 20,
     "low": 0,
