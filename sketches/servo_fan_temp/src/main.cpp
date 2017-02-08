@@ -78,6 +78,7 @@ Ticker ticker;
   String getValue(String data, char separator, int index)
   {
    yield();
+   client.loop();
    int found = 0;
     int strIndex[] = {0, -1  };
     int maxIndex = data.length()-1;
@@ -116,6 +117,7 @@ Ticker ticker;
   String payload;
   void callback(const MQTT::Publish& pub) {
     yield();
+    client.loop();
 
     if (millis() - MQTTtick > MQTTlimit) {
       MQTTtick = millis();
@@ -286,6 +288,8 @@ Ticker ticker;
 
           // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
           yield();
+          client.loop();
+
           confirmPath = "";
           confirmPath = thisDevicePath;
           confirmPath += "/confirm/";
@@ -422,6 +426,8 @@ void loop() {
 
     // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
     yield();
+    client.loop();
+
     confirmPath = "";
     confirmPath = thisDevicePath;
     confirmPath += "/confirm/";
@@ -435,13 +441,16 @@ void loop() {
     confirmPayload += String(temp);
     confirmPayload += "]]}}";
 
+    client.loop();
     client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
+    client.loop();
 
   }
 
 
-
+  client.loop();
   yield();
+  client.loop();
 }
 
 
