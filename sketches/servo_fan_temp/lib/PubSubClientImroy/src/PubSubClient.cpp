@@ -99,7 +99,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
       if (pub->qos() == 1) {
 	MQTT::PublishAck puback(pub->packet_id());
-	_send_message(puback);
+	_send_message(puback, false);
 
       } else if (pub->qos() == 2) {
 
@@ -111,7 +111,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
 	{
 	  MQTT::PublishComp pubcomp(pub->packet_id());
-	  _send_message(pubcomp);
+	  _send_message(pubcomp, false);
 	}
       }
     }
