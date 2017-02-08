@@ -127,7 +127,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
   case MQTT::PINGREQ:
     {
       MQTT::PingResp pr;
-      _send_message(pr);
+      _send_message(pr, false);
     }
     break;
 
@@ -228,7 +228,7 @@ bool PubSubClient::loop() {
       return false;
     } else {
       MQTT::Ping ping;
-      if (!_send_message(ping))
+      if (!_send_message(ping, false))
 	return false;
 
       lastInActivity = lastOutActivity;
@@ -287,7 +287,7 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 
   switch (pub.qos()) {
   case 0:
-    return _send_message(pub);
+    return _send_message(pub, false);
 
   case 1:
     return _send_message(pub, true);
@@ -342,7 +342,7 @@ void PubSubClient::disconnect() {
      return;
 
    MQTT::Disconnect discon;
-   if (_send_message(discon))
+   if (_send_message(discon, false))
      lastInActivity = lastOutActivity;
    _client->stop();
 }
