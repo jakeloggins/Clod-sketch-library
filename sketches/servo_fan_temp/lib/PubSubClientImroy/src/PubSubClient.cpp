@@ -104,6 +104,9 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
       if (_callback)
 	_callback(*pub);
 
+      Serial.println("qos..2nd line..");
+      Serial.println(pub->qos());
+
       if (pub->qos() == 1) {
 	MQTT::PublishAck puback(pub->packet_id());
   Serial.println("puback false");
@@ -287,6 +290,10 @@ bool PubSubClient::publish_P(String topic, PGM_P payload, uint32_t plength, bool
 bool PubSubClient::publish(MQTT::Publish &pub) {
   if (!connected())
     return false;
+
+
+  Serial.println("publish dot qos");
+  Serial.println(pub.qos());
 
   switch (pub.qos()) {
   case 0:
