@@ -78,7 +78,6 @@ Ticker ticker;
   String getValue(String data, char separator, int index)
   {
    yield();
-   client.loop();
    int found = 0;
     int strIndex[] = {0, -1  };
     int maxIndex = data.length()-1;
@@ -288,7 +287,6 @@ Ticker ticker;
 
           // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
           yield();
-          client.loop();
 
           confirmPath = "";
           confirmPath = thisDevicePath;
@@ -404,9 +402,23 @@ void loop() {
       }
     }
 
+/*
     if (client.connected()) {
       client.loop();
     }
+*/
+
+  if (!client.loop()) {
+    Serial.print("Client disconnected...");
+    if (client.connect("arduinoPublisher")) {
+      Serial.println("reconnected.");
+    } else {
+      Serial.println("failed.");
+    }
+  } 
+
+
+
 
   // -- servo move
   if (selectedPos != actualPos) {
@@ -441,16 +453,13 @@ void loop() {
     confirmPayload += String(temp);
     confirmPayload += "]]}}";
 
-    client.loop();
-    client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
-    client.loop();
+    client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(1));
 
   }
 
 
-  client.loop();
   yield();
-  client.loop();
+
 }
 
 
