@@ -86,6 +86,9 @@ bool PubSubClient::_send_message(MQTT::Message& msg, bool need_reply) {
 }
 
 void PubSubClient::_process_message(MQTT::Message* msg) {
+  Serial.println("..process message..");
+  Serial.println(msg->type());
+
   switch (msg->type()) {
   case MQTT::PUBLISH:
     {
