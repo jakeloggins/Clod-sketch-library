@@ -8,6 +8,10 @@
 #include <Ticker.h>
 Ticker ticker;
 
+
+uint32_t t = 0;
+
+
 // -- Servo setup
 
   #include <Servo.h>
@@ -404,8 +408,8 @@ void loop() {
 
 
   if (client.connected()) {
-    Serial.println("..");
-    Serial.println(client.loop());
+    //Serial.println("..");
+    //Serial.println(client.loop());
     client.loop();
   }
 
@@ -425,6 +429,7 @@ void loop() {
   // Do things every tickLimit seconds
   if ( millis() - tick > tickLimit) {
     tick = millis();
+    Serial.println(tick);
 
     counter += 1;
     temp += 1;
@@ -446,7 +451,13 @@ void loop() {
     confirmPayload += String(temp);
     confirmPayload += "]]}}";
 
+    t = millis(); 
     client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(1));
+    Serial.printf("Publish took %dms\n", millis() - t);
+
+    t = millis();
+    client.loop();
+    Serial.printf("Loop took %dms\n", millis() - t);
 
   }
 
