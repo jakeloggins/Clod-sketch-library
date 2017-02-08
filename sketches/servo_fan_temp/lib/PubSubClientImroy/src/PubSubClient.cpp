@@ -47,8 +47,11 @@ PubSubClient& PubSubClient::set_server(String hostname, uint16_t port) {
 
 MQTT::Message* PubSubClient::_recv_message(void) {
   MQTT::Message *msg = MQTT::readPacket(*_client);
-  if (msg != NULL)
+  if (msg != NULL) {
     lastInActivity = millis();
+    Serial.println("..recv..");
+    Serial.println(msg->type());
+  }
   return msg;
 }
 
