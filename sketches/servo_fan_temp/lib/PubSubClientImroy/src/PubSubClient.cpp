@@ -253,6 +253,7 @@ bool PubSubClient::loop() {
 }
 
 bool PubSubClient::publish(String topic, String payload) {
+  loop();
   if (!connected())
     return false;
 
@@ -261,6 +262,7 @@ bool PubSubClient::publish(String topic, String payload) {
 }
 
 bool PubSubClient::publish(String topic, const uint8_t* payload, uint32_t plength, bool retained) {
+  loop();
   if (!connected())
     return false;
 
@@ -270,6 +272,7 @@ bool PubSubClient::publish(String topic, const uint8_t* payload, uint32_t plengt
 }
 
 bool PubSubClient::publish(String topic, MQTT::payload_callback_t pcb, uint32_t length, bool retained) {
+  loop();
   if (!connected())
     return false;
 
@@ -279,6 +282,7 @@ bool PubSubClient::publish(String topic, MQTT::payload_callback_t pcb, uint32_t 
 }
 
 bool PubSubClient::publish_P(String topic, PGM_P payload, uint32_t plength, bool retained) {
+  loop();
   if (!connected())
     return false;
 
@@ -288,6 +292,7 @@ bool PubSubClient::publish_P(String topic, PGM_P payload, uint32_t plength, bool
 }
 
 bool PubSubClient::publish(MQTT::Publish &pub) {
+  loop();
   if (!connected())
     return false;
 
@@ -304,8 +309,8 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 
   case 1:
     {
-    Serial.println("pub true");
-    return _send_message(pub, true);
+    Serial.println("pub false");
+    return _send_message(pub, false);
     }
 
   case 2:
@@ -322,6 +327,7 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 }
 
 bool PubSubClient::subscribe(String topic, uint8_t qos) {
+  loop();
   if (!connected())
     return false;
 
@@ -333,6 +339,7 @@ bool PubSubClient::subscribe(String topic, uint8_t qos) {
 }
 
 bool PubSubClient::subscribe(MQTT::Subscribe &sub) {
+  loop();
   if (!connected())
     return false;
     Serial.println("sub true");
@@ -340,6 +347,7 @@ bool PubSubClient::subscribe(MQTT::Subscribe &sub) {
 }
 
 bool PubSubClient::unsubscribe(String topic) {
+  loop();
   if (!connected())
     return false;
 
@@ -348,6 +356,7 @@ bool PubSubClient::unsubscribe(String topic) {
 }
 
 bool PubSubClient::unsubscribe(MQTT::Unsubscribe &unsub) {
+  loop();
   if (!connected())
     return false;
   Serial.println("unsub true");
