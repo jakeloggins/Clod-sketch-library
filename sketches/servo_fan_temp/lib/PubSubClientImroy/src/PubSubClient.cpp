@@ -54,6 +54,9 @@ MQTT::Message* PubSubClient::_recv_message(void) {
 
 bool PubSubClient::_send_message(MQTT::Message& msg, bool need_reply) {
   MQTT::message_type r_type = msg.response_type();
+  Serial.println("..send message..");
+  Serial.println(need_reply);
+  Serial.println(msg.response_type());
 
   if (msg.need_packet_id())
     msg.set_packet_id(_next_packet_id());
