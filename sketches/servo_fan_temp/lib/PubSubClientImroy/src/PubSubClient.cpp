@@ -92,10 +92,14 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
   Serial.println("..process message..");
   Serial.println(msg->type());
 
+
   switch (msg->type()) {
   case MQTT::PUBLISH:
     {
       MQTT::Publish *pub = static_cast<MQTT::Publish*>(msg);	// RTTI is disabled on embedded, so no dynamic_cast<>()
+   
+      Serial.println("qos..");
+      Serial.println(pub->qos());
 
       if (_callback)
 	_callback(*pub);
