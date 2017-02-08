@@ -402,20 +402,13 @@ void loop() {
       }
     }
 
-/*
-    if (client.connected()) {
-      client.loop();
-    }
-*/
 
-  if (!client.loop()) {
-    Serial.print("Client disconnected...");
-    if (client.connect(thisDeviceName)) {
-      Serial.println("reconnected.");
-    } else {
-      Serial.println("failed.");
-    }
-  } 
+  if (client.connected()) {
+    Serial.println("..");
+    Serial.println(client.loop());
+    client.loop();
+  }
+
 
 
 
