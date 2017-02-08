@@ -437,23 +437,18 @@ void loop() {
     yield();
     client.loop();
 
-    t = millis();
     confirmPath = "";
     confirmPath = thisDevicePath;
     confirmPath += "/confirm/";
     confirmPath += thisDeviceName;
     confirmPath += "/";
     confirmPath += "temperature";
-    Serial.printf("Confirm path took %dms\n", millis() - t);
 
-
-    t = millis();
     confirmPayload = "{\"update\": {\"labels\":[";
     confirmPayload += String(counter);
     confirmPayload += "],\"series\":[[";
     confirmPayload += String(temp);
     confirmPayload += "]]}}";
-    Serial.printf("Confirm payload took %dms\n", millis() - t);
 
 
     t = millis(); 
