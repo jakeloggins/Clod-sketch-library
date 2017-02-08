@@ -410,7 +410,7 @@ void loop() {
 
   if (!client.loop()) {
     Serial.print("Client disconnected...");
-    if (client.connected()) {
+    if (client.connect(thisDeviceName)) {
       Serial.println("reconnected.");
     } else {
       Serial.println("failed.");
