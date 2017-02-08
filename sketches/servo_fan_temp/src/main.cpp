@@ -405,13 +405,13 @@ void loop() {
           Serial.println("request states sent");
       }
     }
+    else {
+      client.loop();  
+    }
 
 
-  if (client.connected()) {
-    //Serial.println("..");
-    //Serial.println(client.loop());
-    client.loop();
-  }
+
+
 
 
 
@@ -429,7 +429,6 @@ void loop() {
   // Do things every tickLimit seconds
   if ( millis() - tick > tickLimit) {
     tick = millis();
-    Serial.println(tick);
 
     counter += 1;
     temp += 1;
@@ -438,18 +437,24 @@ void loop() {
     yield();
     client.loop();
 
+    t = millis();
     confirmPath = "";
     confirmPath = thisDevicePath;
     confirmPath += "/confirm/";
     confirmPath += thisDeviceName;
     confirmPath += "/";
     confirmPath += "temperature";
-    
+    Serial.printf("Confirm path took %dms\n", millis() - t);
+
+
+    t = millis();
     confirmPayload = "{\"update\": {\"labels\":[";
     confirmPayload += String(counter);
     confirmPayload += "],\"series\":[[";
     confirmPayload += String(temp);
     confirmPayload += "]]}}";
+    Serial.printf("Confirm payload took %dms\n", millis() - t);
+
 
     t = millis(); 
     client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(1));
