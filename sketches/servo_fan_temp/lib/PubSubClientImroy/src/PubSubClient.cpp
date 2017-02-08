@@ -106,6 +106,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
       if (pub->qos() == 1) {
 	MQTT::PublishAck puback(pub->packet_id());
+  Serial.println("puback false");
 	_send_message(puback, false);
 
       } else if (pub->qos() == 2) {
@@ -118,6 +119,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
 	{
 	  MQTT::PublishComp pubcomp(pub->packet_id());
+      Serial.println("pucomp false");
 	  _send_message(pubcomp, false);
 	}
       }
@@ -127,6 +129,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
   case MQTT::PINGREQ:
     {
       MQTT::PingResp pr;
+        Serial.println("pr false");
       _send_message(pr, false);
     }
     break;
@@ -287,10 +290,16 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 
   switch (pub.qos()) {
   case 0:
+    {
+    Serial.println("pub false");
     return _send_message(pub, false);
+    }
 
   case 1:
+    {
+    Serial.println("pub true");
     return _send_message(pub, true);
+    }
 
   case 2:
     {
@@ -298,6 +307,7 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 	return false;
 
       MQTT::PublishRel pubrel(pub.packet_id());
+      Serial.println("pubrel true");
       return _send_message(pubrel, true);
     }
   }
@@ -318,7 +328,7 @@ bool PubSubClient::subscribe(String topic, uint8_t qos) {
 bool PubSubClient::subscribe(MQTT::Subscribe &sub) {
   if (!connected())
     return false;
-
+    Serial.println("sub true");
   return _send_message(sub, true);
 }
 
@@ -333,7 +343,7 @@ bool PubSubClient::unsubscribe(String topic) {
 bool PubSubClient::unsubscribe(MQTT::Unsubscribe &unsub) {
   if (!connected())
     return false;
-
+  Serial.println("unsub true");
   return _send_message(unsub, true);
 }
 
