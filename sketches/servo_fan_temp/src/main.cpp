@@ -410,7 +410,7 @@ void loop() {
 
   if (!client.loop()) {
     Serial.print("Client disconnected...");
-    if (client.connect("arduinoPublisher")) {
+    if (client.connected()) {
       Serial.println("reconnected.");
     } else {
       Serial.println("failed.");
