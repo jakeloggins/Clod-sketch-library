@@ -309,8 +309,8 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 
   case 1:
     {
-    Serial.println("pub false");
-    return _send_message(pub, false);
+    Serial.println("pub true");
+    return _send_message(pub, true);
     }
 
   case 2:
