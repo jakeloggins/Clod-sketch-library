@@ -452,7 +452,7 @@ void loop() {
 
 
     t = millis(); 
-    client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(1));
+    client.publish(MQTT::Publish(confirmPath, confirmPayload).set_qos(2));
     Serial.printf("Publish took %dms\n", millis() - t);
 
     t = millis();
