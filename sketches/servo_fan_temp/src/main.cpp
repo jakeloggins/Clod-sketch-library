@@ -300,6 +300,9 @@ uint32_t t = 0;
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
+            Serial.println("servoOpen");
+
+
             selectedOpen = findValue.toInt();
 
           }
@@ -307,6 +310,9 @@ uint32_t t = 0;
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
+            Serial.println("servoClose");
+            
+            
             selectedClose = findValue.toInt();
 
           }
@@ -314,7 +320,9 @@ uint32_t t = 0;
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
-            selectedServo = 1;
+            Serial.println("servoToggle");
+
+            selectedServo = 0;
             servoFlag = true;
 
             if (findValue == "true") {
@@ -377,6 +385,9 @@ uint32_t t = 0;
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
+            Serial.println("fan");
+
+
               selectedServo = 3;
 
             if (findValue == "true") {
@@ -391,6 +402,8 @@ uint32_t t = 0;
 
           }
           else if (lookup_val == "fanSpeed") {
+
+            Serial.println("fanSpeed");
 
             selectedServo = 3;
 
@@ -534,6 +547,8 @@ void loop() {
 
   if (servoFlag) {
     // call function: selectedServo, selectedPos
+    Serial.println("servoRun");
+
     servoRun();
     servoFlag = false;
   }
