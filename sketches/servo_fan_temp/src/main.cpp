@@ -15,18 +15,48 @@ uint32_t t = 0;
 
 // -- Servo setup
 
-  #include <Servo.h>
-  Servo firstServo;
-  Servo fanServo;
+  #include <Wire.h>
+  #include <Adafruit_PWMServoDriver.h>
+
+  // called this way, it uses the default address 0x40
+  Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+  // you can also call it with a different address you want
+  //Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x41);  
+
+  #define SERVOMIN  800 // this is the 'minimum' pulse length count (out of 4096)
+  #define SERVOMAX  2200 // this is the 'maximum' pulse length count (out of 4096)
+
+
+  uint16_t pulselen;
+  int selectedServo = 0;
+  bool servoFlag = false;
+
   int selectedPos;
   int selectedOpen = 175;
   int selectedClose = 5;
-  int actualPos;
-  int pos;
   static uint32_t lastMove = 0;
   static uint32_t moveLimit = 1000;
 
   int selectedFanSpeed = 90;
+
+
+
+  void servoRun() {
+
+    if (millis() - lastMove > moveLimit) {
+      lastMove = millis();
+     
+      // convert to PWM using map function
+      pulselen = map(selectedPos, 0, 180, SERVOMIN, SERVOMAX);
+      // set PWM
+      pwm.setPWM(selectedServo, 0, pulselen);
+
+    }
+    
+  }
+
+
+
 
 // -- temp setup
   int counter = 5;
@@ -284,6 +314,9 @@ uint32_t t = 0;
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
+            selectedServo = 1;
+            servoFlag = true;
+
             if (findValue == "true") {
               selectedPos = selectedOpen;
             }
@@ -291,27 +324,82 @@ uint32_t t = 0;
               selectedPos = selectedClose;
             }
           }
+
+          /* reserved for future use
+         else if (lookup_val == "servoToggleZero") {
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            selectedServo = 0;
+            servoFlag = true;
+
+            if (findValue == "true") {
+              selectedPos = selectedOpen;
+            }
+            else if (findValue == "false") {
+              selectedPos = selectedClose;
+            }
+          }
+
+         else if (lookup_val == "servoToggleOne") {
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            selectedServo = 1;
+            servoFlag = true;
+
+            if (findValue == "true") {
+              selectedPos = selectedOpen;
+            }
+            else if (findValue == "false") {
+              selectedPos = selectedClose;
+            }
+          }
+
+         else if (lookup_val == "servoToggleTwo") {
+            String findValue = getValue(payload, ':', 1);
+            findValue.remove(findValue.length() - 1);
+
+            selectedServo = 2;
+            servoFlag = true;
+
+            if (findValue == "true") {
+              selectedPos = selectedOpen;
+            }
+            else if (findValue == "false") {
+              selectedPos = selectedClose;
+            }
+          }
+        */
+
           
           else if (lookup_val == "fan") {
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
 
+              selectedServo = 3;
+
             if (findValue == "true") {
               // write to selectedFanSpeed
-              fanServo.write(selectedFanSpeed);
+              pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
+              pwm.setPWM(selectedServo, 0, pulselen);
             }
             else if (findValue == "false") {
-              // write to the calibrated stopping point. This is never the same for each servo though.
-              fanServo.write(94);
+              // set speed to zero
+              pwm.setPWM(selectedServo, 0, 0);
             }
 
           }
           else if (lookup_val == "fanSpeed") {
+
+            selectedServo = 3;
+
             String findValue = getValue(payload, ':', 1);
-            findValue.remove(findValue.length() - 1);
-            
+            findValue.remove(findValue.length() - 1);  
             selectedFanSpeed = findValue.toInt();
-            fanServo.write(selectedFanSpeed);
+
+            pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
+            pwm.setPWM(selectedServo, 0, pulselen);
           
           }
          
@@ -390,12 +478,12 @@ void setup() {
   local_ip_str = WiFi.localIP().toString();
   Serial.println(local_ip_str);
 
-  firstServo.attach(PIN_A);
-  fanServo.attach(PIN_B);
-  fanServo.write(0);
-
   DS18B20.begin();
 
+  Wire.begin(4, 5);
+
+  pwm.begin();
+  pwm.setPWMFreq(60);  // This is the maximum PWM frequency
 
 }
 
@@ -441,18 +529,13 @@ void loop() {
 
 
 
+  
 
 
-
-
-
-
-  // -- servo move
-  if (selectedPos != actualPos) {
-    if (millis() - lastMove > moveLimit) {
-      lastMove = millis();
-      firstServo.write(selectedPos);
-    }
+  if (servoFlag) {
+    // call function: selectedServo, selectedPos
+    servoRun();
+    servoFlag = false;
   }
 
 
