@@ -48,6 +48,7 @@ uint32_t t = 0;
      
       // convert to PWM using map function
       pulselen = map(selectedPos, 0, 180, SERVOMIN, SERVOMAX);
+      Serial.printf("pulse .. %d \n", pulselen);
       // set PWM
       pwm.setPWM(selectedServo, 0, pulselen);
 
@@ -397,7 +398,8 @@ uint32_t t = 0;
               Serial.println("fan off");
               pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
 
-              Serial.printf("pulse .. ", pulselen);
+
+              Serial.printf("pulse .. %d \n", pulselen);
 
               pwm.setPWM(selectedServo, 0, pulselen);
             }
@@ -421,7 +423,7 @@ uint32_t t = 0;
 
             pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
 
-            Serial.printf("pulse .. ", pulselen);
+            Serial.printf("pulse .. %d \n", pulselen);
 
             pwm.setPWM(selectedServo, 0, pulselen);
           
