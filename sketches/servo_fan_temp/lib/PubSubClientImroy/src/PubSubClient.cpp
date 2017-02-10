@@ -49,17 +49,17 @@ MQTT::Message* PubSubClient::_recv_message(void) {
   MQTT::Message *msg = MQTT::readPacket(*_client);
   if (msg != NULL) {
     lastInActivity = millis();
-    Serial.println("..recv..");
-    Serial.println(msg->type());
+    // Serial.println("..recv..");
+    // Serial.println(msg->type());
   }
   return msg;
 }
 
 bool PubSubClient::_send_message(MQTT::Message& msg, bool need_reply) {
   MQTT::message_type r_type = msg.response_type();
-  Serial.println("..send message..");
-  Serial.println(need_reply);
-  Serial.println(r_type);
+  // Serial.println("..send message..");
+  // Serial.println(need_reply);
+  // Serial.println(r_type);
 
   if (msg.need_packet_id())
     msg.set_packet_id(_next_packet_id());
@@ -89,8 +89,8 @@ bool PubSubClient::_send_message(MQTT::Message& msg, bool need_reply) {
 }
 
 void PubSubClient::_process_message(MQTT::Message* msg) {
-  Serial.println("..process message..");
-  Serial.println(msg->type());
+  // Serial.println("..process message..");
+  // Serial.println(msg->type());
 
 
   switch (msg->type()) {
@@ -98,18 +98,18 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
     {
       MQTT::Publish *pub = static_cast<MQTT::Publish*>(msg);	// RTTI is disabled on embedded, so no dynamic_cast<>()
    
-      Serial.println("qos..");
-      Serial.println(pub->qos());
+      // Serial.println("qos..");
+      // Serial.println(pub->qos());
 
       if (_callback)
 	_callback(*pub);
 
-      Serial.println("qos..2nd line..");
-      Serial.println(pub->qos());
+      // Serial.println("qos..2nd line..");
+      // Serial.println(pub->qos());
 
       if (pub->qos() == 1) {
 	MQTT::PublishAck puback(pub->packet_id());
-  Serial.println("puback false");
+  // Serial.println("puback false");
 	_send_message(puback, false);
 
       } else if (pub->qos() == 2) {
@@ -122,7 +122,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
 	{
 	  MQTT::PublishComp pubcomp(pub->packet_id());
-      Serial.println("pucomp false");
+      // Serial.println("pucomp false");
 	  _send_message(pubcomp, false);
 	}
       }
@@ -132,7 +132,7 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
   case MQTT::PINGREQ:
     {
       MQTT::PingResp pr;
-        Serial.println("pr false");
+        // Serial.println("pr false");
       _send_message(pr, false);
     }
     break;
@@ -297,19 +297,19 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
     return false;
 
 
-  Serial.println("publish dot qos");
-  Serial.println(pub.qos());
+  // Serial.println("publish dot qos");
+  // Serial.println(pub.qos());
 
   switch (pub.qos()) {
   case 0:
     {
-    Serial.println("pub false");
+    // Serial.println("pub false");
     return _send_message(pub, false);
     }
 
   case 1:
     {
-    Serial.println("pub false");
+    // Serial.println("pub false");
     return _send_message(pub, false);
     }
 
@@ -319,7 +319,7 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 	return false;
 
       MQTT::PublishRel pubrel(pub.packet_id());
-      Serial.println("pubrel true");
+      // Serial.println("pubrel true");
       return _send_message(pubrel, true);
     }
   }
@@ -342,7 +342,7 @@ bool PubSubClient::subscribe(MQTT::Subscribe &sub) {
   loop();
   if (!connected())
     return false;
-    Serial.println("sub true");
+    // Serial.println("sub true");
   return _send_message(sub, true);
 }
 
@@ -359,7 +359,7 @@ bool PubSubClient::unsubscribe(MQTT::Unsubscribe &unsub) {
   loop();
   if (!connected())
     return false;
-  Serial.println("unsub true");
+  // Serial.println("unsub true");
   return _send_message(unsub, true);
 }
 
