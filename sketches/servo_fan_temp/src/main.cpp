@@ -323,7 +323,6 @@ uint32_t t = 0;
             Serial.println("servoToggle");
 
             selectedServo = 0;
-            servoFlag = true;
 
             if (findValue == "true") {
               selectedPos = selectedOpen;
@@ -331,6 +330,8 @@ uint32_t t = 0;
             else if (findValue == "false") {
               selectedPos = selectedClose;
             }
+
+            servoFlag = true;
           }
 
           /* reserved for future use
@@ -392,11 +393,18 @@ uint32_t t = 0;
 
             if (findValue == "true") {
               // write to selectedFanSpeed
+
+              Serial.println("fan off");
               pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
+
+              Serial.printf("pulse .. ", pulselen);
+
               pwm.setPWM(selectedServo, 0, pulselen);
             }
             else if (findValue == "false") {
               // set speed to zero
+
+              Serial.println("fan off");
               pwm.setPWM(selectedServo, 0, 0);
             }
 
@@ -412,6 +420,9 @@ uint32_t t = 0;
             selectedFanSpeed = findValue.toInt();
 
             pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
+
+            Serial.printf("pulse .. ", pulselen);
+
             pwm.setPWM(selectedServo, 0, pulselen);
           
           }
@@ -547,10 +558,9 @@ void loop() {
 
   if (servoFlag) {
     // call function: selectedServo, selectedPos
-    Serial.println("servoRun");
-
-    servoRun();
     servoFlag = false;
+    Serial.println("servoRun");
+    servoRun();
   }
 
 
