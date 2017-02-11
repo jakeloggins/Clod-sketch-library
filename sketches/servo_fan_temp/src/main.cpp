@@ -18,6 +18,10 @@ uint32_t t = 0;
   #include <Wire.h>
   #include <Adafruit_PWMServoDriver.h>
 
+
+  #include <servo_PCA9685.h>
+  servo_PCA9685 servo = servo_PCA9685();
+
   // called this way, it uses the default address 0x40
   Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
   // you can also call it with a different address you want
@@ -50,7 +54,10 @@ uint32_t t = 0;
       pulselen = map(selectedPos, 0, 180, SERVOMIN, SERVOMAX);
       Serial.printf("pulse .. %d \n", pulselen);
       // set PWM
-      pwm.setPWM(selectedServo, 0, pulselen);
+      //pwm.setPWM(selectedServo, 0, pulselen);
+
+      servo.setPWM(selectedPos, 0, pulselen);
+
 
     }
     
@@ -401,13 +408,17 @@ uint32_t t = 0;
 
               Serial.printf("pulse .. %d \n", pulselen);
 
-              pwm.setPWM(selectedServo, 0, pulselen);
+              //pwm.setPWM(selectedServo, 0, pulselen);
+
+              servo.setPWM(selectedPos, 0, pulselen);
             }
             else if (findValue == "false") {
               // set speed to zero
 
               Serial.println("fan off");
-              pwm.setPWM(selectedServo, 0, 0);
+              //pwm.setPWM(selectedServo, 0, 0);
+
+              servo.setPWM(selectedPos, 0, 0);
             }
 
           }
@@ -425,7 +436,9 @@ uint32_t t = 0;
 
             Serial.printf("pulse .. %d \n", pulselen);
 
-            pwm.setPWM(selectedServo, 0, pulselen);
+            //pwm.setPWM(selectedServo, 0, pulselen);
+
+            servo.setPWM(selectedPos, 0, pulselen);
           
           }
          
@@ -506,10 +519,12 @@ void setup() {
 
   DS18B20.begin();
 
-  Wire.begin(4, 5);
+  //Wire.begin(4, 5);
 
-  pwm.begin();
-  pwm.setPWMFreq(1000);  // This is the maximum PWM frequency
+//  pwm.begin();
+//  pwm.setPWMFreq(1000);  // This is the maximum PWM frequency
+
+  servo.begin();
 
 }
 
