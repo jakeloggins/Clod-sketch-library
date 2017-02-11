@@ -341,7 +341,6 @@ uint32_t t = 0;
             servoFlag = true;
           }*/
 
-           reserved for future use
          else if (lookup_val == "servoToggleZero") {
             String findValue = getValue(payload, ':', 1);
             findValue.remove(findValue.length() - 1);
