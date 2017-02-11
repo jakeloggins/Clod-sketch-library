@@ -515,8 +515,7 @@ void setup() {
   Wire.begin(4, 5);
 
   pwm.begin();
-  pwm.setPWMFreq(60);  // This is the maximum PWM frequency
-
+  pwm.setPWMFreq(50);  
 }
 
 
