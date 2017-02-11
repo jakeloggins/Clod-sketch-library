@@ -413,7 +413,7 @@ uint32_t t = 0;
               yield();
 
               Serial.println("fan off");
-              pwm.setPWM(selectedServo, 0, 0);
+              pwm.setPWM(selectedServo, 4096, 0);
             }
 
           }
