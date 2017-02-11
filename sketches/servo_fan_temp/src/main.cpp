@@ -35,7 +35,7 @@ uint32_t t = 0;
   int selectedOpen = 175;
   int selectedClose = 5;
   static uint32_t lastMove = 0;
-  static uint32_t moveLimit = 1000;
+  static uint32_t moveLimit = 250;
 
   int selectedFanSpeed = 90;
 
@@ -46,8 +46,11 @@ uint32_t t = 0;
     if (millis() - lastMove > moveLimit) {
       lastMove = millis();
      
+      yield();
       // convert to PWM using map function
       pulselen = map(selectedPos, 0, 180, SERVOMIN, SERVOMAX);
+      Serial.printf("selected servo .. %d \n", selectedServo);
+      Serial.printf("selected pos .. %d \n", selectedPos);
       Serial.printf("pulse .. %d \n", pulselen);
       // set PWM
       pwm.setPWM(selectedServo, 0, pulselen);
@@ -393,9 +396,10 @@ uint32_t t = 0;
               selectedServo = 3;
 
             if (findValue == "true") {
-              // write to selectedFanSpeed
+              // write to selectedFanSpeed 
+              yield();
 
-              Serial.println("fan off");
+              Serial.println("fan on");
               pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
 
 
@@ -405,6 +409,8 @@ uint32_t t = 0;
             }
             else if (findValue == "false") {
               // set speed to zero
+
+              yield();
 
               Serial.println("fan off");
               pwm.setPWM(selectedServo, 0, 0);
@@ -509,7 +515,7 @@ void setup() {
   Wire.begin(4, 5);
 
   pwm.begin();
-  pwm.setPWMFreq(1000);  // This is the maximum PWM frequency
+  pwm.setPWMFreq(60);  // This is the maximum PWM frequency
 
 }
 
