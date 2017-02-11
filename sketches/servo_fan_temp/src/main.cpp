@@ -512,7 +512,7 @@ void setup() {
 
   DS18B20.begin();
 
-  Wire.begin(4, 5);
+  //Wire.begin(4, 5);
 
   pwm.begin();
   pwm.setPWMFreq(50);  
