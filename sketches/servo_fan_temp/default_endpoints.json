@@ -37,10 +37,10 @@
       "false": "circle"
     }
   },
-  "continuousServo": {
+  "Fan": {
     "card-type": "crouton-simple-toggle",
     "static_endpoint_id": "fan",
-    "title": "Cont Servo",
+    "title": "Fan",
     "values": {
       "value": false
     },
@@ -53,10 +53,10 @@
       "false": "toggle-off"
     }
   },
-  "continuousServoSpeed": {
+  "FanSpeed": {
     "card-type": "crouton-simple-slider",
     "static_endpoint_id": "fanSpeed",
-    "title": "Cont Servo Speed",
+    "title": "Fan Speed",
     "values": {
       "value": 90
     },

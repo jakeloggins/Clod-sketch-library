@@ -60,6 +60,9 @@ uint32_t t = 0;
   }
 
 
+// -- fan stuff
+  bool fanToggle = false;
+
 
 
 // -- temp setup
@@ -397,6 +400,7 @@ uint32_t t = 0;
 
             if (findValue == "true") {
               // write to selectedFanSpeed 
+              fanToggle = true;
               yield();
 
               Serial.println("fan on");
@@ -409,7 +413,7 @@ uint32_t t = 0;
             }
             else if (findValue == "false") {
               // set speed to zero
-
+              fanToggle = false;
               yield();
 
               Serial.println("fan off");
@@ -427,11 +431,16 @@ uint32_t t = 0;
             findValue.remove(findValue.length() - 1);  
             selectedFanSpeed = findValue.toInt();
 
-            pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
+            if (fanToggle) {
 
-            Serial.printf("pulse .. %d \n", pulselen);
+              pulselen = map(selectedFanSpeed, 0, 180, 0, 4096);
 
-            pwm.setPWM(selectedServo, 0, pulselen);
+              Serial.printf("pulse .. %d \n", pulselen);
+
+              pwm.setPWM(selectedServo, 0, pulselen);
+
+            }
+
           
           }
          
@@ -667,5 +676,4 @@ void loop() {
 }
 
 
-// add fan/motor with PWM
 // add 2 more servos and save as separate sketch
