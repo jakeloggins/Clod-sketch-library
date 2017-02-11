@@ -25,7 +25,7 @@
 
 
 // Set to true to print some debug messages, or false to disable them.
-#define ENABLE_DEBUG_OUTPUT false
+#define ENABLE_DEBUG_OUTPUT true
 
 Adafruit_PWMServoDriver::Adafruit_PWMServoDriver(uint8_t addr) {
   _i2caddr = addr;
@@ -42,19 +42,19 @@ void Adafruit_PWMServoDriver::reset(void) {
 }
 
 void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
-  //Serial.print("Attempting to set freq ");
-  //Serial.println(freq);
+  Serial.print("Attempting to set freq ");
+  Serial.println(freq);
   freq *= 0.9;  // Correct for overshoot in the frequency setting (see issue #11).
   float prescaleval = 25000000;
   prescaleval /= 4096;
   prescaleval /= freq;
   prescaleval -= 1;
   if (ENABLE_DEBUG_OUTPUT) {
-    //Serial.print("Estimated pre-scale: "); Serial.println(prescaleval);
+    Serial.print("Estimated pre-scale: "); Serial.println(prescaleval);
   }
   uint8_t prescale = floor(prescaleval + 0.5);
   if (ENABLE_DEBUG_OUTPUT) {
-    //Serial.print("Final pre-scale: "); Serial.println(prescale);
+    Serial.print("Final pre-scale: "); Serial.println(prescale);
   }
   
   uint8_t oldmode = read8(PCA9685_MODE1);
@@ -65,11 +65,11 @@ void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
   delay(5);
   write8(PCA9685_MODE1, oldmode | 0xa1);  //  This sets the MODE1 register to turn on auto increment.
                                           // This is why the beginTransmission below was not working.
-  //  Serial.print("Mode now 0x"); Serial.println(read8(PCA9685_MODE1), HEX);
+    Serial.print("Mode now 0x"); Serial.println(read8(PCA9685_MODE1), HEX);
 }
 
 void Adafruit_PWMServoDriver::setPWM(uint8_t num, uint16_t on, uint16_t off) {
-  //Serial.print("Setting PWM "); Serial.print(num); Serial.print(": "); Serial.print(on); Serial.print("->"); Serial.println(off);
+  Serial.print("Setting PWM "); Serial.print(num); Serial.print(": "); Serial.print(on); Serial.print("->"); Serial.println(off);
 
   WIRE.beginTransmission(_i2caddr);
   WIRE.write(LED0_ON_L+4*num);
