@@ -10,13 +10,15 @@
 PubSubClient::PubSubClient(Client& c) :
   _callback(NULL),
   _client(&c),
-  _max_retries(10)
+  _max_retries(10),
+  isSubAckFound(false)
 {}
 
 PubSubClient::PubSubClient(Client& c, IPAddress &ip, uint16_t port) :
   _callback(NULL),
   _client(&c),
   _max_retries(10),
+  isSubAckFound(false),
   server_ip(ip),
   server_port(port)
 {}
@@ -25,6 +27,7 @@ PubSubClient::PubSubClient(Client& c, String hostname, uint16_t port) :
   _callback(NULL),
   _client(&c),
   _max_retries(10),
+  isSubAckFound(false),
   server_port(port),
   server_hostname(hostname)
 {}
@@ -44,13 +47,19 @@ PubSubClient& PubSubClient::set_server(String hostname, uint16_t port) {
 
 MQTT::Message* PubSubClient::_recv_message(void) {
   MQTT::Message *msg = MQTT::readPacket(*_client);
-  if (msg != NULL)
+  if (msg != NULL) {
     lastInActivity = millis();
+    // Serial.println("..recv..");
+    // Serial.println(msg->type());
+  }
   return msg;
 }
 
 bool PubSubClient::_send_message(MQTT::Message& msg, bool need_reply) {
   MQTT::message_type r_type = msg.response_type();
+  // Serial.println("..send message..");
+  // Serial.println(need_reply);
+  // Serial.println(r_type);
 
   if (msg.need_packet_id())
     msg.set_packet_id(_next_packet_id());
@@ -80,17 +89,28 @@ bool PubSubClient::_send_message(MQTT::Message& msg, bool need_reply) {
 }
 
 void PubSubClient::_process_message(MQTT::Message* msg) {
+  // Serial.println("..process message..");
+  // Serial.println(msg->type());
+
+
   switch (msg->type()) {
   case MQTT::PUBLISH:
     {
       MQTT::Publish *pub = static_cast<MQTT::Publish*>(msg);	// RTTI is disabled on embedded, so no dynamic_cast<>()
+   
+      // Serial.println("qos..");
+      // Serial.println(pub->qos());
 
       if (_callback)
 	_callback(*pub);
 
+      // Serial.println("qos..2nd line..");
+      // Serial.println(pub->qos());
+
       if (pub->qos() == 1) {
 	MQTT::PublishAck puback(pub->packet_id());
-	_send_message(puback);
+  // Serial.println("puback false");
+	_send_message(puback, false);
 
       } else if (pub->qos() == 2) {
 
@@ -102,7 +122,8 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
 
 	{
 	  MQTT::PublishComp pubcomp(pub->packet_id());
-	  _send_message(pubcomp);
+      // Serial.println("pucomp false");
+	  _send_message(pubcomp, false);
 	}
       }
     }
@@ -111,7 +132,8 @@ void PubSubClient::_process_message(MQTT::Message* msg) {
   case MQTT::PINGREQ:
     {
       MQTT::PingResp pr;
-      _send_message(pr);
+        // Serial.println("pr false");
+      _send_message(pr, false);
     }
     break;
 
@@ -137,9 +159,20 @@ bool PubSubClient::_wait_for(MQTT::message_type match_type, uint16_t match_pid) 
 		if (match_pid)
 			return pid == match_pid;
 		return true;
+      }else if(msg->type() == MQTT::SUBACK){ // if the current message is not the one we want
+        // Signal that we found a SUBACK message
+        isSubAckFound = true;
       }
 
       _process_message(msg);
+
+      // After having proceeded new incoming packets, we check if our response as not already been processed
+      if(match_type == MQTT::SUBACK && isSubAckFound){
+        isSubAckFound = false;
+        // Return false will cause a resend of a SUBSCRIBE message (and so a new chance to get a SUBACK)
+        return false; 
+      }
+
       delete msg;
     }
 
@@ -201,7 +234,7 @@ bool PubSubClient::loop() {
       return false;
     } else {
       MQTT::Ping ping;
-      if (!_send_message(ping))
+      if (!_send_message(ping, false))
 	return false;
 
       lastInActivity = lastOutActivity;
@@ -220,6 +253,7 @@ bool PubSubClient::loop() {
 }
 
 bool PubSubClient::publish(String topic, String payload) {
+  loop();
   if (!connected())
     return false;
 
@@ -228,6 +262,7 @@ bool PubSubClient::publish(String topic, String payload) {
 }
 
 bool PubSubClient::publish(String topic, const uint8_t* payload, uint32_t plength, bool retained) {
+  loop();
   if (!connected())
     return false;
 
@@ -237,6 +272,7 @@ bool PubSubClient::publish(String topic, const uint8_t* payload, uint32_t plengt
 }
 
 bool PubSubClient::publish(String topic, MQTT::payload_callback_t pcb, uint32_t length, bool retained) {
+  loop();
   if (!connected())
     return false;
 
@@ -246,6 +282,7 @@ bool PubSubClient::publish(String topic, MQTT::payload_callback_t pcb, uint32_t 
 }
 
 bool PubSubClient::publish_P(String topic, PGM_P payload, uint32_t plength, bool retained) {
+  loop();
   if (!connected())
     return false;
 
@@ -255,15 +292,26 @@ bool PubSubClient::publish_P(String topic, PGM_P payload, uint32_t plength, bool
 }
 
 bool PubSubClient::publish(MQTT::Publish &pub) {
+  loop();
   if (!connected())
     return false;
 
+
+  // Serial.println("publish dot qos");
+  // Serial.println(pub.qos());
+
   switch (pub.qos()) {
   case 0:
-    return _send_message(pub);
+    {
+    // Serial.println("pub false");
+    return _send_message(pub, false);
+    }
 
   case 1:
-    return _send_message(pub, true);
+    {
+    // Serial.println("pub false");
+    return _send_message(pub, false);
+    }
 
   case 2:
     {
@@ -271,6 +319,7 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 	return false;
 
       MQTT::PublishRel pubrel(pub.packet_id());
+      // Serial.println("pubrel true");
       return _send_message(pubrel, true);
     }
   }
@@ -278,6 +327,7 @@ bool PubSubClient::publish(MQTT::Publish &pub) {
 }
 
 bool PubSubClient::subscribe(String topic, uint8_t qos) {
+  loop();
   if (!connected())
     return false;
 
@@ -289,13 +339,15 @@ bool PubSubClient::subscribe(String topic, uint8_t qos) {
 }
 
 bool PubSubClient::subscribe(MQTT::Subscribe &sub) {
+  loop();
   if (!connected())
     return false;
-
+    // Serial.println("sub true");
   return _send_message(sub, true);
 }
 
 bool PubSubClient::unsubscribe(String topic) {
+  loop();
   if (!connected())
     return false;
 
@@ -304,9 +356,10 @@ bool PubSubClient::unsubscribe(String topic) {
 }
 
 bool PubSubClient::unsubscribe(MQTT::Unsubscribe &unsub) {
+  loop();
   if (!connected())
     return false;
-
+  // Serial.println("unsub true");
   return _send_message(unsub, true);
 }
 
@@ -315,7 +368,7 @@ void PubSubClient::disconnect() {
      return;
 
    MQTT::Disconnect discon;
-   if (_send_message(discon))
+   if (_send_message(discon, false))
      lastInActivity = lastOutActivity;
    _client->stop();
 }
