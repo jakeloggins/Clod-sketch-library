@@ -131,7 +131,7 @@ void Adafruit_MCP23017::begin(uint8_t addr) {
  * Initializes the default MCP23017, with 000 for the configurable part of the address
  */
 void Adafruit_MCP23017::begin(void) {
-	begin(0);
+	begin(0x20);
 	Serial.println("began at default");
 }
 
