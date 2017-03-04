@@ -122,6 +122,9 @@ void Adafruit_MCP23017::begin(uint8_t addr) {
 	// all inputs on port A and B
 	writeRegister(MCP23017_IODIRA,0xff);
 	writeRegister(MCP23017_IODIRB,0xff);
+
+	Serial.println("began at ..");
+	Serial.println(addr);
 }
 
 /**
@@ -129,6 +132,7 @@ void Adafruit_MCP23017::begin(uint8_t addr) {
  */
 void Adafruit_MCP23017::begin(void) {
 	begin(0);
+	Serial.println("began at default");
 }
 
 /**
