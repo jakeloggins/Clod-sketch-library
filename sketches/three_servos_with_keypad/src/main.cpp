@@ -641,7 +641,7 @@ void loop() {
     servoRun();
   }
 
-
+  /*
   // Do things every tickLimit seconds
   if ( millis() - tick > tickLimit) {
     tick = millis();
@@ -678,7 +678,7 @@ void loop() {
 
 
 
-    /*
+    
     // i2c scan
     byte error, address;
     int nDevices;
@@ -714,11 +714,11 @@ void loop() {
       Serial.println("No I2C devices found\n");
     else
       Serial.println("done\n");
-   */ 
+    
 
 
   }
-
+  */
 
   yield();
 
