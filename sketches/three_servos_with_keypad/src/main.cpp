@@ -626,10 +626,10 @@ void loop() {
 
 
 
-  //    char customKey = keypad.getKey();
-  //  if (customKey){
-  //    Serial.println(customKey);
-  //  }
+    char key = keypad.getKey();
+    if (key){
+      Serial.println(key);
+    }
 
   
 
