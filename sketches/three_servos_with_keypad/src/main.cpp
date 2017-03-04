@@ -641,13 +641,13 @@ void loop() {
     servoRun();
   }
 
-  /*
   // Do things every tickLimit seconds
   if ( millis() - tick > tickLimit) {
     tick = millis();
 
     counter += 1;
 
+  /*
     // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
     yield();
     client.loop();
@@ -678,6 +678,7 @@ void loop() {
 
 
 
+  */
     
     // i2c scan
     byte error, address;
@@ -718,7 +719,6 @@ void loop() {
 
 
   }
-  */
 
   yield();
 
