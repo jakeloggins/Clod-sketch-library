@@ -30,8 +30,8 @@ uint32_t t = 0;
     {'7','8','9', 'C'},
     {'*','0','#', 'D'}
   };
-  byte rowPins[ROWS] = {7, 6, 5, 4}; //connect to the row pinouts of the keypad to the mcp2017 pins (GPA 0,1,2,3 ~ pins 21, 22, 23, 24)
-  byte colPins[COLS] = {3, 2, 1, 0}; //connect to the column pinouts of the keypad to the mcp2017 pins (GPA 0,1,2,3 ~ pins 25, 26, 27, 28)
+  byte rowPins[ROWS] = {0, 1, 2, 3}; //connect to the row pinouts of the keypad to the mcp2017 pins (GPA 0,1,2,3 ~ pins 21, 22, 23, 24)
+  byte colPins[COLS] = {4, 5, 6, 7}; //connect to the column pinouts of the keypad to the mcp2017 pins (GPA 4,5,6,7 ~ pins 25, 26, 27, 28)
 
   Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
