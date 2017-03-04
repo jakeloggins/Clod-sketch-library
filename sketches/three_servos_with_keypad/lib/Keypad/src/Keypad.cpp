@@ -52,7 +52,7 @@ Keypad::Keypad(char *userKeymap, byte *row, byte *col, byte numRows, byte numCol
 void Keypad::begin(char *userKeymap) {
     keymap = userKeymap;
     mcpADA.begin();
-    serial.println("keypad began");
+    Serial.println("keypad began");
 }
 
 // Returns a single key only. Retained for backwards compatibility.
