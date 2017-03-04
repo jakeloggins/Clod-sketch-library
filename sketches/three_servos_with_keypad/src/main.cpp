@@ -529,7 +529,7 @@ uint32_t t = 0;
 
 void setup() {
 
-  Serial.begin(115200);
+  //Serial.begin(115200);
   Serial.println("Booting");
   Serial.println(ESP.getResetInfo());
   WiFi.mode(WIFI_STA);
@@ -662,7 +662,7 @@ void loop() {
   }
 
   // Do things every tickLimit seconds
-  /*
+  
   if ( millis() - tick > tickLimit) {
     tick = millis();
 
@@ -738,7 +738,7 @@ void loop() {
 
 
   }
-  */
+  
 
   yield();
 
