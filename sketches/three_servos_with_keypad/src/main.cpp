@@ -592,6 +592,11 @@ void loop() {
     }
 
 
+    char customKey = keypad.getKey();
+  
+    if (customKey){
+      Serial.println(customKey);
+    }
 
   
 
@@ -677,21 +682,6 @@ void loop() {
     else
       Serial.println("done\n");
     
-    char customKey = keypad.getKey();
-  
-    if (customKey){
-      Serial.println(customKey);
-    }
-
-
-
-
-
-
-
-
-
-
 
 
   }
