@@ -49,7 +49,7 @@
 do {							 \
 	if(_mode == INPUT_PULLUP)	 \
 		mcpADA.pinMode(_pin, INPUT);	 \
-		mcpADA.digitalWrite(_pin, 1);	 \
+		mcpADA.pullup(_pin, HIGH);	 \
 	if(_mode != INPUT_PULLUP)	 \
 		mcpADA.pinMode(_pin, _mode);	 \
 }while(0)
