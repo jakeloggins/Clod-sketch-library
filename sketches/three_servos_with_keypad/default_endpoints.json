@@ -1,0 +1,114 @@
+{
+  "ServoOpen": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "servoOpen",
+    "title": "Servo Open Position",
+    "values": {
+      "value": 175
+    },
+    "min": 0,
+    "max": 180,
+    "units": "degrees"
+  },
+  "ServoClose": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "servoClose",
+    "title": "Servo Close Position",
+    "values": {
+      "value": 5
+    },
+    "min": 0,
+    "max": 180,
+    "units": "degrees"
+  },
+  "ServoToggleZero": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "servoToggleZero",
+    "title": "Servo 0",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "Open",
+      "false": "Close"
+    },
+    "icons": {
+      "true": "circle-o",
+      "false": "circle"
+    }
+  },
+  "ServoToggleOne": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "servoToggleOne",
+    "title": "Servo 1",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "Open",
+      "false": "Close"
+    },
+    "icons": {
+      "true": "circle-o",
+      "false": "circle"
+    }
+  },
+  "ServoToggleTwo": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "servoToggleTwo",
+    "title": "Servo 2",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "Open",
+      "false": "Close"
+    },
+    "icons": {
+      "true": "circle-o",
+      "false": "circle"
+    }
+  },
+  "Fan": {
+    "card-type": "crouton-simple-toggle",
+    "static_endpoint_id": "fan",
+    "title": "Fan",
+    "values": {
+      "value": false
+    },
+    "labels": {
+      "true": "On",
+      "false": "Off"
+    },
+    "icons": {
+      "true": "toggle-on",
+      "false": "toggle-off"
+    }
+  },
+  "FanSpeed": {
+    "card-type": "crouton-simple-slider",
+    "static_endpoint_id": "fanSpeed",
+    "title": "Fan Speed",
+    "values": {
+      "value": 90
+    },
+    "min": 0,
+    "max": 160,
+    "units": "degrees"
+  },
+  "temperature": {
+    "values": {
+        "labels": [1,2,3,4],
+        "series": [[60,55,50,45]],
+        "update": {
+          "labels": [5],
+          "series": [[40]]
+        }
+    },
+    "max": 20,
+    "low": 0,
+    "high": 100,
+    "card-type": "crouton-chart-line",
+    "title": "Temperature (F)"
+  }
+}
