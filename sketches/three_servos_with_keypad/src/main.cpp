@@ -21,6 +21,7 @@ uint32_t t = 0;
   // input expander
   #include <Keypad.h>
 
+  String msg;
 
   const byte ROWS = 4; //four rows
   const byte COLS = 4; //three columns
@@ -626,12 +627,31 @@ void loop() {
 
 
 
-    char key = keypad.getKey();
-    if (key){
-      Serial.println(key);
-    }
-
-  
+  if (keypad.getKeys())
+  {
+      for (int i=0; i<LIST_MAX; i++)   // Scan the whole key list.
+      {
+          if ( keypad.key[i].stateChanged )   // Only find keys that have changed state.
+          {
+              switch (keypad.key[i].kstate) {  // Report active key state : IDLE, PRESSED, HOLD, or RELEASED
+                  case PRESSED:
+                  msg = " PRESSED.";
+              break;
+                  case HOLD:
+                  msg = " HOLD.";
+              break;
+                  case RELEASED:
+                  msg = " RELEASED.";
+              break;
+                  case IDLE:
+                  msg = " IDLE.";
+              }
+              Serial.print("Key ");
+              Serial.print(keypad.key[i].kchar);
+              Serial.println(msg);
+          }
+      }
+  }
 
 
   if (servoFlag) {
@@ -642,12 +662,12 @@ void loop() {
   }
 
   // Do things every tickLimit seconds
+  /*
   if ( millis() - tick > tickLimit) {
     tick = millis();
 
     counter += 1;
 
-  /*
     // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
     yield();
     client.loop();
@@ -678,7 +698,6 @@ void loop() {
 
 
 
-  */
     
     // i2c scan
     byte error, address;
@@ -719,6 +738,7 @@ void loop() {
 
 
   }
+  */
 
   yield();
 
