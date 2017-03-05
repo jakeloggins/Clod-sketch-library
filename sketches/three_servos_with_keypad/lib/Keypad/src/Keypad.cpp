@@ -37,7 +37,7 @@ Keypad::Keypad(char *userKeymap, byte *row, byte *col, byte numRows, byte numCol
 	columnPins = col;
 	sizeKpd.rows = numRows;
 	sizeKpd.columns = numCols;
-	Serial.begin(115200);
+
 	begin(userKeymap);
 
 	setDebounceTime(10);
