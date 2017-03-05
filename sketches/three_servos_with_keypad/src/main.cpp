@@ -664,13 +664,10 @@ void loop() {
   // Do things every tickLimit seconds
   
   if ( millis() - tick > tickLimit) {
+    
+
     tick = millis();
 
-    counter += 1;
-
-    // sketch confirms the value by sending it back on /[path]/[confirm]/[device_name]/[endpoint_key]
-    yield();
-    client.loop();
 
     getTemperature();
 
