@@ -46,7 +46,7 @@ Keypad::Keypad(char *userKeymap, byte *row, byte *col, byte numRows, byte numCol
 
 	startTime = 0;
 	single_key = false;
-
+	Serial.begin(115200);
 	Serial.println("keypad began with constructor");
 }
 
