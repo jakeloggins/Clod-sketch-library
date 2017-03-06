@@ -36,39 +36,6 @@ uint32_t t = 0;
 
   Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
-  // Taking care of some special events.
-  void keypadEvent(KeypadEvent key){
-      yield();
-      switch (keypad.getState()){
-      case PRESSED:
-          Serial.println("pressed");
-          Serial.println(key);
-          //if (key == '#') {
-          //    digitalWrite(ledPin,!digitalRead(ledPin));
-          //    ledPin_state = digitalRead(ledPin);        // Remember LED state, lit or unlit.
-          //}
-          break;
-
-      case RELEASED:
-          Serial.println("released");
-          Serial.println(key);
-          //if (key == '*') {
-          //    digitalWrite(ledPin,ledPin_state);    // Restore LED state from before it started blinking.
-          //    blink = false;
-          //}
-          break;
-
-      case HOLD:
-          Serial.println("hold");
-          Serial.println(key);
-          //if (key == '*') {
-          //    blink = true;    // Blink the LED when holding the * key.
-          //}
-          break;
-      }
-  }
-
-
 
 // -- Servo setup
 
@@ -582,7 +549,7 @@ void setup() {
   pwm.setPWMFreq(50);  
 
   // keypad stuff
-  keypad.addEventListener(keypadEvent); // Add an event listener for this keypad
+
 }
 
 
@@ -626,6 +593,7 @@ void loop() {
     }
 
 
+<<<<<<< HEAD
 
   if (keypad.getKeys())
   {
@@ -652,6 +620,15 @@ void loop() {
           }
       }
   }
+=======
+    char customKey = keypad.getKey();
+  
+    if (customKey){
+      Serial.println(customKey);
+    }
+
+  
+>>>>>>> parent of a7bf2a2... keypad event listener
 
 
   if (servoFlag) {
@@ -742,3 +719,4 @@ void loop() {
 }
 
 
+// add 2 more servos and save as separate sketch
